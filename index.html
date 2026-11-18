@@ -375,7 +375,7 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
     <canvas id="world" aria-label="Dunia permainan 3D" tabindex="0"></canvas>
     <div class="labels" id="labels"></div>
     <div class="nogl">Perangkat ini belum mendukung WebGL untuk tampilan 3D. Kamu tetap bisa mengerjakan misi lewat tombol di Papan Misi.</div>
-    <div class="notready"><div class="box"><h3>Game belum siap</h3><p class="muted" id="notReadyText">Dunia ini butuh minimal 15 misi yang lengkap.</p><button class="primary" id="toStudio">🧰 Buka Teacher Studio</button></div></div>
+    <div class="notready"><div class="box"><h3 id="notReadyTitle">Game belum siap</h3><p class="muted" id="notReadyText">Dunia ini butuh minimal 15 misi yang lengkap.</p><button class="primary" id="toStudio">🧰 Buka Teacher Studio</button><button class="primary" id="retryLoad" hidden>↻ Coba lagi</button></div></div>
     <div class="ov topbar">
      <div class="worldchip"><h2 id="worldName">🌴 Algorithm Island</h2><div class="tags" id="worldMeta"></div><div class="minihud" id="miniHud"></div></div>
      <div class="stagebtns">
@@ -504,6 +504,18 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
     </details>
    </div>
    <div>
+    <div id="srvBox">
+     <h3 class="sub2">🔗 Link siswa tetap (tanpa unduh ulang)</h3>
+     <p class="small muted" style="margin-top:0">Misi disimpan di Google Sheet Anda (sheet <b>Misi</b>). Siswa cukup membuka satu link. Setiap kali Anda menerbitkan, misi di link itu ikut berubah. Butuh kode Apps Script <b>versi 3</b> dan <b>KUNCI_GURU</b> yang sudah Anda ganti di kode itu.</p>
+     <div class="field"><label for="teacherKey">Kunci guru (sama dengan KUNCI_GURU di Apps Script)</label><input id="teacherKey" type="password" autocomplete="off"></div>
+     <div class="actions"><button class="primary" id="srvPublish">🌐 Terbitkan misi ke link siswa</button><button id="srvPull">📥 Ambil misi dari spreadsheet</button></div>
+     <div class="sendline" id="srvStatus">Isi URL Apps Script di kolom kiri dan kunci guru, lalu terbitkan.</div>
+     <div id="srvLinkRow" hidden style="margin-top:10px"><label for="studentLink">Link siswa (bagikan ini)</label><div class="urlrow"><input id="studentLink" readonly><button id="copyLink">📋 Salin</button></div>
+      <p class="small muted" style="margin:8px 0 0">Pintu guru (jangan dibagikan): <b id="teacherLink"></b></p>
+      <div class="hint small" id="cfgHint" hidden style="margin-top:10px">Supaya <b>link utama tanpa ?g=</b> langsung menjadi link siswa, buat file <b>config.json</b> di repo GitHub (Add file → Create new file) berisi:<pre class="code" id="cfgJson" style="max-height:none;white-space:pre-wrap;word-break:break-all"></pre></div>
+     </div>
+     <hr style="border:0;border-top:2px dashed var(--line);margin:16px 0">
+    </div>
     <div id="onlineBox" hidden>
      <h3 class="sub2">🌐 Link online</h3>
      <p class="small muted" style="margin-top:0">Halaman ini adalah link online. Setelah misi siap, terbitkan supaya siswa yang membuka link yang sama langsung memainkan misi ini.</p>
@@ -807,11 +819,14 @@ let SPOTS=[];
 function refreshSpots(){const n=Math.max(1,missions.length);SPOTS=missions.map((_,i)=>TOUR[Math.min(TOUR.length-1,Math.floor(i*TOUR.length/n))])}
 
 /* ================= KONFIG TERTANAM (file siswa) ================= */
+const QS=new URLSearchParams(location.search),GID=(QS.get('g')||'').trim(),TEACHER_ENTRY=QS.has('guru')||/^#guru$/i.test(location.hash),WEB=/^https?:$/.test(location.protocol);
+const SERVER=/^[\w-]{20,}$/.test(GID),SERVER_URL=SERVER?'https://script.google.com/macros/s/'+GID+'/exec':'',SRV_CACHE='eduverse-srv-'+GID;
 let CFG={};try{CFG=unpackCfg($('ev-config').textContent)||{}}catch(e){CFG={}}
+if(SERVER){try{CFG=JSON.parse(localStorage.getItem(SRV_CACHE)||'null')||{}}catch(e){CFG={}}}
 const EMBED=!!CFG.id;
 const detectOnline=()=>{try{return !!(window.claude&&typeof window.claude.use==='function')}catch(e){return false}};
 let ONLINE=detectOnline(),OWNER=false;
-const isStudent=()=>ONLINE?!OWNER:EMBED;
+const isStudent=()=>SERVER?true:ONLINE?!OWNER:EMBED;
 const SAVE_KEY=EMBED?'eduverse-save-v2-'+CFG.id:'eduverse-save-v2';
 const HIST_KEY=EMBED?'eduverse-history-'+CFG.id:'eduverse-history-v1';
 
@@ -826,7 +841,7 @@ try{deviceId=localStorage.getItem('eduverse-device')||'';if(!deviceId){deviceId=
 
 function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:2,configId:CFG.id||'',missions:EMBED?[]:missions,completed,wrongs,xp,coins,right,wrong,steps,player,collected:[...collected],chest,avatarId,theme,worldTitle,library,camMode,student,startedAt,finishedAt,finished,mode,autoCount,sheetUrl,askName,subject:$('subject').value,topic:$('topic').value,grade:$('grade').value,genre:$('genre').value}))}catch(e){}if(ONLINE&&OWNER)saveDraft()}
 function saveHistory(){try{localStorage.setItem(HIST_KEY,JSON.stringify(history.slice(-500)))}catch(e){}}
-function applyConfig(c){if(Array.isArray(c.missions)&&c.missions.length)missions=c.missions.slice(0,MAXM).map(fixMission);['subject','topic','grade','genre'].forEach(k=>{if(c[k])$(k).value=c[k]});if(palettes[c.theme])theme=c.theme;if(c.worldTitle)worldTitle=c.worldTitle;sheetUrl=c.sheetUrl||'';askName=c.askName!==false}
+function applyConfig(c){if(Array.isArray(c.missions)&&c.missions.length)missions=c.missions.slice(0,MAXM).map(fixMission);['subject','topic','grade','genre'].forEach(k=>{if(c[k])$(k).value=c[k]});if(palettes[c.theme])theme=c.theme;if(c.worldTitle)worldTitle=c.worldTitle;sheetUrl=SERVER?SERVER_URL:(c.sheetUrl||'');askName=c.askName!==false}
 function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null')}catch(e){}
  if(!s&&!EMBED){try{const old=JSON.parse(localStorage.getItem('eduverse-save-v1')||'null');if(old){s=old;s.v=1}}catch(e){}}
  if(EMBED)applyConfig(CFG);
@@ -837,9 +852,10 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SAVE_KEY)||'nul
   if(s.v===1&&!EMBED&&missions.length<MINM){const have=new Set(missions.map(m=>m.q));for(const m of packs[pickPack($('subject').value)]){if(missions.length>=MINM)break;if(!have.has(m.q))missions.push(clone(m))}setTimeout(()=>toast('Dunia lama ditambah soal dari bank supaya mencapai 15 misi.','purple'),900)}
  }
  try{history=JSON.parse(localStorage.getItem(HIST_KEY)||'[]')||[]}catch(e){history=[]}
+ if(SERVER&&!EMBED)missions=[];
  normalize()}
 function fixMission(m){m=m||{};const a=Array.isArray(m.a)?m.a.slice(0,4).map(x=>x==null?'':String(x)):['','',''];while(a.length<3)a.push('');return{title:String(m.title||'Misi'),q:String(m.q||''),a,c:Math.max(0,Math.min(a.length-1,+m.c||0)),ex:String(m.ex||''),skill:String(m.skill||''),src:m.src||'manual'}}
-function normalize(){if(!missions.length)missions=clone(packs.Informatika);completed=missions.map((_,i)=>!!completed[i]);wrongs=missions.map((_,i)=>+wrongs[i]||0);refreshSpots();player.x=Math.max(0,Math.min(COLS-1,Math.round(+player.x||0)));player.y=Math.max(0,Math.min(ROWS-1,Math.round(+player.y||0)));ensurePlayerFree()}
+function normalize(){if(!missions.length&&!SERVER)missions=clone(packs.Informatika);completed=missions.map((_,i)=>!!completed[i]);wrongs=missions.map((_,i)=>+wrongs[i]||0);refreshSpots();player.x=Math.max(0,Math.min(COLS-1,Math.round(+player.x||0)));player.y=Math.max(0,Math.min(ROWS-1,Math.round(+player.y||0)));ensurePlayerFree()}
 const missionValid=m=>!!(m&&m.q.trim()&&m.a.filter(x=>x.trim()).length>=2&&m.a[m.c]&&m.a[m.c].trim());
 const validCount=()=>missions.filter(missionValid).length;
 const gameReady=()=>missions.length>=MINM&&validCount()===missions.length;
@@ -1101,7 +1117,8 @@ function updateHint(){const tg=currentTarget(),c=coinSpots.some((p,i)=>!collecte
  $('gameHint').textContent=msg;const p=$('prompt');if(pr){p.textContent=pr;p.classList.remove('hide')}else p.classList.add('hide');$('interactBtn').classList.toggle('ready',!!tg);$('playerCoord').textContent='Posisi '+(player.x+1)+','+(player.y+1)}
 function renderAll(){updateStats();renderQuests();updateHint();renderStuChip()}
 function renderWorldHeader(){const P=palettes[theme]||palettes.cyber;$('worldName').textContent=(worldTitle==='Algorithm Island'?'🌴 ':P.emoji+' ')+worldTitle;$('worldMeta').innerHTML=[$('grade').value,$('subject').value,$('topic').value,$('genre').value].filter(Boolean).map(t=>`<span class="tag">${escapeHTML(t)}</span>`).join('')}
-function checkReady(){const ok=gameReady();stage.classList.toggle('blocked',!ok);if(!ok){const v=validCount();$('notReadyText').textContent=missions.length<MINM?'Dunia ini baru punya '+missions.length+' misi. Butuh minimal '+MINM+' misi.':(missions.length-v)+' misi belum lengkap (pertanyaan, minimal 2 opsi, dan kunci jawaban). Lengkapi di Mission Editor.'}$('toStudio').hidden=isStudent();return ok}
+let srvState='';
+function checkReady(){const ok=gameReady();stage.classList.toggle('blocked',!ok);$('retryLoad').hidden=!(SERVER&&srvState==='error');if(!ok&&SERVER&&!EMBED){$('notReadyText').textContent=srvState==='error'?srvErr:'Memuat misi dari guru...';$('toStudio').hidden=true;return ok}if(!ok){const v=validCount();$('notReadyText').textContent=missions.length<MINM?'Dunia ini baru punya '+missions.length+' misi. Butuh minimal '+MINM+' misi.':(missions.length-v)+' misi belum lengkap (pertanyaan, minimal 2 opsi, dan kunci jawaban). Lengkapi di Mission Editor.'}$('toStudio').hidden=isStudent();return ok}
 function renderStuChip(){const c=$('stuChip');c.textContent=student.name?curAvatar().emoji+' '+student.name.split(' ')[0]:curAvatar().emoji+' Isi nama';c.hidden=!askName&&!student.name}
 
 /* ================= SISWA ================= */
@@ -1421,13 +1438,27 @@ const detailRows=r=>r.details.map(d=>[fmtTime(r.time),r.name,r.kelas||'',d.no,d.
 function excelFor(recs,fname){const rk=[REKAP_HEAD,...recs.map(rekapRow)],dt=[DETAIL_HEAD];recs.forEach(r=>dt.push(...detailRows(r)));download(makeXlsx([{name:'Rekap',rows:rk,widths:[19,24,9,9,9,16,24,18,11,13,11,8,11,8,7,7,13,12,14]},{name:'Detail',rows:dt,widths:[19,24,9,8,18,26,50,26,12,12,14]}]),fname)}
 
 /* ================= GOOGLE SHEETS ================= */
-const GAS_CODE=`/** EDUVERSE AI: penerima hasil siswa ke Google Sheets (versi 2) */
+const GAS_CODE=`/** EDUVERSE AI: server misi + penerima hasil siswa (versi 3) */
+
+// 1) GANTI kunci di bawah dengan kata sandi Anda sendiri. Jangan dibagikan ke siswa.
+var KUNCI_GURU = 'GANTI_DENGAN_KUNCI_RAHASIA';
+
 var REKAP = ${JSON.stringify(REKAP_HEAD)};
 var DETAIL = ${JSON.stringify(DETAIL_HEAD)};
+var KOLOM_MISI = ${JSON.stringify(TPL_HEAD)};
+
+function doGet(e) {
+  var p = (e && e.parameter) || {};
+  if (p.a === 'misi') return json_(misiUntukSiswa_());
+  if (p.d) return catatLink_(p.d);
+  return halaman_('✓ EDUVERSE AI siap menerima hasil (versi 3).');
+}
 
 function doPost(e) {
+  var data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+  if (data.a === 'simpanMisi') return json_(kunci_(data.kunci, function () { return simpanMisi_(data.cfg); }));
+  if (data.a === 'ambilMisi') return json_(kunci_(data.kunci, function () { return { ok: true, cfg: bacaMisi_() }; }));
   return catat_(function (ss) {
-    var data = JSON.parse(e.postData.contents);
     if (sudahAda_(ss, data.rekap[data.rekap.length - 1])) return 'sudah';
     tulis_(ss, 'Rekap', REKAP, [data.rekap]);
     if (data.detail && data.detail.length) tulis_(ss, 'Detail', DETAIL, data.detail);
@@ -1435,11 +1466,83 @@ function doPost(e) {
   }, false);
 }
 
-// Dipakai tombol "Kirim hasil ke guru" pada versi link online
-function doGet(e) {
-  if (!e || !e.parameter || !e.parameter.d) return halaman_('✓ EDUVERSE AI siap menerima hasil (versi 2).');
+// ---------- Misi ----------
+function kunci_(k, fn) {
+  if (!KUNCI_GURU || KUNCI_GURU === 'GANTI_DENGAN_KUNCI_RAHASIA') return { ok: false, error: 'KUNCI_GURU di kode Apps Script belum diganti.' };
+  if (String(k || '') !== KUNCI_GURU) { Utilities.sleep(1500); return { ok: false, error: 'Kunci guru salah.' }; }
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try { return fn(); } catch (err) { return { ok: false, error: String(err) }; } finally { lock.releaseLock(); }
+}
+
+function simpanMisi_(cfg) {
+  if (!cfg || !cfg.missions || cfg.missions.length < 15) return { ok: false, error: 'Minimal 15 misi.' };
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Misi') || ss.insertSheet('Misi');
+  sh.clear();
+  var rows = [KOLOM_MISI];
+  cfg.missions.slice(0, 30).forEach(function (m, i) {
+    var a = m.a || [];
+    rows.push([i + 1, m.title, m.q, a[0], a[1], a[2], a[3], 'ABCD'.charAt(m.c || 0), m.ex, m.skill]);
+  });
+  var rg = sh.getRange(1, 1, rows.length, KOLOM_MISI.length);
+  rg.setNumberFormat('@');
+  rg.setValues(rows.map(function (r) { return r.map(teks_); }));
+  sh.getRange(1, 1, 1, KOLOM_MISI.length).setFontWeight('bold').setBackground('#6b4ce6').setFontColor('#ffffff');
+  sh.setFrozenRows(1);
+  var meta = { subject: cfg.subject, topic: cfg.topic, grade: cfg.grade, genre: cfg.genre, theme: cfg.theme, worldTitle: cfg.worldTitle,
+    askName: cfg.askName !== false, teacher: cfg.teacher || null,
+    made: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm') };
+  PropertiesService.getScriptProperties().setProperty('META', JSON.stringify(meta));
+  var c = bacaMisi_();
+  return { ok: true, id: c.id, jumlah: c.missions.length, made: meta.made };
+}
+
+function bacaMisi_() {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Misi');
+  var meta = JSON.parse(PropertiesService.getScriptProperties().getProperty('META') || '{}');
+  var missions = [];
+  if (sh && sh.getLastRow() > 1) {
+    sh.getRange(2, 1, sh.getLastRow() - 1, KOLOM_MISI.length).getDisplayValues().forEach(function (r) {
+      if (!String(r[2]).trim()) return;
+      var a = [r[3], r[4], r[5], r[6]];
+      while (a.length > 3 && !String(a[a.length - 1]).trim()) a.pop();
+      var c = 'ABCD'.indexOf(String(r[7]).trim().toUpperCase().charAt(0));
+      missions.push({ title: r[1] || ('Misi ' + (missions.length + 1)), q: r[2], a: a, c: c < 0 ? 0 : c, ex: r[8], skill: r[9], src: 'server' });
+    });
+  }
+  var cfg = { missions: missions.slice(0, 30), subject: meta.subject || '', topic: meta.topic || '', grade: meta.grade || '',
+    genre: meta.genre || '', theme: meta.theme || 'cyber', worldTitle: meta.worldTitle || 'Algorithm Island',
+    askName: meta.askName !== false, teacher: meta.teacher || null, made: meta.made || '' };
+  var dig = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, JSON.stringify(cfg));
+  cfg.id = 'S' + dig.map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); }).join('').slice(0, 12);
+  return cfg;
+}
+
+function misiUntukSiswa_() {
+  var c = bacaMisi_();
+  if (c.missions.length < 15) return { ok: false, error: 'Guru belum menerbitkan minimal 15 misi.' };
+  return { ok: true, id: c.id, z: pack_(c, c.id) };
+}
+
+function pack_(obj, id) {
+  var b = Utilities.newBlob(JSON.stringify(obj)).getBytes(), k = Utilities.newBlob('EV' + id).getBytes();
+  for (var i = 0; i < b.length; i++) {
+    var v = (b[i] & 255) ^ (k[i % k.length] & 255) ^ ((i * 31 + 7) & 255);
+    b[i] = v > 127 ? v - 256 : v;
+  }
+  return Utilities.base64Encode(b);
+}
+
+function teks_(v) {
+  v = (v === null || v === undefined) ? '' : String(v);
+  return /^[=+\\-@]/.test(v) ? "'" + v : v;
+}
+
+// ---------- Hasil siswa ----------
+function catatLink_(raw) {
   return catat_(function (ss) {
-    var d = JSON.parse(e.parameter.d), r = d.r, id = r[r.length - 1];
+    var d = JSON.parse(raw), r = d.r, id = r[r.length - 1];
     if (sudahAda_(ss, id)) return 'Hasil ' + r[1] + ' sudah tercatat sebelumnya. Tab ini boleh ditutup.';
     tulis_(ss, 'Rekap', REKAP, [r]);
     var w = String(d.w || '').split('.'), rows = [];
@@ -1457,9 +1560,9 @@ function catat_(fn, html) {
   lock.waitLock(30000);
   try {
     var msg = fn(SpreadsheetApp.getActiveSpreadsheet());
-    return html ? halaman_(msg) : ContentService.createTextOutput(JSON.stringify({ ok: true, status: msg })).setMimeType(ContentService.MimeType.JSON);
+    return html ? halaman_(msg) : json_({ ok: true, status: msg });
   } catch (err) {
-    return html ? halaman_('Gagal mencatat: ' + err) : ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) })).setMimeType(ContentService.MimeType.JSON);
+    return html ? halaman_('Gagal mencatat: ' + err) : json_({ ok: false, error: String(err) });
   } finally {
     lock.releaseLock();
   }
@@ -1472,15 +1575,19 @@ function tulis_(ss, nama, header, rows) {
     sh.getRange(1, 1, 1, header.length).setFontWeight('bold').setBackground('#6b4ce6').setFontColor('#ffffff');
     sh.setFrozenRows(1);
   }
-  sh.getRange(sh.getLastRow() + 1, 1, rows.length, header.length).setValues(rows);
+  sh.getRange(sh.getLastRow() + 1, 1, rows.length, header.length).setValues(rows.map(function (r) { return r.map(teks_); }));
 }
 
 function sudahAda_(ss, id) {
   var sh = ss.getSheetByName('Rekap');
   if (!sh || sh.getLastRow() < 2) return false;
-  var v = sh.getRange(2, REKAP.length, sh.getLastRow() - 1, 1).getValues();
+  var v = sh.getRange(2, REKAP.length, sh.getLastRow() - 1, 1).getDisplayValues();
   for (var i = 0; i < v.length; i++) if (String(v[i][0]) === String(id)) return true;
   return false;
+}
+
+function json_(o) {
+  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }
 
 function halaman_(msg) {
@@ -1510,6 +1617,34 @@ async function exportGame(){if(!gameReady()){toast('Lengkapi minimal 15 misi dul
  const html=docWithConfig(packCfg(makeCfg()));if(await download(new Blob([html],{type:'text/html'}),'EDUVERSE_'+slug($('topic').value||worldTitle)+'_siswa.html'))toast('📦 File game siswa diunduh','green')}
 function exportMissionsXlsx(){const rows=[TPL_HEAD,...missions.map((m,i)=>[i+1,m.title,m.q,m.a[0]||'',m.a[1]||'',m.a[2]||'',m.a[3]||'','ABCD'[m.c]||'A',m.ex||'',m.skill||''])];download(makeXlsx([{name:'Misi',rows,widths:[5,16,46,22,22,22,22,14,40,22]}]),'Misi_EDUVERSE_'+slug($('topic').value||worldTitle)+'.xlsx').then(ok=>{if(ok)toast('💾 '+missions.length+' misi disimpan ke Excel','green')})}
 
+/* ================= LINK SISWA TETAP (misi di Google Sheet) ================= */
+const PAGES_BASE='https://rouffadilah.github.io/eduverse/';let CONFIG_GID='';
+function scriptId(){const m=(sheetUrl||'').match(/\/macros\/s\/([\w-]+)\/exec/);return m?m[1]:''}
+function siteBase(){return WEB&&!ONLINE?location.origin+location.pathname:PAGES_BASE}
+function studentLinkFor(){const id=scriptId();if(!id)return'';return CONFIG_GID&&CONFIG_GID===id?siteBase():siteBase()+'?g='+id}
+async function srvPost(body){const r=await fetchT(sheetUrl,40000,{method:'POST',body:JSON.stringify(body)});const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error('Balasan dari Apps Script tidak dikenali. Pastikan kode versi 3 sudah diterapkan sebagai versi baru dan aksesnya "Siapa saja".')}if(!j.ok)throw new Error(j.error||'Gagal');return j}
+function getTKey(){const k=$('teacherKey').value.trim();try{if(k)sessionStorage.setItem('ev-tkey',k)}catch(e){}return k}
+function showStudentLink(){const l=studentLinkFor(),id=scriptId();$('srvLinkRow').hidden=!l;if(l)$('studentLink').value=l;$('teacherLink').textContent=siteBase()+'?guru';$('cfgHint').hidden=!id||CONFIG_GID===id;if(id)$('cfgJson').textContent=JSON.stringify({g:id})}
+async function readSiteConfig(){if(!WEB||ONLINE)return'';try{const r=await fetchT('config.json?t='+Date.now(),8000);if(!r.ok)return'';const j=await r.json();const v=String(j.g||j.url||'');const m=v.match(/\/macros\/s\/([\w-]+)\/exec/);return m?m[1]:(/^[\w-]{20,}$/.test(v)?v:'')}catch(e){return''}}
+async function publishServer(){if(ONLINE)return;if(!saveSheetUrl()||!sheetUrl||!scriptId()){setSendLine($('srvStatus'),'Isi URL Apps Script yang benar (berakhiran /exec) di kolom Google Sheets dulu.','err');return}if(!gameReady()){toast('Lengkapi minimal 15 misi dulu.');renderReady();return}if(!pinData){openPin('setup',null);toast('Buat PIN guru dulu.');return}
+ const kunci=getTKey();if(!kunci){setSendLine($('srvStatus'),'Isi kunci guru (KUNCI_GURU di Apps Script).','err');$('teacherKey').focus();return}
+ if(!(await confirmBox('Terbitkan '+missions.length+' misi ke link siswa? Misi lama di spreadsheet diganti, dan siswa yang membuka link akan mendapat misi ini.',{title:'Terbitkan misi',ok:'🌐 Terbitkan'})))return;
+ setSendLine($('srvStatus'),'Menerbitkan ke Google Sheet...','busy');$('srvPublish').disabled=true;
+ try{const j=await srvPost({a:'simpanMisi',kunci,cfg:{...publishable(),teacher:{salt:pinData.salt,pin:pinData.pin}}});setSendLine($('srvStatus'),'✓ '+j.jumlah+' misi terbit ('+(j.made||'')+'). Siswa yang membuka link akan memakai misi ini.','ok');showStudentLink();toast('🌐 Misi terbit ke link siswa','green')}
+ catch(e){setSendLine($('srvStatus'),String(e.message||e).includes('Failed to fetch')||e.name==='AbortError'?'Tidak bisa menghubungi Apps Script. Periksa internet dan URL-nya.':String(e.message||e),'err')}
+ $('srvPublish').disabled=false}
+async function pullServer(){if(ONLINE)return;if(!saveSheetUrl()||!scriptId()){setSendLine($('srvStatus'),'Isi URL Apps Script dulu.','err');return}const kunci=getTKey();if(!kunci){setSendLine($('srvStatus'),'Isi kunci guru dulu.','err');$('teacherKey').focus();return}
+ if(!(await confirmBox('Ganti misi di Teacher Studio dengan misi dari spreadsheet?',{ok:'Ambil misi'})))return;
+ setSendLine($('srvStatus'),'Mengambil misi dari Google Sheet...','busy');
+ try{const j=await srvPost({a:'ambilMisi',kunci}),c=j.cfg||{};if(!c.missions||!c.missions.length)throw new Error('Sheet Misi masih kosong.');['subject','topic','grade','genre'].forEach(k=>{if(c[k])$(k).value=c[k]});if(palettes[c.theme])theme=c.theme;if(c.worldTitle)worldTitle=c.worldTitle;if(R3D)buildWorld();startNewWorld(c.missions,c.missions.length+' misi diambil dari spreadsheet.');setSendLine($('srvStatus'),'✓ '+c.missions.length+' misi diambil dari spreadsheet.','ok');showStudentLink()}
+ catch(e){setSendLine($('srvStatus'),String(e.message||e),'err')}}
+async function loadServerCfg(){srvState='loading';checkReady();
+ try{const r=await fetchT(SERVER_URL+'?a=misi&t='+Date.now(),25000);const j=await r.json();if(!j.ok)throw new Error(j.error||'Gagal memuat misi.');const cfg=unpackCfg(JSON.stringify({id:j.id,z:j.z}));cfg.id=j.id;if(!Array.isArray(cfg.missions)||cfg.missions.length<MINM)throw new Error('Guru belum menerbitkan minimal 15 misi.');
+  if(cfg.id!==CFG.id){let flag='';try{flag=sessionStorage.getItem('ev-srv-reload')||''}catch(e){}try{localStorage.setItem(SRV_CACHE,JSON.stringify(cfg))}catch(e){}if(flag!==cfg.id){try{sessionStorage.setItem('ev-srv-reload',cfg.id)}catch(e){}if(EMBED)toast('Guru memperbarui misi. Memuat ulang...','purple');setTimeout(()=>location.reload(),EMBED?900:50);return}throw new Error('Browser ini memblokir penyimpanan. Buka link di Chrome atau Safari biasa (bukan mode samaran).')}
+  srvState='ok';checkReady()}
+ catch(e){srvState='error';srvErr=String(e&&e.message||e);if(/Failed to fetch|NetworkError|aborted|AbortError|Load failed/i.test(srvErr))srvErr='Tidak bisa terhubung ke server guru. Periksa internet, lalu coba lagi.';if(EMBED){srvState='ok';toast('Tidak bisa memeriksa misi terbaru. Memakai misi terakhir yang tersimpan.')}checkReady()}}
+let srvErr='';
+
 /* ================= AKSES GURU (PIN) ================= */
 const PIN_KEY='eduverse-teacher-pin',TEACHER_VIEWS=['studio','library'],IDLE_LOCK=15*60*1000;
 function hashPin(pin,salt){const d=new TextEncoder().encode('eduverse|'+salt+'|'+pin);let h1=0x811c9dc5,h2=0x9747b28c,h3=0x2545f491;for(let r=0;r<3000;r++)for(let i=0;i<d.length;i++){const x=d[i]^(r&255);h1=Math.imul(h1^x,16777619)>>>0;h2=Math.imul(h2^(x+i),2246822519)>>>0;h3=Math.imul(h3^h1,3266489917)>>>0}return[h1,h2,h3].map(v=>v.toString(16).padStart(8,'0')).join('')}
@@ -1529,7 +1664,7 @@ function applyAccess(){const t=teacherUnlocked;
  document.querySelectorAll('.nav .teacher').forEach(b=>{b.hidden=isStudent();b.textContent=(t?(b.dataset.view==='studio'?'🧰 ':'📚 '):'🔒 ')+b.dataset.label});
  document.querySelectorAll('.teacher-only').forEach(e=>e.hidden=!t);
  document.querySelectorAll('.teacher-help').forEach(e=>e.hidden=isStudent());
- $('lockBtn').hidden=!t;$('teachGate').hidden=t||(isStudent()&&!pinData);$('toStudio').hidden=isStudent();$('onlineBox').hidden=!(ONLINE&&OWNER);$('resetAll').querySelector('.rlabel').textContent=isStudent()?' Main ulang':' Reset game';document.querySelector('.brand p').textContent='Petualangan belajar 3D'+(isStudent()&&$('topic').value?': '+$('topic').value:'');if(ONLINE){$('shareTitle').textContent='Atau unduh sebagai file HTML';$('shareNote').innerHTML='Halaman ini adalah <b>link online</b>. Siswa yang membuka link ini hanya bisa bermain. Teacher Studio hanya muncul untuk pemilik link yang sedang login, dan tetap dikunci PIN.';$('sourceUrl').placeholder='Ambil dari link hanya tersedia di file HTML guru'}renderPubStatus();
+ $('lockBtn').hidden=!t;$('teachGate').hidden=t||(isStudent()&&!pinData);$('toStudio').hidden=isStudent();$('onlineBox').hidden=!(ONLINE&&OWNER);$('srvBox').hidden=ONLINE;$('resetAll').querySelector('.rlabel').textContent=isStudent()?' Main ulang':' Reset game';document.querySelector('.brand p').textContent='Petualangan belajar 3D'+(isStudent()&&$('topic').value?': '+$('topic').value:'');if(ONLINE){$('shareTitle').textContent='Atau unduh sebagai file HTML';$('shareNote').innerHTML='Halaman ini adalah <b>link online</b>. Siswa yang membuka link ini hanya bisa bermain. Teacher Studio hanya muncul untuk pemilik link yang sedang login, dan tetap dikunci PIN.';$('sourceUrl').placeholder='Ambil dari link hanya tersedia di file HTML guru'}renderPubStatus();
  $('resendBtn')&&renderHistory()}
 function openPin(mode,after){pinMode=mode;pinAfter=after||null;['pinInput','pinConfirm','pinRec'].forEach(id=>$(id).value='');$('pinWarn').textContent='';$('pinStepA').hidden=false;$('pinStepB').hidden=true;$('pinCancel').hidden=false;
  const setup=mode==='setup'||mode==='change',rec=mode==='recover',nr=mode==='newrec';$('pinWipe').hidden=!(rec&&!isStudent());
@@ -1660,7 +1795,8 @@ $('edNext').addEventListener('click',()=>{const s=$('editMission');s.value=Strin
 $('saveMission').addEventListener('click',saveEditor);
 $('addMission').addEventListener('click',()=>{if(missions.length>=MAXM){toast('Maksimal '+MAXM+' misi dalam satu pulau.');return}missions.push({title:'Misi '+(missions.length+1),q:'',a:['','','',''],c:0,ex:'',skill:'',src:'manual'});completed.push(false);wrongs.push(0);finished=false;refreshSpots();ensurePlayerFree();snapPlayer();rebuildLabels();renderAll();renderEditorSelect();$('editMission').value=String(missions.length-1);loadEditor();checkReady();save();toast('+ Portal '+missions.length+' muncul. Isi soalnya lalu simpan.','purple');$('editQuestion').focus()});
 $('deleteMission').addEventListener('click',async()=>{if(missions.length<=1){toast('Minimal satu misi harus tersedia.');return}const i=+$('editMission').value;const t=missions[i].title;if(!(await confirmBox('Hapus misi "'+t+'"?',{ok:'Hapus',danger:true})))return;missions.splice(i,1);completed.splice(i,1);wrongs.splice(i,1);refreshSpots();ensurePlayerFree();snapPlayer();rebuildLabels();renderAll();renderEditorSelect();checkReady();save();toast('Misi "'+t+'" dihapus'+(missions.length<MINM?'. Game butuh minimal '+MINM+' misi.':''))});
-$('saveSheet').addEventListener('click',saveSheetUrl);$('checkScript').addEventListener('click',checkScript);$('testSheet').addEventListener('click',testSheet);
+$('saveSheet').addEventListener('click',()=>{saveSheetUrl();showStudentLink()});$('srvPublish').addEventListener('click',publishServer);$('srvPull').addEventListener('click',pullServer);$('retryLoad').addEventListener('click',loadServerCfg);$('copyLink').addEventListener('click',async()=>{const v=$('studentLink').value;try{await navigator.clipboard.writeText(v);toast('📋 Link siswa disalin','green')}catch(e){$('studentLink').select();toast('Link sudah diblok. Tekan Salin.')}});
+try{const k=sessionStorage.getItem('ev-tkey');if(k)$('teacherKey').value=k}catch(e){}$('checkScript').addEventListener('click',checkScript);$('testSheet').addEventListener('click',testSheet);
 $('copyGas').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(GAS_CODE);toast('📋 Kode Apps Script disalin','green')}catch(e){const r=document.createRange();r.selectNodeContents($('gasCode'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Kode sudah diblok. Tekan Ctrl+C / Salin.')}});
 $('askName').addEventListener('change',()=>{askName=$('askName').checked;renderStuChip();save()});
 $('exportGame').addEventListener('click',exportGame);$('exportMissions').addEventListener('click',exportMissionsXlsx);$('publishBtn').addEventListener('click',publishOnline);
@@ -1674,6 +1810,7 @@ window.addEventListener('online',()=>{if(sheetUrl)resendPending(null)});
 window.addEventListener('resize',()=>{if(R3D)resize()});
 
 /* ================= START ================= */
+function startApp(){
 load();
 $('muteBtn').textContent=muted?'🔇':'🔊';
 $('sheetUrl').value=sheetUrl;if(sheetUrl)setSendLine($('sheetStatus'),'Terhubung ke Apps Script. Hasil siswa dikirim otomatis saat dunia selesai.','ok');
@@ -1685,7 +1822,10 @@ if(R3D){resize();setupCamera(-1)}
 requestAnimationFrame(frame);
 setView('play');
 if(sheetUrl&&navigator.onLine&&!ONLINE)setTimeout(()=>resendPending(null),2500);
+if(SERVER)loadServerCfg();else showStudentLink();
 if(ONLINE)initOnline();else setTimeout(()=>{if(!ONLINE&&detectOnline()){ONLINE=true;initOnline()}},1500);
+}
+if(WEB&&!SERVER&&!ONLINE){readSiteConfig().then(g=>{CONFIG_GID=g;if(g&&!TEACHER_ENTRY){location.replace(location.pathname+'?g='+g+location.hash);return}startApp()})}else startApp();
 
 })();
 </script>
