@@ -488,7 +488,7 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
     <h3 class="sub2">Kirim hasil otomatis ke Google Sheets</h3>
     <p class="small muted" style="margin-top:0">Setiap siswa yang menyelesaikan dunia akan tercatat sebagai satu baris di sheet <b>Rekap</b>, dan rincian per soal di sheet <b>Detail</b>.</p>
     <div class="field"><label for="sheetUrl">URL Aplikasi Web Apps Script</label><input id="sheetUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec"></div>
-    <div class="actions"><button class="primary" id="saveSheet">Simpan URL</button><button id="testSheet">Kirim data uji</button></div>
+    <div class="actions"><button class="primary" id="saveSheet">Simpan URL</button><button id="testSheet">Kirim data uji</button><button id="checkScript">🔎 Cek versi script</button></div>
     <div class="sendline" id="sheetStatus">Belum terhubung. Hasil tetap bisa diunduh sebagai file Excel.</div>
     <details class="steps"><summary>Cara menghubungkan Google Sheets (sekali saja)</summary>
      <ol>
@@ -497,6 +497,7 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
       <li>Hapus isi editor, tempel kode di bawah, lalu simpan.</li>
       <li>Klik <b>Terapkan → Deployment baru</b>, pilih jenis <b>Aplikasi web</b>. Jalankan sebagai: <b>Saya</b>. Yang memiliki akses: <b>Siapa saja</b>.</li>
       <li>Izinkan akses, lalu salin <b>URL aplikasi web</b> (berakhiran <code>/exec</code>) ke kolom di atas dan tekan <b>Kirim data uji</b>.</li>
+      <li>Tekan <b>Cek versi script</b>. Harus tertulis <b>versi 2</b>. Setiap kali kode diganti, buka <b>Terapkan → Kelola deployment → ✏️ Edit → Versi: Versi baru → Terapkan</b>. Tanpa langkah ini, Google tetap menjalankan kode lama.</li>
      </ol>
      <pre class="code" id="gasCode"></pre>
      <button id="copyGas">📋 Salin kode Apps Script</button>
@@ -628,6 +629,7 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
    <div class="tablewrap"><table class="rtable"><thead><tr><th>No</th><th>Misi / kompetensi</th><th>Salah</th><th>Status</th></tr></thead><tbody id="winTable"></tbody></table></div>
    <div class="sendline" id="winSend">Hasil tersimpan di perangkat ini.</div>
    <a class="btnlink success" id="winSendLink" target="_blank" rel="noopener" hidden>📤 Kirim hasil ke guru</a>
+   <a class="linkbtn" id="winSendAlt" target="_blank" rel="noopener" hidden style="display:block;text-align:center;margin-top:8px">Belum masuk ke spreadsheet? Kirim lewat tab baru</a>
    <div class="dfoot" style="flex-wrap:wrap"><button class="primary" id="winExcel">📥 Unduh Excel</button><button id="winCopy">📋 Salin laporan</button><button id="replayBtn">↺ Main lagi</button><button id="closeWin">Tutup</button></div>
   </div>
  </div>
@@ -1126,7 +1128,7 @@ let lastRecord=null;
 function buildRecord(){const n=missions.length,first=missions.filter((m,i)=>completed[i]&&!wrongs[i]).length;
  return{id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),time:finishedAt,name:student.name||'Tanpa nama',kelas:student.kelas,absen:student.absen,grade:$('grade').value,subject:$('subject').value,topic:$('topic').value,world:worldTitle,n,first,wrong:wrongs.reduce((a,b)=>a+(+b||0),0),score:Math.round(first/n*100),acc:accNow(),xp,level:Math.floor(xp/300)+1,coins,duration:Math.max(0,finishedAt-(startedAt||finishedAt)),device:deviceId,sent:false,
   details:missions.map((m,i)=>({no:i+1,title:m.title,skill:m.skill||m.title,q:m.q,key:m.a[m.c]||'',wrongs:wrongs[i]||0,first:!wrongs[i]}))}}
-function finishGame(){finished=true;finishedAt=Date.now();const rec=buildRecord();lastRecord=rec;history.push(rec);saveHistory();save();showWin(rec);const wl=$('winSendLink');wl.hidden=true;
+function finishGame(){finished=true;finishedAt=Date.now();const rec=buildRecord();lastRecord=rec;history.push(rec);saveHistory();save();showWin(rec);const wl=$('winSendLink'),wa=$('winSendAlt');wl.hidden=true;wa.hidden=!(sheetUrl&&!ONLINE);if(!wa.hidden){wa.href=sheetLink(rec);wa.onclick=()=>{rec.sent=true;saveHistory();setSendLine($('winSend'),'Tab baru dibuka. Jika tertulis "Hasil tercatat" atau "sudah tercatat", nilaimu sudah masuk.','ok')}}
  if(sheetUrl&&ONLINE){wl.href=sheetLink(rec);wl.hidden=false;wl.onclick=()=>{rec.sent=true;saveHistory();setSendLine($('winSend'),'Tab baru dibuka. Jika muncul tulisan "Hasil tercatat", nilaimu sudah masuk ke spreadsheet guru.','ok')};setSendLine($('winSend'),'Tekan "Kirim hasil ke guru" supaya nilaimu masuk ke spreadsheet guru.','busy')}
  else if(sheetUrl)sendRecords([rec],$('winSend'));else setSendLine($('winSend'),'Hasil tersimpan di perangkat ini. '+(ONLINE&&!DL?'Salin laporan lalu kirim ke guru.':'Unduh Excel atau salin laporan untuk diserahkan ke guru.'),'')}
 function showWin(rec){const stars=rec.score>=90?3:rec.score>=70?2:1;$('winStars').innerHTML=[0,1,2].map(i=>`<span class="${i<stars?'':'off'}">⭐</span>`).join('');$('winScore').textContent=rec.score;$('winName').textContent=rec.name;$('winMeta').textContent=[rec.kelas&&'Kelas '+rec.kelas,rec.absen&&'No. '+rec.absen,rec.subject,rec.topic].filter(Boolean).join(' • ');
@@ -1435,7 +1437,7 @@ function doPost(e) {
 
 // Dipakai tombol "Kirim hasil ke guru" pada versi link online
 function doGet(e) {
-  if (!e || !e.parameter || !e.parameter.d) return halaman_('EDUVERSE AI siap menerima hasil.');
+  if (!e || !e.parameter || !e.parameter.d) return halaman_('✓ EDUVERSE AI siap menerima hasil (versi 2).');
   return catat_(function (ss) {
     var d = JSON.parse(e.parameter.d), r = d.r, id = r[r.length - 1];
     if (sudahAda_(ss, id)) return 'Hasil ' + r[1] + ' sudah tercatat sebelumnya. Tab ini boleh ditutup.';
@@ -1492,9 +1494,11 @@ async function sendRecords(recs,line){if(!sheetUrl||!recs.length)return;if(ONLIN
  for(const r of recs){try{await postSheet(r);r.sent=true;ok++}catch(e){r.sent=false}}saveHistory();renderHistory();
  if(ok===recs.length)setSendLine(line,'✓ Hasil terkirim ke spreadsheet guru'+(recs.length>1?' ('+ok+' hasil)':'')+'.','ok');else setSendLine(line,'Sebagian hasil belum terkirim. Coba "Kirim ulang yang tertunda" di menu Hasil belajar.','err')}
 function resendPending(line){const p=history.filter(r=>!r.sent);if(p.length)sendRecords(p,line)}
-function saveSheetUrl(){const u=$('sheetUrl').value.trim();if(u&&!/^https:\/\/script\.google(usercontent)?\.com\//.test(u)){setSendLine($('sheetStatus'),'URL harus berupa alamat Apps Script yang diawali https://script.google.com/... dan berakhiran /exec.','err');return false}sheetUrl=u;save();renderHistory();setSendLine($('sheetStatus'),u?'URL tersimpan. Tekan "Kirim data uji" untuk mengecek koneksi.':'URL dihapus. Hasil hanya disimpan di perangkat dan bisa diunduh sebagai Excel.',u?'ok':'');return true}
+function saveSheetUrl(){const u=$('sheetUrl').value.trim().replace(/\s+/g,'');$('sheetUrl').value=u;if(u&&!/^https:\/\/script\.google(usercontent)?\.com\//.test(u)){setSendLine($('sheetStatus'),'URL harus berupa alamat Apps Script yang diawali https://script.google.com/... dan berakhiran /exec.','err');return false}sheetUrl=u;save();renderHistory();setSendLine($('sheetStatus'),u?(ONLINE?'URL tersimpan di link ini. Tekan "Terbitkan ke link ini" supaya siswa ikut memakai URL ini, lalu cek versi script.':'URL tersimpan. Tekan "Kirim data uji", lalu "Cek versi script".'):'URL dihapus. Hasil hanya disimpan di perangkat dan bisa diunduh sebagai Excel.',u?'ok':'');return true}
+function openExternal(url){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}
+function checkScript(){if(!saveSheetUrl()||!sheetUrl){setSendLine($('sheetStatus'),'Isi URL Aplikasi Web dulu.','err');return}openExternal(sheetUrl);setSendLine($('sheetStatus'),'Tab baru dibuka. Harus tertulis "siap menerima hasil (versi 2)". Jika tidak ada tulisan versi 2, kode Apps Script belum diperbarui atau belum diterapkan sebagai versi baru.','busy')}
 async function testSheet(){if(!saveSheetUrl()||!sheetUrl){if(!sheetUrl)setSendLine($('sheetStatus'),'Isi URL Aplikasi Web dulu.','err');return}const now=Date.now();const rec={id:'UJI-'+now.toString(36),time:now,name:'Data uji (boleh dihapus)',kelas:'-',absen:'',grade:$('grade').value,subject:$('subject').value,topic:$('topic').value,world:worldTitle,n:1,first:1,wrong:0,score:100,acc:100,xp:0,level:1,coins:0,duration:0,device:deviceId,details:[{no:1,title:'Uji koneksi',skill:'-',q:'-',key:'-',wrongs:0,first:true}]};
- if(ONLINE){const a=document.createElement('a');a.href=sheetLink(rec);a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setSendLine($('sheetStatus'),'Tab baru dibuka. Jika tertulis "Hasil Data uji ... sudah tercatat", koneksi berhasil. Pastikan kode Apps Script sudah versi 2.','ok');return}
+ if(ONLINE){openExternal(sheetLink(rec));setSendLine($('sheetStatus'),'Tab baru dibuka. Jika tertulis "Hasil Data uji ... sudah tercatat", koneksi berhasil. Pastikan kode Apps Script sudah versi 2.','ok');return}
  setSendLine($('sheetStatus'),'Mengirim data uji...','busy');try{await postSheet(rec);setSendLine($('sheetStatus'),'✓ Data uji terkirim. Buka Google Sheet Anda: jika ada baris "Data uji" di sheet Rekap, koneksi berhasil.','ok')}catch(e){setSendLine($('sheetStatus'),'Gagal mengirim. Periksa internet dan pastikan akses deployment "Siapa saja".','err')}}
 
 /* ================= BAGIKAN KE SISWA ================= */
@@ -1618,7 +1622,7 @@ let swipe=null;canvas.addEventListener('pointerdown',e=>{audio();swipe={x:e.clie
 $('interactBtn').addEventListener('click',()=>{audio();if(canPlay())interact()});$('talkBtn').addEventListener('click',talk);
 $('closeNpc').addEventListener('click',()=>{clearInterval(typeTimer);$('npcModal').classList.remove('show')});
 $('closeQuiz').addEventListener('click',closeQuizModal);$('nextQuiz').addEventListener('click',closeQuizModal);
-$('closeWin').addEventListener('click',()=>$('winModal').classList.remove('show'));
+$('closeWin').addEventListener('click',async()=>{$('winModal').classList.remove('show');const r=lastRecord;if(ONLINE&&sheetUrl&&r&&!r.sent){if(await confirmBox('Hasilmu belum dikirim ke guru. Kirim sekarang? Sebuah tab baru akan terbuka untuk mencatat nilaimu.',{title:'Kirim hasil ke guru?',ok:'📤 Kirim sekarang'})){openExternal(sheetLink(r));r.sent=true;saveHistory();toast('Tab pengiriman dibuka. Cek tulisan "Hasil tercatat".','green')}else toast('Kamu bisa mengirimnya nanti dari menu Hasil belajar.')}});
 $('replayBtn').addEventListener('click',()=>{resetGame();toast('↺ Petualangan dimulai lagi')});
 $('winExcel').addEventListener('click',()=>{const r=lastRecord||history[history.length-1];if(!r)return;excelFor([r],'Hasil_'+slug(r.name)+'_'+fmtTime(r.time).slice(0,10)+'.xlsx');toast('📥 Laporan Excel diunduh','green')});
 ['quizModal','npcModal','winModal','stuModal'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target.id!==id)return;if(id==='quizModal')closeQuizModal();else if(id==='stuModal'){if(!$('stuSkip').hidden)$(id).classList.remove('show')}else $(id).classList.remove('show')}));
@@ -1656,7 +1660,7 @@ $('edNext').addEventListener('click',()=>{const s=$('editMission');s.value=Strin
 $('saveMission').addEventListener('click',saveEditor);
 $('addMission').addEventListener('click',()=>{if(missions.length>=MAXM){toast('Maksimal '+MAXM+' misi dalam satu pulau.');return}missions.push({title:'Misi '+(missions.length+1),q:'',a:['','','',''],c:0,ex:'',skill:'',src:'manual'});completed.push(false);wrongs.push(0);finished=false;refreshSpots();ensurePlayerFree();snapPlayer();rebuildLabels();renderAll();renderEditorSelect();$('editMission').value=String(missions.length-1);loadEditor();checkReady();save();toast('+ Portal '+missions.length+' muncul. Isi soalnya lalu simpan.','purple');$('editQuestion').focus()});
 $('deleteMission').addEventListener('click',async()=>{if(missions.length<=1){toast('Minimal satu misi harus tersedia.');return}const i=+$('editMission').value;const t=missions[i].title;if(!(await confirmBox('Hapus misi "'+t+'"?',{ok:'Hapus',danger:true})))return;missions.splice(i,1);completed.splice(i,1);wrongs.splice(i,1);refreshSpots();ensurePlayerFree();snapPlayer();rebuildLabels();renderAll();renderEditorSelect();checkReady();save();toast('Misi "'+t+'" dihapus'+(missions.length<MINM?'. Game butuh minimal '+MINM+' misi.':''))});
-$('saveSheet').addEventListener('click',saveSheetUrl);$('testSheet').addEventListener('click',testSheet);
+$('saveSheet').addEventListener('click',saveSheetUrl);$('checkScript').addEventListener('click',checkScript);$('testSheet').addEventListener('click',testSheet);
 $('copyGas').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(GAS_CODE);toast('📋 Kode Apps Script disalin','green')}catch(e){const r=document.createRange();r.selectNodeContents($('gasCode'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Kode sudah diblok. Tekan Ctrl+C / Salin.')}});
 $('askName').addEventListener('change',()=>{askName=$('askName').checked;renderStuChip();save()});
 $('exportGame').addEventListener('click',exportGame);$('exportMissions').addEventListener('click',exportMissionsXlsx);$('publishBtn').addEventListener('click',publishOnline);
