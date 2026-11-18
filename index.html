@@ -303,7 +303,7 @@ pre.code{max-height:220px;overflow:auto;background:#10243b;color:#d6f1ff;border-
 @media(max-width:900px){.grid2{grid-template-columns:1fr}}
 @media(max-width:600px){.srcrow{grid-template-columns:1fr}.wingrid.four{grid-template-columns:repeat(2,1fr)}.score{grid-template-columns:1fr;justify-items:center;text-align:center}.stuchip{max-width:100px}}
 .win .rtable td,.win .rtable th{text-align:left}
-@media(max-width:600px){.worldchip{max-width:56%}.tags .tag:nth-child(n+4){display:none}.tag{font-size:10.5px}.stagebtns{gap:5px}.stagebtns button{width:40px;height:40px}.stuchip{width:auto!important;max-width:96px;padding:0 8px;font-size:12px}}
+@media(max-width:600px){.worldchip{max-width:56%}.tags .tag:not(.lv):not(:first-child){display:none}.tag{font-size:10.5px}.stagebtns{gap:5px}.stagebtns button{width:40px;height:40px}.stuchip{width:auto!important;max-width:96px;padding:0 8px;font-size:12px}}
 .lockpill{background:#fff3c4;border-color:var(--ink)}
 .teachgate{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;padding:11px 14px;border:2px dashed var(--ink2);border-radius:var(--r-md);background:#ffffffb3;font-size:14px;font-weight:600;color:var(--ink2)}
 .reccode{font:700 26px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.08em;text-align:center;padding:14px;border:3px dashed var(--ink);border-radius:14px;background:#fff9e3;user-select:all;-webkit-user-select:all}
@@ -364,6 +364,31 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
 .stage.night{background:radial-gradient(1.5px 1.5px at 12% 18%,#fff 60%,transparent),radial-gradient(1px 1px at 28% 8%,#fff 60%,transparent),radial-gradient(1.5px 1.5px at 46% 22%,#fff 60%,transparent),radial-gradient(1px 1px at 63% 12%,#fff 60%,transparent),radial-gradient(1.5px 1.5px at 78% 26%,#fff 60%,transparent),radial-gradient(1px 1px at 90% 9%,#fff 60%,transparent),radial-gradient(1px 1px at 35% 30%,#ffffffb0 60%,transparent),radial-gradient(1px 1px at 70% 34%,#ffffffb0 60%,transparent),linear-gradient(180deg,var(--skyTop),var(--skyBot))}
 @media(max-width:600px){.story{display:none}}
 @media(max-width:600px){.pkgrid{max-height:none;overflow:visible}}
+/* ===== Pilih dunia (siswa) & dunia yang diatur (guru) ===== */
+.worldctx{display:flex;flex-direction:column;gap:4px;margin:-4px 0 14px;padding:10px 12px;border:2px dashed var(--line);border-radius:var(--r-md);background:var(--paper2);font-size:13px;line-height:1.5}
+.worldctx:empty{display:none}
+.worldctx.pk{border:2.5px solid var(--grape);border-style:solid;background:#f3efff}
+.worldctx b{font:700 15px var(--display)}
+.wcact{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.wcact button{padding:6px 10px;font-size:12.5px;box-shadow:0 3px 0 var(--ink)}
+.pkcard.editing{outline:3px solid var(--leaf);outline-offset:2px}
+.pkedit{position:absolute;right:8px;bottom:6px;font:700 11px var(--display);background:var(--leaf);color:#fff;border:1.5px solid var(--ink);border-radius:20px;padding:2px 8px}
+.pkcustom{margin:0 0 2px;font-size:12px;font-weight:800;color:var(--grape-d)}
+.pkpub{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;padding:10px 12px;border:2.5px solid var(--ink);border-radius:var(--r-md);background:#fff6d6}
+.pkpub span{flex:1;min-width:160px;font-size:13px;font-weight:800}
+.wkelas{max-width:240px}
+#wList{max-height:min(62vh,560px);overflow:auto;padding:2px 4px 4px 2px}
+.wgrp{margin:12px 0 8px;font:700 15px var(--display)}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.wcard{display:flex;flex-direction:column;padding:0;text-align:left;overflow:hidden;border-radius:var(--r-md);box-shadow:0 4px 0 var(--ink);background:#fff;font-weight:400}
+.wcard.cur{outline:3px solid var(--grape);outline-offset:2px}
+.wband{display:block;position:relative;height:56px;border-bottom:2.5px solid var(--ink)}
+.wbody{display:flex;flex-direction:column;gap:2px;padding:9px 10px 10px}
+.wbody b{font:700 15px/1.25 var(--display)}
+.wstat{margin-top:4px;font-size:12px;font-weight:800;color:var(--ink2)}
+.wcard.fin .wstat{color:var(--leaf-d)}
+.wbar{display:block;height:7px;border:1.5px solid var(--ink);border-radius:8px;background:var(--paper2);overflow:hidden;margin-top:3px}
+.wbar i{display:block;height:100%;background:var(--leaf)}
+.wempty{padding:18px;text-align:center;border:2px dashed var(--line);border-radius:var(--r-md);font-weight:700;color:var(--ink2)}
 </style>
 <!--EV:/HEAD--></head>
 <body><!--EV:BODY-->
@@ -411,11 +436,12 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
     <canvas id="world" aria-label="Dunia permainan 3D" tabindex="0"></canvas>
     <div class="labels" id="labels"></div>
     <div class="nogl">Perangkat ini belum mendukung WebGL untuk tampilan 3D. Kamu tetap bisa mengerjakan misi lewat tombol di Papan Misi.</div>
-    <div class="notready"><div class="box"><h3 id="notReadyTitle">Game belum siap</h3><p class="muted" id="notReadyText">Dunia ini butuh minimal 15 misi yang lengkap.</p><button class="primary" id="toStudio">🧰 Buka Teacher Studio</button><button class="primary" id="retryLoad" hidden>↻ Coba lagi</button></div></div>
+    <div class="notready"><div class="box"><h3 id="notReadyTitle">Game belum siap</h3><p class="muted" id="notReadyText">Dunia ini butuh minimal 15 misi yang lengkap.</p><button class="primary" id="toStudio">🧰 Buka Teacher Studio</button><button class="primary" id="retryLoad" hidden>↻ Coba lagi</button><button class="primary" id="pickWorld" hidden>🌍 Pilih dunia sesuai kelasmu</button></div></div>
     <div class="ov topbar">
      <div class="worldchip"><h2 id="worldName">🌴 Algorithm Island</h2><div class="tags" id="worldMeta"></div><p class="story" id="worldStory" hidden></p><div class="minihud" id="miniHud"></div></div>
      <div class="stagebtns">
       <button class="stuchip" id="stuChip" aria-label="Ubah nama pemain">👤 Pemain</button>
+      <button id="worldBtn" aria-label="Pilih dunia" title="Pilih dunia" hidden>🌍</button>
       <button id="camBtn" aria-label="Ganti sudut kamera" title="Kamera">🎥</button>
       <button id="fullBtn" aria-label="Layar penuh" title="Layar penuh">⛶</button>
      </div>
@@ -474,7 +500,7 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
      <div class="wcount" id="materialCount">0 kata</div>
     </div>
     <div class="two">
-     <div class="field"><label for="autoCount">Jumlah misi yang dibuat</label><select id="autoCount"><option>15</option><option>20</option><option>25</option><option>30</option></select></div>
+     <div class="field"><label for="autoCount">Jumlah misi yang dibuat</label><select id="autoCount"><option>15</option><option>20</option><option>25</option><option>30</option><option>35</option><option>40</option><option>45</option><option>50</option></select></div>
      <div class="field"><label>&nbsp;</label><button id="clearMaterial" style="width:100%">Kosongkan materi</button></div>
     </div>
     <div class="actions"><button class="primary genbtn" id="generateBtn">✦ Buat misi otomatis</button><button id="restoreBtn">Pulihkan materi contoh</button></div>
@@ -492,20 +518,22 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
    </div>
 
    <div id="modePaket" hidden>
-    <p class="small" style="margin-top:0;line-height:1.55">Dunia siap pakai yang disusun dari perangkat ajar Informatika dan KKA kelas X–XII. Soal diambil dari instrumen asesmen dan bahan ajar setiap bab, lengkap dengan kunci, pembahasan, dan kode TP. Suasana dunia mengikuti kelas: X siang dengan bantuan, XI senja, XII malam.</p>
+    <p class="small" style="margin-top:0;line-height:1.55">36 dunia dari perangkat ajar Informatika dan KKA kelas X–XII. Siswa memilih sendiri dunia yang sesuai tingkat kelasnya: kelas X-1 sampai X-3 melihat dunia kelas X, dan seterusnya. Tekan <b>Atur misi</b> untuk mengubah, menambah, atau menghapus misi sebuah dunia (15–50 misi), lalu terbitkan. Suasana mengikuti kelas: X siang dengan bantuan, XI senja, XII malam.</p>
     <div class="pkfilter">
      <div class="pkseg" role="group" aria-label="Mata pelajaran"><button data-pk-mapel="Semua" class="on">Semua mapel</button><button data-pk-mapel="Informatika">Informatika</button><button data-pk-mapel="KKA">KKA</button></div>
      <div class="pkseg" role="group" aria-label="Kelas"><button data-pk-kelas="Semua" class="on">Semua kelas</button><button data-pk-kelas="X">X</button><button data-pk-kelas="XI">XI</button><button data-pk-kelas="XII">XII</button></div>
      <span class="small muted" id="pkCount"></span>
     </div>
     <div class="pkgrid" id="pkGrid"></div>
-    <div class="pkbar" id="pkBar" hidden><span id="pkSel"></span><button class="primary" id="pkMerge">Gabungkan jadi satu dunia</button><button id="pkClear">Batal pilih</button></div>
+    <div class="pkbar" id="pkBar" hidden><span id="pkSel"></span><button class="primary" id="pkMerge">Gabungkan jadi dunia guru</button><button id="pkClear">Batal pilih</button></div>
+    <div class="pkpub" id="pkPubRow" hidden><span id="pkPubText"></span><button class="primary" id="pkPubAll">🌐 Terbitkan semua</button></div>
    </div>
 
    <div class="ready" id="readyBox"><div class="row"><span id="readyText">Misi siap: 0 dari minimal 15</span><span class="badge" id="readyBadge">Belum siap</span></div><div class="progress"><div id="readyBar"></div></div></div>
    <div class="hint studiomsg" id="studioMessage">Mode otomatis membaca materi dan membuat soal pilihan ganda: definisi istilah, isian kata kunci, fakta angka, dan pernyataan benar. Jika materi kurang, sisanya diambil dari bank soal mapel.</div>
   </div>
   <div class="card panel">
+   <div class="worldctx" id="worldCtx"></div>
    <h2>📝 Mission Editor</h2><p class="small muted" style="margin-top:0">Pilih misi untuk mengubah pertanyaan, opsi jawaban, dan penjelasan. Tanda ⚠️ berarti misi belum lengkap.</p>
    <div class="field"><label for="editMission">Pilih misi</label><div class="edsel"><button id="edPrev" aria-label="Misi sebelumnya">◀</button><select id="editMission"></select><button id="edNext" aria-label="Misi berikutnya">▶</button></div></div>
    <div class="field"><label for="editTitle">Nama misi</label><input id="editTitle"></div>
@@ -553,7 +581,7 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
    <div>
     <div id="srvBox">
      <h3 class="sub2">🔗 Link siswa tetap (tanpa unduh ulang)</h3>
-     <p class="small muted" style="margin-top:0">Misi disimpan di Google Sheet Anda (sheet <b>Misi</b>). Siswa cukup membuka satu link. Setiap kali Anda menerbitkan, misi di link itu ikut berubah. Butuh kode Apps Script <b>versi 3</b> dan <b>KUNCI_GURU</b> yang sudah Anda ganti di kode itu.</p>
+     <p class="small muted" style="margin-top:0">Misi disimpan di Google Sheet Anda (sheet <b>Misi</b>). Siswa cukup membuka satu link. Setiap kali Anda menerbitkan, misi di link itu ikut berubah. Butuh kode Apps Script <b>versi 4</b> dan <b>KUNCI_GURU</b> yang sudah Anda ganti di kode itu.</p>
      <div class="field"><label for="teacherKey">Kunci guru (sama dengan KUNCI_GURU di Apps Script)</label><input id="teacherKey" type="password" autocomplete="off"></div>
      <div class="actions"><button class="primary" id="srvPublish">🌐 Terbitkan misi ke link siswa</button><button id="srvPull">📥 Ambil misi dari spreadsheet</button></div>
      <div class="sendline" id="srvStatus">Isi URL Apps Script di kolom kiri dan kunci guru, lalu terbitkan.</div>
@@ -629,7 +657,7 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
    <div class="helpitem"><h3>⌨️ Di komputer</h3><p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> atau tombol panah untuk berjalan. <kbd>E</kbd> atau <kbd>Enter</kbd> untuk interaksi, <kbd>C</kbd> untuk ganti kamera. Saat soal terbuka, tekan <kbd>A</kbd>–<kbd>D</kbd> untuk menjawab.</p></div>
    <div class="helpitem"><h3>📱 Di HP / tablet</h3><p>Ketuk petak atau portal untuk berjalan otomatis. Bisa juga geser layar, atau tahan tombol arah. Tombol ⛶ membuat dunia memenuhi layar.</p></div>
    <div class="helpitem"><h3>🎯 Tujuan dan nilai</h3><p>Buka semua portal dengan menjawab soal. Nilai dihitung dari soal yang benar pada percobaan pertama. Koin (+10 XP) dan peti harta (+50 XP) menambah XP, bukan nilai.</p></div>
-   <div class="helpitem teacher-help"><h3>🧑‍🏫 Membuat misi</h3><p>Mode otomatis: unggah file, tempel link, atau tempel teks, lalu pilih jumlah misi (15–30). Mode manual: tulis di Mission Editor atau impor dari template Excel. Mode paket perangkat ajar: pilih salah satu dari 36 dunia Informatika dan KKA kelas X–XII, atau gabungkan beberapa bab. Periksa soal sebelum dipakai di kelas.</p></div>
+   <div class="helpitem teacher-help"><h3>🧑‍🏫 Membuat misi</h3><p>Mode otomatis: unggah file, tempel link, atau tempel teks, lalu pilih jumlah misi (15–50). Mode manual: tulis di Mission Editor atau impor dari template Excel. Mode paket perangkat ajar: atur misi tiap dunia Informatika dan KKA kelas X–XII (sampai 50 misi), atau gabungkan beberapa bab menjadi dunia guru. Siswa memilih sendiri dunia sesuai tingkat kelasnya lewat tombol 🌍. Periksa soal sebelum dipakai di kelas.</p></div>
    <div class="helpitem"><h3>🌗 Suasana sesuai kelas</h3><p>Kelas X bermain di dunia siang dan mendapat bantuan: setelah jawaban salah, satu pilihan salah lain disingkirkan. Kelas XI bermain saat senja, kelas XII saat malam, tanpa bantuan. Nilai tetap dihitung dari jawaban benar pada percobaan pertama.</p></div>
    <div class="helpitem teacher-help"><h3>📊 Hasil ke spreadsheet</h3><p>Di akhir permainan muncul laporan nilai yang bisa diunduh sebagai Excel. Jika URL Apps Script diisi, hasil juga terkirim otomatis ke Google Sheets guru.</p></div>
    <div class="helpitem"><h3>🌐 Butuh internet untuk</h3><p>Mengambil materi dari link, membaca foto/scan lewat OCR, dan mengirim hasil ke Google Sheets. Bermain, membaca PDF/Word/PowerPoint/Excel, dan mengunduh Excel bisa offline.</p></div>
@@ -669,11 +697,21 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
    <p class="small muted" style="margin-top:12px">Nama dan kelas dicantumkan di laporan akhir dan di spreadsheet guru.</p>
    <div class="field"><label for="stuName">Nama lengkap</label><input id="stuName" autocomplete="name" placeholder="Contoh: Siti Aisyah"></div>
    <div class="two">
-    <div class="field"><label for="stuClass">Kelas</label><input id="stuClass" placeholder="Contoh: X-2"></div>
+    <div class="field"><label for="stuClass">Kelas</label><select id="stuClass"><option value="">Pilih kelas</option></select></div>
     <div class="field"><label for="stuAbsen">No. absen</label><input id="stuAbsen" inputmode="numeric" placeholder="Opsional"></div>
    </div>
    <div class="edwarn" id="stuWarn"></div>
    <div class="dfoot"><button id="stuSkip">Nanti saja</button><button class="success" id="stuSave">Mulai bermain ▶</button></div>
+  </div>
+ </div>
+</div>
+<div class="modal" id="worldModal" role="dialog" aria-modal="true" aria-labelledby="worldHead">
+ <div class="dialog wide">
+  <div class="dhead" style="background:var(--grape)"><h2 id="worldHead">Pilih dunia</h2><span class="pchip" id="worldTier">Pilih kelasmu</span></div>
+  <div class="dbody">
+   <div class="field wkelas"><label for="wKelas">Kelasmu</label><select id="wKelas"></select></div>
+   <div id="wList"></div>
+   <div class="dfoot"><button id="wClose">Tutup</button></div>
   </div>
  </div>
 </div>
@@ -690,7 +728,7 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
    <div class="sendline" id="winSend">Hasil tersimpan di perangkat ini.</div>
    <a class="btnlink success" id="winSendLink" target="_blank" rel="noopener" hidden>📤 Kirim hasil ke guru</a>
    <a class="linkbtn" id="winSendAlt" target="_blank" rel="noopener" hidden style="display:block;text-align:center;margin-top:8px">Belum masuk ke spreadsheet? Kirim lewat tab baru</a>
-   <div class="dfoot" style="flex-wrap:wrap"><button class="primary" id="winExcel">📥 Unduh Excel</button><button id="winCopy">📋 Salin laporan</button><button id="replayBtn">↺ Main lagi</button><button id="closeWin">Tutup</button></div>
+   <div class="dfoot" style="flex-wrap:wrap"><button class="primary" id="winExcel">📥 Unduh Excel</button><button id="winCopy">📋 Salin laporan</button><button id="replayBtn">↺ Main lagi</button><button id="winWorld" hidden>🌍 Pilih dunia lain</button><button id="closeWin">Tutup</button></div>
   </div>
  </div>
 </div>
@@ -736,7 +774,7 @@ const PRISTINE='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
 const $=id=>document.getElementById(id);
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const defaultMaterial='Algoritma adalah urutan langkah logis untuk menyelesaikan masalah. Variabel digunakan untuk menyimpan data atau nilai dalam program. Perulangan merupakan struktur yang menjalankan instruksi secara berulang. Percabangan memungkinkan program memilih tindakan berdasarkan kondisi. Pseudocode adalah penulisan algoritma menggunakan bahasa sederhana.';
-const MINM=15,MAXM=30;
+const MINM=15,MAXM=50;
 
 /* ================= BANK SOAL (15 per mapel) ================= */
 const Q=(title,q,a,c,ex,skill)=>({title,q,a,c,ex,skill,src:'bank'});
@@ -884,8 +922,10 @@ const TOUR=[[4,1],[8,1],[11,1],[14,1],[18,1],[20,3],[16,3],[13,3],[9,3],[6,3],[2
 const trees=[[6,1],[16,1],[1,5],[10,5],[21,5],[6,6],[14,8],[4,8],[17,8],[3,10],[7,12],[12,12],[17,12],[21,13],[4,13]];
 const buildings=[{x:2,y:7,lab:false},{x:16,y:6,lab:true}];
 const coinSpots=[[2,1],[12,2],[19,2],[7,4],[15,4],[2,6],[18,6],[9,7],[13,8],[5,10],[10,10],[16,10],[21,11],[3,12],[14,12],[8,13],[0,9]];
+/* lebih dari 30 misi: 50 posisi portal di baris yang sama, lorong genap tetap terbuka */
+const TOUR50=[[4,1],[8,1],[11,1],[14,1],[18,1],[20,1],[20,3],[18,3],[16,3],[13,3],[9,3],[8,3],[6,3],[4,3],[2,3],[2,5],[4,5],[6,5],[8,5],[13,5],[15,5],[16,5],[19,5],[19,9],[17,9],[15,9],[14,9],[12,9],[9,9],[6,9],[4,9],[2,9],[1,11],[4,11],[6,11],[8,11],[10,11],[13,11],[15,11],[17,11],[20,11],[19,13],[17,13],[15,13],[12,13],[10,13],[7,13],[5,13],[3,13],[1,13]];
 let SPOTS=[];
-function refreshSpots(){const n=Math.max(1,missions.length);SPOTS=missions.map((_,i)=>TOUR[Math.min(TOUR.length-1,Math.floor(i*TOUR.length/n))])}
+function refreshSpots(){const n=Math.max(1,missions.length),T=n>TOUR.length?TOUR50:TOUR;SPOTS=missions.map((_,i)=>T[Math.min(T.length-1,Math.floor(i*T.length/n))])}
 
 /* ================= KONFIG TERTANAM (file siswa) ================= */
 const QS=new URLSearchParams(location.search),GID=(QS.get('g')||'').trim(),TEACHER_ENTRY=QS.has('guru')||/^#guru$/i.test(location.hash),WEB=/^https?:$/.test(location.protocol);
@@ -898,6 +938,9 @@ let ONLINE=detectOnline(),OWNER=false;
 const isStudent=()=>SERVER?true:ONLINE?!OWNER:EMBED;
 const SAVE_KEY=EMBED?'eduverse-save-v2-'+CFG.id:SERVER?'eduverse-srv-wait':'eduverse-save-v2';
 const HIST_KEY=EMBED?'eduverse-history-'+CFG.id:SERVER?'eduverse-srv-wait-h':'eduverse-history-v1';
+/* dunia yang dipilih, kemajuan per dunia, dan misi per dunia */
+const SCOPE=SERVER?GID:EMBED?CFG.id:'local',PICK_KEY='eduverse-pick-'+SCOPE,PROG_KEY='eduverse-prog-'+SCOPE,OWN_KEY='eduverse-own-'+SCOPE,STU_KEY='eduverse-stu-'+SCOPE,WCACHE_KEY='eduverse-wcache-'+SCOPE,OV_KEY='eduverse-worlds-v1';
+let curWorld='',picked=false,worldReady=true;try{const v=localStorage.getItem(PICK_KEY);if(v!==null){picked=true;curWorld=v}}catch(e){}worldReady=!curWorld;
 
 /* ================= STATE ================= */
 const clone=x=>JSON.parse(JSON.stringify(x));
@@ -908,7 +951,7 @@ let activeMission=-1,answered=false,muted=false;
 try{muted=localStorage.getItem('eduverse-muted')==='1'}catch(e){}
 try{deviceId=localStorage.getItem('eduverse-device')||'';if(!deviceId){deviceId='D'+Math.random().toString(36).slice(2,8).toUpperCase();localStorage.setItem('eduverse-device',deviceId)}}catch(e){deviceId='D-'+Date.now().toString(36)}
 
-function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:2,configId:CFG.id||'',missions:EMBED?[]:missions,completed,wrongs,xp,coins,right,wrong,steps,player,collected:[...collected],chest,avatarId,theme,worldTitle,library,camMode,student,startedAt,finishedAt,finished,mode,autoCount,sheetUrl,askName,subject:$('subject').value,topic:$('topic').value,grade:$('grade').value,genre:$('genre').value}))}catch(e){}if(ONLINE&&OWNER)saveDraft()}
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:2,configId:CFG.id||'',missions:EMBED?[]:missions,completed,wrongs,xp,coins,right,wrong,steps,player,collected:[...collected],chest,avatarId,theme,worldTitle,library,camMode,student,startedAt,finishedAt,finished,mode,autoCount,sheetUrl,askName,subject:$('subject').value,topic:$('topic').value,grade:$('grade').value,genre:$('genre').value,curWorld}));if(student.name||student.kelas)localStorage.setItem(STU_KEY,JSON.stringify({student,avatarId}))}catch(e){}try{if(worldReady)saveWorldState()}catch(e){}if(ONLINE&&OWNER)saveDraft()}
 function saveHistory(){try{localStorage.setItem(HIST_KEY,JSON.stringify(history.slice(-500)))}catch(e){}}
 function applyConfig(c){if(Array.isArray(c.missions)&&c.missions.length)missions=c.missions.slice(0,MAXM).map(fixMission);['subject','topic','grade','genre'].forEach(k=>{if(c[k])setField(k,c[k])});if(palettes[c.theme])theme=c.theme;if(c.worldTitle)worldTitle=c.worldTitle;sheetUrl=SERVER?SERVER_URL:(c.sheetUrl||'');askName=c.askName!==false}
 function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null')}catch(e){}
@@ -920,6 +963,8 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SAVE_KEY)||'nul
   if(s.student&&typeof s.student==='object')student={name:s.student.name||'',kelas:s.student.kelas||'',absen:s.student.absen||''};startedAt=+s.startedAt||0;finishedAt=+s.finishedAt||0;finished=!!s.finished;
   if(s.v===1&&!EMBED&&missions.length<MINM){const have=new Set(missions.map(m=>m.q));for(const m of packs[pickPack($('subject').value)]){if(missions.length>=MINM)break;if(!have.has(m.q))missions.push(clone(m))}setTimeout(()=>toast('Dunia lama ditambah soal dari bank supaya mencapai 15 misi.','purple'),900)}
  }
+ if(!student.name){try{const st=JSON.parse(localStorage.getItem(STU_KEY)||'null');if(st&&st.student){student={name:st.student.name||'',kelas:st.student.kelas||'',absen:st.student.absen||''};if(typeof st.avatarId==='string')avatarId=st.avatarId}}catch(e){}}
+ if(SERVER)sheetUrl=SERVER_URL;
  try{history=JSON.parse(localStorage.getItem(HIST_KEY)||'[]')||[]}catch(e){history=[]}
  if(SERVER&&!EMBED)missions=[];
  normalize()}
@@ -1014,7 +1059,7 @@ function initMeshes(){const mk=f=>{const g=new Geo();f(g);return g.build()};
  MESH.water=mk(g=>{const c=[1,1,1];for(let x=-40;x<64;x+=2.5)for(let z=-36;z<54;z+=2.5)g.quad([x,-.34,z],[x+2.5,-.34,z],[x+2.5,-.34,z+2.5],[x,-.34,z+2.5],c,0,[x+1.25,-5,z+1.25])})}
 let STATIC=null,GLOW=null,FOG=[.8,.9,1];
 function buildWorld(){const P=palettes[theme]||palettes.cyber,g=new Geo(),gw=new Geo();const C=k=>hex(P[k]);
- const occupied=(x,z)=>isTree(x,z)||isBuilding(x,z)||(x===NPC.x&&z===NPC.y)||(x===CHEST.x&&z===CHEST.y)||TOUR.some(p=>p[0]===x&&p[1]===z)||coinSpots.some(p=>p[0]===x&&p[1]===z)||(x===START.x&&z===START.y);
+ const occupied=(x,z)=>isTree(x,z)||isBuilding(x,z)||(x===NPC.x&&z===NPC.y)||(x===CHEST.x&&z===CHEST.y)||TOUR50.some(p=>p[0]===x&&p[1]===z)||coinSpots.some(p=>p[0]===x&&p[1]===z)||(x===START.x&&z===START.y);
  for(let z=0;z<ROWS;z++)for(let x=0;x<COLS;x++){const path=z===PROW||x===PCOL,h=hash(x,z);let col=path?C('path'):(h<.5?C('ground'):C('ground2'));col=shade(col,.96+hash(z,x)*.08);g.box(x,-.07,z,1,.14,1,col);
   if(path&&h<.35)g.box(x+(h-.17)*2,.005,z+(hash(z+3,x)-.5)*.6,.18,.03,.12,shade(C('path'),.82));
   if(x===0||z===0||x===COLS-1||z===ROWS-1)g.box(x,-.42,z,1,.56,1,C('dirt'));
@@ -1140,7 +1185,7 @@ function floatText(x,z,text,color='#ffc83d'){if(!R3D)return;const el=document.cr
 
 /* ================= GERAK & INTERAKSI ================= */
 const DIRS={up:[0,-1,Math.PI],down:[0,1,0],left:[-1,0,-Math.PI/2],right:[1,0,Math.PI/2]};
-const MODALS=['quizModal','npcModal','winModal','stuModal','pinModal','askModal'];
+const MODALS=['quizModal','npcModal','winModal','stuModal','worldModal','pinModal','askModal'];
 const modalOpen=()=>MODALS.some(id=>$(id).classList.contains('show'));
 function currentTarget(){const cand=[];missions.forEach((m,i)=>{if(completed[i]||!SPOTS[i])return;const [x,y]=SPOTS[i];if(adj(player,{x,y}))cand.push({kind:'portal',i,x,y})});if(adj(player,NPC))cand.push({kind:'npc',x:NPC.x,y:NPC.y});if(!chest&&adj(player,CHEST))cand.push({kind:'chest',x:CHEST.x,y:CHEST.y});if(!cand.length)return null;const fx_=Math.round(Math.sin(rp.face)),fz=Math.round(Math.cos(rp.face));return cand.find(c=>c.x===player.x+fx_&&c.y===player.y+fz)||cand[0]}
 function interactWith(tg){if(!tg)return false;faceTo(tg.x,tg.y);if(tg.kind==='portal')openQuiz(tg.i);else if(tg.kind==='npc')talk();else if(tg.kind==='chest')openChest();return true}
@@ -1198,17 +1243,17 @@ function updateHint(){const tg=currentTarget(),c=coinSpots.some((p,i)=>!collecte
  if(tg&&tg.kind==='portal'){msg='🌀 Portal '+(tg.i+1)+' ada di depanmu.';pr='Tekan ⚡ untuk membuka Portal '+(tg.i+1)}else if(tg&&tg.kind==='npc'){msg='💬 Professor Byte siap membantu.';pr='Tekan ⚡ untuk bicara dengan Professor'}else if(tg&&tg.kind==='chest'){msg='💎 Peti harta ditemukan!';pr='Tekan ⚡ untuk membuka peti'}else if(!missions.length){msg='Menunggu misi dari guru.'}else{const left=completed.filter(x=>!x).length;msg=left?'Masih ada '+left+' portal menunggu'+(c?', dan koin berserakan di pulau.':'.'):'Semua portal sudah terbuka. Hebat!'}
  $('gameHint').textContent=msg;const p=$('prompt');if(pr){p.textContent=pr;p.classList.remove('hide')}else p.classList.add('hide');$('interactBtn').classList.toggle('ready',!!tg);$('playerCoord').textContent='Posisi '+(player.x+1)+','+(player.y+1)}
 function renderAll(){updateStats();renderQuests();updateHint();renderStuChip()}
-function renderWorldHeader(){const P=palettes[theme]||palettes.cyber;$('worldName').textContent=(worldTitle==='Algorithm Island'?'🌴 ':P.emoji+' ')+worldTitle;const LV=worldLevel();$('worldMeta').innerHTML=[$('grade').value,$('subject').value,$('topic').value,$('genre').value].filter(Boolean).map(t=>`<span class="tag">${escapeHTML(t)}</span>`).join('')+(LV.key!=='standar'?`<span class="tag lv lv-${LV.key}" title="${LV.help?'Kelas X: setelah jawaban salah, satu pilihan salah lain disingkirkan.':LV.time==='night'?'Kelas XII: dunia malam tanpa bantuan.':'Kelas XI: dunia senja tanpa bantuan.'}">${LV.icon} ${LV.name}</span>`:'');const st=worldStory(),el=$('worldStory');el.textContent=st;el.hidden=!st||completed.some(Boolean)}
+function renderWorldHeader(){const P=palettes[theme]||palettes.cyber;$('worldName').textContent=(worldTitle==='Algorithm Island'?'🌴 ':P.emoji+' ')+worldTitle;const LV=worldLevel();$('worldMeta').innerHTML=[$('grade').value,$('subject').value,$('topic').value,$('genre').value].filter(Boolean).map(t=>`<span class="tag">${escapeHTML(t)}</span>`).join('')+(LV.key!=='standar'?`<span class="tag lv lv-${LV.key}" title="${LV.help?'Kelas X: setelah jawaban salah, satu pilihan salah lain disingkirkan.':LV.time==='night'?'Kelas XII: dunia malam tanpa bantuan.':'Kelas XI: dunia senja tanpa bantuan.'}">${LV.icon} ${LV.name}</span>`:'');const st=worldStory(),el=$('worldStory');el.textContent=st;el.hidden=!st||completed.some(Boolean);document.querySelector('.brand p').textContent='Petualangan belajar 3D'+(isStudent()&&$('topic').value?': '+$('topic').value:'')}
 let srvState='';
-function checkReady(){const ok=gameReady();stage.classList.toggle('blocked',!ok);$('retryLoad').hidden=!(SERVER&&srvState==='error');if(!ok&&SERVER&&!EMBED){$('notReadyText').textContent=srvState==='error'?srvErr:'Memuat misi dari guru...';$('toStudio').hidden=true;return ok}if(!ok){const v=validCount();$('notReadyText').textContent=missions.length<MINM?'Dunia ini baru punya '+missions.length+' misi. Butuh minimal '+MINM+' misi.':(missions.length-v)+' misi belum lengkap (pertanyaan, minimal 2 opsi, dan kunci jawaban). Lengkapi di Mission Editor.'}$('toStudio').hidden=isStudent();return ok}
+function checkReady(){const ok=gameReady();stage.classList.toggle('blocked',!ok);$('pickWorld').hidden=!isStudent();$('retryLoad').hidden=!(SERVER&&srvState==='error');if(!ok&&SERVER&&!EMBED){$('notReadyText').textContent=srvState==='error'?(/belum menerbitkan/.test(srvErr)?'Pilih dunia sesuai kelasmu untuk mulai bermain.':srvErr):'Memuat misi dari guru...';$('toStudio').hidden=true;return ok}if(!ok){const v=validCount();$('notReadyText').textContent=missions.length<MINM?'Dunia ini baru punya '+missions.length+' misi. Butuh minimal '+MINM+' misi.':(missions.length-v)+' misi belum lengkap (pertanyaan, minimal 2 opsi, dan kunci jawaban). Lengkapi di Mission Editor.'}$('toStudio').hidden=isStudent();return ok}
 function renderStuChip(){const c=$('stuChip');c.textContent=student.name?curAvatar().emoji+' '+student.name.split(' ')[0]:curAvatar().emoji+' Isi nama';c.hidden=!askName&&!student.name}
 
 /* ================= SISWA ================= */
 function renderAvatarPicker(){const g=$('avGrid');g.innerHTML=AVATARS.map(a=>`<button type="button" class="avtile ${a.id===avatarId?'on':''}" data-av="${a.id}" role="radio" aria-checked="${a.id===avatarId}" aria-label="${a.name}"><canvas width="120" height="120"></canvas><span>${a.name}</span></button>`).join('');
  g.querySelectorAll('.avtile').forEach(b=>b.addEventListener('click',()=>{avatarId=b.dataset.av;g.querySelectorAll('.avtile').forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-checked',on)});save();renderStuChip();SFX.coin()}));
  requestAnimationFrame(()=>{if(!renderAvatarThumbs())g.querySelectorAll('.avtile').forEach(b=>{const a=AVATARS.find(x=>x.id===b.dataset.av);b.querySelector('canvas').outerHTML='<div class="avemo">'+a.emoji+'</div>'})})}
-function openStudent(){if($('stuModal').classList.contains('show'))return;renderAvatarPicker();$('stuName').value=student.name;$('stuClass').value=student.kelas;$('stuAbsen').value=student.absen;$('stuWarn').textContent='';$('stuSkip').hidden=isStudent()&&askName&&!student.name;$('stuModal').classList.add('show');setTimeout(()=>$('stuName').focus(),80)}
-function saveStudent(){const n=$('stuName').value.trim().replace(/\s+/g,' ');if(n.length<2){$('stuWarn').textContent='Isi nama lengkap dulu, ya.';$('stuName').focus();return}student={name:n.slice(0,60),kelas:$('stuClass').value.trim().slice(0,20),absen:$('stuAbsen').value.trim().slice(0,6)};$('stuModal').classList.remove('show');if(!startedAt)startedAt=Date.now();renderStuChip();save();toast('Selamat bermain, '+student.name.split(' ')[0]+'! 🎮','green');canvas.focus({preventScroll:true})}
+function openStudent(){if($('stuModal').classList.contains('show'))return;renderAvatarPicker();$('stuName').value=student.name;fillKelas($('stuClass'),student.kelas);$('stuAbsen').value=student.absen;$('stuWarn').textContent='';$('stuSkip').hidden=isStudent()&&askName&&!student.name;$('stuModal').classList.add('show');setTimeout(()=>$('stuName').focus(),80)}
+function saveStudent(){const n=$('stuName').value.trim().replace(/\s+/g,' ');if(n.length<2){$('stuWarn').textContent='Isi nama lengkap dulu, ya.';$('stuName').focus();return}if(isStudent()&&!$('stuClass').value){$('stuWarn').textContent='Pilih kelasmu dulu, ya. Dunia yang muncul disesuaikan dengan tingkat kelas.';$('stuClass').focus();return}student={name:n.slice(0,60),kelas:$('stuClass').value.trim().slice(0,20),absen:$('stuAbsen').value.trim().slice(0,6)};$('stuModal').classList.remove('show');if(!startedAt)startedAt=Date.now();renderStuChip();save();toast('Selamat bermain, '+student.name.split(' ')[0]+'! 🎮','green');if(needPicker())openPicker();else canvas.focus({preventScroll:true})}
 
 /* ================= KUIS ================= */
 let pendingBurst=-1;
@@ -1230,7 +1275,7 @@ function buildRecord(){const n=missions.length,first=missions.filter((m,i)=>comp
 function finishGame(){finished=true;finishedAt=Date.now();const rec=buildRecord();lastRecord=rec;history.push(rec);saveHistory();save();showWin(rec);const wl=$('winSendLink'),wa=$('winSendAlt');wl.hidden=true;wa.hidden=!(sheetUrl&&!ONLINE);if(!wa.hidden){wa.href=sheetLink(rec);wa.onclick=()=>{rec.sent=true;saveHistory();setSendLine($('winSend'),'Tab baru dibuka. Jika tertulis "Hasil tercatat" atau "sudah tercatat", nilaimu sudah masuk.','ok')}}
  if(sheetUrl&&ONLINE){wl.href=sheetLink(rec);wl.hidden=false;wl.onclick=()=>{rec.sent=true;saveHistory();setSendLine($('winSend'),'Tab baru dibuka. Jika muncul tulisan "Hasil tercatat", nilaimu sudah masuk ke spreadsheet guru.','ok')};setSendLine($('winSend'),'Tekan "Kirim hasil ke guru" supaya nilaimu masuk ke spreadsheet guru.','busy')}
  else if(sheetUrl)sendRecords([rec],$('winSend'));else setSendLine($('winSend'),'Hasil tersimpan di perangkat ini. '+(ONLINE&&!DL?'Salin laporan lalu kirim ke guru.':'Unduh Excel atau salin laporan untuk diserahkan ke guru.'),'')}
-function showWin(rec){const stars=rec.score>=90?3:rec.score>=70?2:1;$('winStars').innerHTML=[0,1,2].map(i=>`<span class="${i<stars?'':'off'}">⭐</span>`).join('');$('winScore').textContent=rec.score;$('winName').textContent=rec.name;$('winMeta').textContent=[rec.kelas&&'Kelas '+rec.kelas,rec.absen&&'No. '+rec.absen,rec.subject,rec.topic].filter(Boolean).join(' • ');
+function showWin(rec){$('winWorld').hidden=!isStudent();const stars=rec.score>=90?3:rec.score>=70?2:1;$('winStars').innerHTML=[0,1,2].map(i=>`<span class="${i<stars?'':'off'}">⭐</span>`).join('');$('winScore').textContent=rec.score;$('winName').textContent=rec.name;$('winMeta').textContent=[rec.kelas&&'Kelas '+rec.kelas,rec.absen&&'No. '+rec.absen,rec.subject,rec.topic].filter(Boolean).join(' • ');
  $('winAcc').textContent=rec.acc+'%';$('winTime').textContent=fmtDur(rec.duration);$('winXP').textContent=rec.xp;$('winCoins').textContent=rec.coins;
  $('winTable').innerHTML=rec.details.map(d=>`<tr><td>${d.no}</td><td>${escapeHTML(d.skill)}</td><td>${d.wrongs}</td><td class="${d.first?'st-ok':'st-retry'}">${d.first?'✓ Benar langsung':'✓ Setelah '+d.wrongs+'× salah'}</td></tr>`).join('');
  $('winModal').classList.add('show');SFX.win();confetti(220,innerWidth/2,innerHeight*.3,1.3);setTimeout(()=>confetti(140,innerWidth*.25,innerHeight*.4,.9),400);setTimeout(()=>confetti(140,innerWidth*.75,innerHeight*.4,.9),700)}
@@ -1473,7 +1518,7 @@ async function handleUrl(){if(busy)return;if(ONLINE){setExtract('Di link online,
  try{const r=await fetchUrlText(raw,msg=>setExtract(msg,'busy'));const host=new URL(r.url).hostname.replace(/^www\./,'');appendMaterial(host,r.text);addLibrary(($('topic').value.trim()||host),'Artikel / Website',r.url);setExtract('✓ Teks dari '+host+' ditambahkan ke materi ('+(r.text.match(/\S+/g)||[]).length.toLocaleString('id-ID')+' kata).','ok');$('sourceUrl').value=''}
  catch(e){console.warn(e);const m=String(e&&e.message||e);setExtract(m==='offline'?'Perangkat sedang offline. Mengambil materi dari link butuh internet.':m==='urlsalah'?'Link tidak valid. Periksa lagi alamatnya.':'Link tidak bisa dibaca. Pastikan halaman bisa dibuka tanpa login (untuk Google Drive/Docs: bagikan sebagai "Siapa saja yang memiliki link"). Alternatif: unduh filenya lalu unggah, atau salin teksnya ke kotak materi.','err')}
  busy=false;$('fetchUrl').disabled=false}
-function startNewWorld(list,msg){missions=list.slice(0,MAXM).map(fixMission);completed=missions.map(()=>false);wrongs=missions.map(()=>0);xp=0;coins=0;right=0;wrong=0;steps=0;player={...START};collected=new Set();chest=false;chestLid=0;startedAt=0;finishedAt=0;finished=false;shown.xp=null;shown.coins=null;refreshSpots();snapPlayer();rebuildLabels();renderWorldHeader();renderAll();renderEditorSelect();checkReady();save();if(msg)$('studioMessage').textContent=msg}
+function startNewWorld(list,msg){if(curWorld){const T=themeById(curWorld);if(T){theme=palettes[T.tema]?T.tema:theme;worldTitle=T.dunia;if(R3D)buildWorld()}}missions=list.slice(0,MAXM).map(fixMission);completed=missions.map(()=>false);wrongs=missions.map(()=>0);xp=0;coins=0;right=0;wrong=0;steps=0;player={...START};collected=new Set();chest=false;chestLid=0;startedAt=0;finishedAt=0;finished=false;shown.xp=null;shown.coins=null;refreshSpots();snapPlayer();rebuildLabels();renderWorldHeader();renderAll();renderEditorSelect();checkReady();save();if(msg)$('studioMessage').textContent=msg}
 function generate(){const sub=$('subject').value.trim()||'Informatika',text=$('material').value.trim(),target=+$('autoCount').value||15;autoCount=target;const r=buildQuestions(text,target,sub);
  theme=$('theme').value==='auto'?autoTheme(sub):$('theme').value;worldTitle=(palettes[theme]||palettes.cyber).name;if(R3D)buildWorld();
  let msg=r.fromText+' misi dibuat dari materi'+(r.fromBank?' dan '+r.fromBank+' misi diambil dari bank soal '+r.pack:'')+'. Periksa dan sunting soal di Mission Editor sebelum dipakai.';if(r.list.length<target)msg+=' Materi dan bank soal hanya cukup untuk '+r.list.length+' misi. Tambah materi atau tulis sisanya secara manual.';
@@ -1481,7 +1526,7 @@ function generate(){const sub=$('subject').value.trim()||'Informatika',text=$('m
 async function blankSlots(){if(missions.some(m=>m.q.trim())&&!(await confirmBox('Ganti semua misi yang ada dengan 15 slot kosong?',{ok:'Ganti',danger:true})))return;const list=Array.from({length:MINM},(_,i)=>({title:'Misi '+(i+1),q:'',a:['','','',''],c:0,ex:'',skill:'',src:'manual'}));startNewWorld(list,'15 slot kosong siap diisi. Pilih misi di Mission Editor, isi soalnya, lalu tekan Simpan. Game bisa dimainkan setelah semua slot lengkap.');$('editMission').value='0';loadEditor();toast('✍️ 15 slot misi kosong dibuat','purple');if(innerWidth<900)$('editMission').scrollIntoView({behavior:'smooth',block:'center'})}
 const TPL_HEAD=['No','Judul Misi','Pertanyaan','Opsi A','Opsi B','Opsi C','Opsi D','Jawaban Benar (A/B/C/D)','Penjelasan','Kompetensi'];
 function downloadTemplate(){const rows=[TPL_HEAD,[1,'Misi 1','Apa fungsi variabel dalam pemrograman?','Menghapus program','Menyimpan data atau nilai','Mematikan komputer','Menggambar grafik','B','Variabel digunakan untuk menyimpan data atau nilai.','Konsep variabel']];for(let i=2;i<=MINM;i++)rows.push([i,'Misi '+i,'','','','','','','','']);
- const guide=[['Petunjuk mengisi template EDUPLAY'],['1. Isi sheet "Misi". Satu baris = satu misi. Minimal 15 misi, maksimal 30.'],['2. Opsi A dan B wajib diisi. Opsi C dan D boleh dikosongkan.'],['3. Kolom "Jawaban Benar" diisi huruf A, B, C, atau D.'],['4. Baris 2 berisi contoh. Ganti dengan soal Anda sendiri.'],['5. Simpan file, lalu di Teacher Studio pilih Manual → Impor soal dari Excel/CSV.']];
+ const guide=[['Petunjuk mengisi template EDUPLAY'],['1. Isi sheet "Misi". Satu baris = satu misi. Minimal 15 misi, maksimal 50.'],['2. Opsi A dan B wajib diisi. Opsi C dan D boleh dikosongkan.'],['3. Kolom "Jawaban Benar" diisi huruf A, B, C, atau D.'],['4. Baris 2 berisi contoh. Ganti dengan soal Anda sendiri.'],['5. Simpan file, lalu di Teacher Studio pilih Manual → Impor soal dari Excel/CSV.']];
  download(makeXlsx([{name:'Misi',rows,widths:[5,16,46,22,22,22,22,14,40,22]},{name:'Petunjuk',rows:guide,widths:[90]}]),'Template_Misi_EDUPLAY.xlsx');toast('📥 Template Excel diunduh','green')}
 function parseCSV(t){const first=t.split(/\r?\n/)[0]||'';const d=[';','\t',','].sort((a,b)=>first.split(b).length-first.split(a).length)[0];const rows=[];let row=[],cell='',q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){cell+='"';i++}else q=false}else cell+=c}else if(c==='"')q=true;else if(c===d){row.push(cell);cell=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell=''}else cell+=c}if(cell||row.length){row.push(cell);rows.push(row)}return rows}
 function rowsToMissions(rows){const hi=rows.findIndex(r=>r.some(c=>/pertanyaan|soal|question/i.test(c||'')));if(hi<0)throw new Error('Kolom "Pertanyaan" tidak ditemukan. Pakai template dari tombol Unduh template Excel.');const H=rows[hi].map(h=>String(h||'').toLowerCase().trim());
@@ -1520,7 +1565,7 @@ const detailRows=r=>r.details.map(d=>[fmtTime(r.time),r.name,r.kelas||'',d.no,d.
 function excelFor(recs,fname){const rk=[REKAP_HEAD,...recs.map(rekapRow)],dt=[DETAIL_HEAD];recs.forEach(r=>dt.push(...detailRows(r)));download(makeXlsx([{name:'Rekap',rows:rk,widths:[19,24,9,9,9,16,24,18,11,13,11,8,11,8,7,7,13,12,14]},{name:'Detail',rows:dt,widths:[19,24,9,8,18,26,50,26,12,12,14]}]),fname)}
 
 /* ================= GOOGLE SHEETS ================= */
-const GAS_CODE=`/** EDUPLAY: server misi + penerima hasil siswa (versi 3) */
+const GAS_CODE=`/** EDUPLAY: server misi + dunia per kelas + penerima hasil siswa (versi 4) */
 
 // 1) GANTI kunci di bawah dengan kata sandi Anda sendiri. Jangan dibagikan ke siswa.
 var KUNCI_GURU = 'GANTI_DENGAN_KUNCI_RAHASIA';
@@ -1528,18 +1573,25 @@ var KUNCI_GURU = 'GANTI_DENGAN_KUNCI_RAHASIA';
 var REKAP = ${JSON.stringify(REKAP_HEAD)};
 var DETAIL = ${JSON.stringify(DETAIL_HEAD)};
 var KOLOM_MISI = ${JSON.stringify(TPL_HEAD)};
+var KOLOM_DUNIA = ['Dunia'].concat(KOLOM_MISI);
+var MAKS = 50;
 
 function doGet(e) {
   var p = (e && e.parameter) || {};
   if (p.a === 'misi') return json_(misiUntukSiswa_());
+  if (p.a === 'versi') return json_({ ok: true, v: 4 });
+  if (p.a === 'dunia') return json_(duniaUntukSiswa_(String(p.id || '')));
+  if (p.a === 'daftar') return json_(daftarDunia_());
   if (p.d) return catatLink_(p.d);
-  return halaman_('✓ EDUPLAY siap menerima hasil (versi 3).');
+  return halaman_('✓ EDUPLAY siap menerima hasil (versi 4).');
 }
 
 function doPost(e) {
   var data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
   if (data.a === 'simpanMisi') return json_(kunci_(data.kunci, function () { return simpanMisi_(data.cfg); }));
   if (data.a === 'ambilMisi') return json_(kunci_(data.kunci, function () { return { ok: true, cfg: bacaMisi_() }; }));
+  if (data.a === 'simpanDunia') return json_(kunci_(data.kunci, function () { return simpanDunia_(data.id, data.missions); }));
+  if (data.a === 'hapusDunia') return json_(kunci_(data.kunci, function () { return simpanDunia_(data.id, null); }));
   return catat_(function (ss) {
     if (sudahAda_(ss, data.rekap[data.rekap.length - 1])) return 'sudah';
     tulis_(ss, 'Rekap', REKAP, [data.rekap]);
@@ -1563,7 +1615,7 @@ function simpanMisi_(cfg) {
   var sh = ss.getSheetByName('Misi') || ss.insertSheet('Misi');
   sh.clear();
   var rows = [KOLOM_MISI];
-  cfg.missions.slice(0, 30).forEach(function (m, i) {
+  cfg.missions.slice(0, MAKS).forEach(function (m, i) {
     var a = m.a || [];
     rows.push([i + 1, m.title, m.q, a[0], a[1], a[2], a[3], 'ABCD'.charAt(m.c || 0), m.ex, m.skill]);
   });
@@ -1593,7 +1645,7 @@ function bacaMisi_() {
       missions.push({ title: r[1] || ('Misi ' + (missions.length + 1)), q: r[2], a: a, c: c < 0 ? 0 : c, ex: r[8], skill: r[9], src: 'server' });
     });
   }
-  var cfg = { missions: missions.slice(0, 30), subject: meta.subject || '', topic: meta.topic || '', grade: meta.grade || '',
+  var cfg = { missions: missions.slice(0, MAKS), subject: meta.subject || '', topic: meta.topic || '', grade: meta.grade || '',
     genre: meta.genre || '', theme: meta.theme || 'cyber', worldTitle: meta.worldTitle || 'Algorithm Island',
     askName: meta.askName !== false, teacher: meta.teacher || null, made: meta.made || '' };
   var dig = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, JSON.stringify(cfg));
@@ -1605,6 +1657,62 @@ function misiUntukSiswa_() {
   var c = bacaMisi_();
   if (c.missions.length < 15) return { ok: false, error: 'Guru belum menerbitkan minimal 15 misi.' };
   return { ok: true, id: c.id, z: pack_(c, c.id) };
+}
+
+// ---------- Misi per dunia (paket perangkat ajar) ----------
+function idDunia_(id) { return /^[a-z0-9-]{2,24}$/.test(String(id || '')); }
+
+function bacaSemuaDunia_() {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Dunia'), out = {};
+  if (!sh || sh.getLastRow() < 2) return out;
+  sh.getRange(2, 1, sh.getLastRow() - 1, KOLOM_DUNIA.length).getDisplayValues().forEach(function (r) {
+    var id = String(r[0]).trim();
+    if (!id || !String(r[3]).trim()) return;
+    var a = [r[4], r[5], r[6], r[7]];
+    while (a.length > 3 && !String(a[a.length - 1]).trim()) a.pop();
+    var c = 'ABCD'.indexOf(String(r[8]).trim().toUpperCase().charAt(0));
+    (out[id] = out[id] || []).push({ title: r[2] || 'Misi', q: r[3], a: a, c: c < 0 ? 0 : c, ex: r[9], skill: r[10] });
+  });
+  return out;
+}
+
+function sidik_(obj) {
+  var dig = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, JSON.stringify(obj));
+  return 'W' + dig.map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); }).join('').slice(0, 12);
+}
+
+function simpanDunia_(id, missions) {
+  if (!idDunia_(id)) return { ok: false, error: 'Kode dunia tidak valid.' };
+  if (missions && (missions.length < 15 || missions.length > MAKS)) return { ok: false, error: 'Satu dunia berisi 15 sampai ' + MAKS + ' misi.' };
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Dunia') || ss.insertSheet('Dunia');
+  var lama = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, KOLOM_DUNIA.length).getValues().filter(function (r) { return String(r[0]) !== id; }) : [];
+  var baru = (missions || []).map(function (m, i) {
+    var a = m.a || [];
+    return [id, i + 1, m.title, m.q, a[0], a[1], a[2], a[3], 'ABCD'.charAt(m.c || 0), m.ex, m.skill];
+  });
+  var rows = [KOLOM_DUNIA].concat(lama, baru);
+  sh.clear();
+  var rg = sh.getRange(1, 1, rows.length, KOLOM_DUNIA.length);
+  rg.setNumberFormat('@');
+  rg.setValues(rows.map(function (r) { return r.map(teks_); }));
+  sh.getRange(1, 1, 1, KOLOM_DUNIA.length).setFontWeight('bold').setBackground('#6b4ce6').setFontColor('#ffffff');
+  sh.setFrozenRows(1);
+  return { ok: true, id: id, jumlah: baru.length, made: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm') };
+}
+
+function duniaUntukSiswa_(id) {
+  if (!idDunia_(id)) return { ok: false, error: 'Kode dunia tidak valid.' };
+  var m = bacaSemuaDunia_()[id];
+  if (!m || m.length < 15) return { ok: true, kosong: true };
+  var obj = { missions: m.slice(0, MAKS) }, h = sidik_(obj);
+  return { ok: true, id: h, n: obj.missions.length, z: pack_(obj, h) };
+}
+
+function daftarDunia_() {
+  var all = bacaSemuaDunia_(), out = {};
+  Object.keys(all).forEach(function (id) { if (all[id].length >= 15) out[id] = { n: Math.min(MAKS, all[id].length), h: sidik_({ missions: all[id].slice(0, MAKS) }) }; });
+  return { ok: true, v: 4, dunia: out };
 }
 
 function pack_(obj, id) {
@@ -1685,17 +1793,18 @@ async function sendRecords(recs,line){if(!sheetUrl||!recs.length)return;if(ONLIN
 function resendPending(line){const p=history.filter(r=>!r.sent);if(p.length)sendRecords(p,line)}
 function saveSheetUrl(){const u=$('sheetUrl').value.trim().replace(/\s+/g,'');$('sheetUrl').value=u;if(u&&!/^https:\/\/script\.google(usercontent)?\.com\//.test(u)){setSendLine($('sheetStatus'),'URL harus berupa alamat Apps Script yang diawali https://script.google.com/... dan berakhiran /exec.','err');return false}sheetUrl=u;save();renderHistory();setSendLine($('sheetStatus'),u?(ONLINE?'URL tersimpan di link ini. Tekan "Terbitkan ke link ini" supaya siswa ikut memakai URL ini, lalu cek versi script.':'URL tersimpan. Tekan "Kirim data uji", lalu "Cek versi script".'):'URL dihapus. Hasil hanya disimpan di perangkat dan bisa diunduh sebagai Excel.',u?'ok':'');return true}
 function openExternal(url){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}
-function checkScript(){if(!saveSheetUrl()||!sheetUrl){setSendLine($('sheetStatus'),'Isi URL Aplikasi Web dulu.','err');return}openExternal(sheetUrl);setSendLine($('sheetStatus'),'Tab baru dibuka. Harus tertulis "siap menerima hasil (versi 3)". Jika tidak ada tulisan versi 3, kode Apps Script belum diperbarui atau belum diterapkan sebagai versi baru.','busy')}
+function checkScript(){if(!saveSheetUrl()||!sheetUrl){setSendLine($('sheetStatus'),'Isi URL Aplikasi Web dulu.','err');return}openExternal(sheetUrl);setSendLine($('sheetStatus'),'Tab baru dibuka. Harus tertulis "siap menerima hasil (versi 4)". Jika tidak ada tulisan versi 4, kode Apps Script belum diperbarui atau belum diterapkan sebagai versi baru.','busy')}
 async function testSheet(){if(!saveSheetUrl()||!sheetUrl){if(!sheetUrl)setSendLine($('sheetStatus'),'Isi URL Aplikasi Web dulu.','err');return}const now=Date.now();const rec={id:'UJI-'+now.toString(36),time:now,name:'Data uji (boleh dihapus)',kelas:'-',absen:'',grade:$('grade').value,subject:$('subject').value,topic:$('topic').value,world:worldTitle,n:1,first:1,wrong:0,score:100,acc:100,xp:0,level:1,coins:0,duration:0,device:deviceId,details:[{no:1,title:'Uji koneksi',skill:'-',q:'-',key:'-',wrongs:0,first:true}]};
  if(ONLINE){openExternal(sheetLink(rec));setSendLine($('sheetStatus'),'Tab baru dibuka. Jika tertulis "Hasil Data uji ... sudah tercatat", koneksi berhasil. Pastikan kode Apps Script sudah versi 2.','ok');return}
  setSendLine($('sheetStatus'),'Mengirim data uji...','busy');try{await postSheet(rec);setSendLine($('sheetStatus'),'✓ Data uji terkirim. Buka Google Sheet Anda: jika ada baris "Data uji" di sheet Rekap, koneksi berhasil.','ok')}catch(e){setSendLine($('sheetStatus'),'Gagal mengirim. Periksa internet dan pastikan akses deployment "Siapa saja".','err')}}
 
 /* ================= BAGIKAN KE SISWA ================= */
-function publishable(){return{missions,subject:$('subject').value,topic:$('topic').value,grade:$('grade').value,genre:$('genre').value,theme,worldTitle,sheetUrl,askName}}
-function makeCfg(){return{id:'G'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),made:fmtTime(Date.now()),...publishable(),teacher:{salt:pinData.salt,pin:pinData.pin}}}
+function publishable(){const o=curWorld?ownWorld():null;if(curWorld&&o)return{missions:(o.missions||[]).slice(0,MAXM),subject:o.subject||'',topic:o.topic||'',grade:o.grade||'',genre:o.genre||'',theme:o.theme||'cyber',worldTitle:o.worldTitle||'Algorithm Island',sheetUrl,askName};return{missions,subject:$('subject').value,topic:$('topic').value,grade:$('grade').value,genre:$('genre').value,theme,worldTitle,sheetUrl,askName}}
+function ownReady(){const m=(publishable().missions||[]).map(fixMission);return m.length>=MINM&&m.every(missionValid)}
+function makeCfg(){return{id:'G'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),made:fmtTime(Date.now()),...publishable(),worlds:exportWorlds(),teacher:{salt:pinData.salt,pin:pinData.pin}}}
 function cleanDoc(){const s=PRISTINE,h0=s.indexOf('<!--EV:HEAD-->'),h1=s.indexOf('<!--EV:/HEAD-->'),b0=s.indexOf('<!--EV:BODY-->'),b1=s.lastIndexOf('</body>');if(h0<0||h1<0||b0<0)return s;return'<!DOCTYPE html>\n<html lang="id">\n<head>'+s.slice(h0,h1+15)+'</head>\n<body>'+s.slice(b0,b1<0?s.length:b1)+'</body>\n</html>\n'}
 function docWithConfig(json){return cleanDoc().replace(/<script type="application\/json" id="ev-config">[\s\S]*?<\/script>/,()=>'<script type="application/json" id="ev-config">'+json+'<\/script>')}
-async function exportGame(){if(!gameReady()){toast('Lengkapi minimal 15 misi dulu sebelum dibagikan.');renderReady();return}if(!pinData){openPin('setup',null);toast('Buat PIN guru dulu sebelum membagikan game.');return}if(!sheetUrl&&!(await confirmBox('URL Google Sheets belum diisi, jadi hasil siswa tidak terkirim otomatis. Siswa tetap bisa mengunduh atau menyalin laporannya. Lanjut unduh?',{ok:'Lanjut unduh'})))return;
+async function exportGame(){if(curWorld)saveWorldState();if(!ownReady()&&!curWorld){toast('Lengkapi minimal 15 misi dulu sebelum dibagikan.');renderReady();return}if(!pinData){openPin('setup',null);toast('Buat PIN guru dulu sebelum membagikan game.');return}if(!sheetUrl&&!(await confirmBox('URL Google Sheets belum diisi, jadi hasil siswa tidak terkirim otomatis. Siswa tetap bisa mengunduh atau menyalin laporannya. Lanjut unduh?',{ok:'Lanjut unduh'})))return;
  const html=docWithConfig(packCfg(makeCfg()));if(await download(new Blob([html],{type:'text/html'}),'EDUPLAY_'+slug($('topic').value||worldTitle)+'_siswa.html'))toast('📦 File game siswa diunduh','green')}
 function exportMissionsXlsx(){const rows=[TPL_HEAD,...missions.map((m,i)=>[i+1,m.title,m.q,m.a[0]||'',m.a[1]||'',m.a[2]||'',m.a[3]||'','ABCD'[m.c]||'A',m.ex||'',m.skill||''])];download(makeXlsx([{name:'Misi',rows,widths:[5,16,46,22,22,22,22,14,40,22]}]),'Misi_EDUPLAY_'+slug($('topic').value||worldTitle)+'.xlsx').then(ok=>{if(ok)toast('💾 '+missions.length+' misi disimpan ke Excel','green')})}
 
@@ -1704,18 +1813,18 @@ const PAGES_BASE='https://rouffadilah.github.io/eduverse/';let CONFIG_GID='';
 function scriptId(){const m=(sheetUrl||'').match(/\/macros\/s\/([\w-]+)\/exec/);return m?m[1]:''}
 function siteBase(){return WEB&&!ONLINE?location.origin+location.pathname:PAGES_BASE}
 function studentLinkFor(){const id=scriptId();if(!id)return'';return CONFIG_GID&&CONFIG_GID===id?siteBase():siteBase()+'?g='+id}
-async function srvPost(body){const r=await fetchT(sheetUrl,40000,{method:'POST',body:JSON.stringify(body)});const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error('Balasan dari Apps Script tidak dikenali. Pastikan kode versi 3 sudah diterapkan sebagai versi baru dan aksesnya "Siapa saja".')}if(!j.ok)throw new Error(j.error||'Gagal');return j}
+async function srvPost(body){const r=await fetchT(sheetUrl,40000,{method:'POST',body:JSON.stringify(body)});const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error('Balasan dari Apps Script tidak dikenali. Pastikan kode versi 4 sudah diterapkan sebagai versi baru dan aksesnya "Siapa saja".')}if(!j.ok)throw new Error(j.error||'Gagal');return j}
 function getTKey(){const k=$('teacherKey').value.trim();try{if(k)sessionStorage.setItem('ev-tkey',k)}catch(e){}return k}
 function showStudentLink(){const l=studentLinkFor(),id=scriptId();$('srvLinkRow').hidden=!l;if(l)$('studentLink').value=l;$('teacherLink').textContent=siteBase()+'?guru';$('cfgHint').hidden=!id||CONFIG_GID===id;if(id)$('cfgJson').textContent=JSON.stringify({g:id})}
 async function readSiteConfig(){if(!WEB||ONLINE)return'';try{const r=await fetchT('config.json?t='+Date.now(),8000);if(!r.ok)return'';const j=await r.json();const v=String(j.g||j.url||'');const m=v.match(/\/macros\/s\/([\w-]+)\/exec/);return m?m[1]:(/^[\w-]{20,}$/.test(v)?v:'')}catch(e){return''}}
-async function publishServer(){if(ONLINE)return;if(!saveSheetUrl()||!sheetUrl||!scriptId()){setSendLine($('srvStatus'),'Isi URL Apps Script yang benar (berakhiran /exec) di kolom Google Sheets dulu.','err');return}if(!gameReady()){toast('Lengkapi minimal 15 misi dulu.');renderReady();return}if(!pinData){openPin('setup',null);toast('Buat PIN guru dulu.');return}
+async function publishServer(){if(ONLINE)return;if(curWorld)return publishCurrentWorld();if(!saveSheetUrl()||!sheetUrl||!scriptId()){setSendLine($('srvStatus'),'Isi URL Apps Script yang benar (berakhiran /exec) di kolom Google Sheets dulu.','err');return}if(!gameReady()){toast('Lengkapi minimal 15 misi dulu.');renderReady();return}if(!pinData){openPin('setup',null);toast('Buat PIN guru dulu.');return}
  const kunci=getTKey();if(!kunci){setSendLine($('srvStatus'),'Isi kunci guru (KUNCI_GURU di Apps Script).','err');$('teacherKey').focus();return}
  if(!(await confirmBox('Terbitkan '+missions.length+' misi ke link siswa? Misi lama di spreadsheet diganti, dan siswa yang membuka link akan mendapat misi ini.',{title:'Terbitkan misi',ok:'🌐 Terbitkan'})))return;
  setSendLine($('srvStatus'),'Menerbitkan ke Google Sheet...','busy');$('srvPublish').disabled=true;
  try{const j=await srvPost({a:'simpanMisi',kunci,cfg:{...publishable(),teacher:{salt:pinData.salt,pin:pinData.pin}}});setSendLine($('srvStatus'),'✓ '+j.jumlah+' misi terbit ('+(j.made||'')+'). Siswa yang membuka link akan memakai misi ini.','ok');showStudentLink();toast('🌐 Misi terbit ke link siswa','green')}
  catch(e){const m=String(e.message||e);setSendLine($('srvStatus'),m.includes('Failed to fetch')||e.name==='AbortError'?'Tidak bisa menghubungi Apps Script. Periksa internet dan URL-nya.':m.includes('belum diganti')?m+' Kalau sudah diganti: simpan, lalu Terapkan → Kelola deployment → ✏️ Edit → Versi: Versi baru → Terapkan. Google tetap menjalankan versi lama sampai langkah ini dilakukan.':m.includes('salah')?m+' Isi kolom ini harus sama persis dengan KUNCI_GURU di Apps Script.':m,'err')}
  $('srvPublish').disabled=false}
-async function pullServer(){if(ONLINE)return;if(!saveSheetUrl()||!scriptId()){setSendLine($('srvStatus'),'Isi URL Apps Script dulu.','err');return}const kunci=getTKey();if(!kunci){setSendLine($('srvStatus'),'Isi kunci guru dulu.','err');$('teacherKey').focus();return}
+async function pullServer(){if(ONLINE)return;if(curWorld)return pullWorld(curWorld);if(!saveSheetUrl()||!scriptId()){setSendLine($('srvStatus'),'Isi URL Apps Script dulu.','err');return}const kunci=getTKey();if(!kunci){setSendLine($('srvStatus'),'Isi kunci guru dulu.','err');$('teacherKey').focus();return}
  if(!(await confirmBox('Ganti misi di Teacher Studio dengan misi dari spreadsheet?',{ok:'Ambil misi'})))return;
  setSendLine($('srvStatus'),'Mengambil misi dari Google Sheet...','busy');
  try{const j=await srvPost({a:'ambilMisi',kunci}),c=j.cfg||{};if(!c.missions||!c.missions.length)throw new Error('Sheet Misi masih kosong.');['subject','topic','grade','genre'].forEach(k=>{if(c[k])setField(k,c[k])});if(palettes[c.theme])theme=c.theme;if(c.worldTitle)worldTitle=c.worldTitle;if(R3D)buildWorld();startNewWorld(c.missions,c.missions.length+' misi diambil dari spreadsheet.');setSendLine($('srvStatus'),'✓ '+c.missions.length+' misi diambil dari spreadsheet.','ok');showStudentLink()}
@@ -1836,14 +1945,15 @@ async function renderPaket(){const grid=$('pkGrid');if(!grid||isStudent())return
  document.querySelectorAll('[data-pk-mapel]').forEach(b=>b.classList.toggle('on',b.dataset.pkMapel===pkMapel));document.querySelectorAll('[data-pk-kelas]').forEach(b=>b.classList.toggle('on',b.dataset.pkKelas===pkKelas));
  const list=THEMES.filter(t=>(pkMapel==='Semua'||t.mapel===pkMapel)&&(pkKelas==='Semua'||t.kelas===pkKelas));
  $('pkCount').textContent=list.length+' dunia · '+list.reduce((a,t)=>a+t.missions.length,0)+' misi';
- grid.innerHTML=list.map(t=>{const P=palettes[t.tema]||palettes.cyber,L=pkLevel(t.kelas),[sT,sB]=pkSky(t),on=pkPicked.has(t.id);
-  return`<article class="pkcard${on?' picked':''}" data-pk="${t.id}">
-  <div class="pkband" style="background:linear-gradient(180deg,${sT},${sB} 70%,${P.ground} 70%,${P.ground2})"><span class="pkemo">${P.emoji}</span><span class="pklv">${L.icon} ${L.name}</span></div>
-  <div class="pkbody"><p class="pkbab">${escapeHTML(t.mapel)} · Kelas ${t.kelas} · Bab ${t.bab}</p><h4>${escapeHTML(t.dunia)}</h4><p class="pkjudul">${escapeHTML(t.judul)}</p>
-  <details class="pksoal"><summary>Lihat ${t.missions.length} soal</summary><ol>${t.missions.map(m=>`<li>${escapeHTML(m.q)} <b>${escapeHTML(m.a[m.c])}</b></li>`).join('')}</ol></details>
-  <div class="pkact"><button class="primary" data-pk-use="${t.id}">Pakai dunia ini</button><button data-pk-xl="${t.id}" title="Unduh soal dunia ini sebagai Excel">Excel</button><label class="pkchk"><input type="checkbox" data-pk-sel="${t.id}"${on?' checked':''}> Gabung</label></div></div></article>`}).join('');
- renderPkBar()}
-function renderPkBar(){const n=pkPicked.size,bar=$('pkBar');bar.hidden=!n;if(!n)return;const tot=[...pkPicked].reduce((a,id)=>a+((themeById(id)||{}).missions||[]).length,0);$('pkSel').textContent=n+' bab dipilih · '+tot+' soal'+(tot>MAXM?' (diambil '+MAXM+' soal merata dari tiap bab)':'');$('pkMerge').disabled=n<2}
+ grid.innerHTML=list.map(t=>{const P=palettes[t.tema]||palettes.cyber,L=pkLevel(t.kelas),[sT,sB]=pkSky(t),on=pkPicked.has(t.id),ms=teacherWorldMissions(t.id),o=OV[t.id],ed=curWorld===t.id;
+  return`<article class="pkcard${on?' picked':''}${ed?' editing':''}" data-pk="${t.id}">
+  <div class="pkband" style="background:linear-gradient(180deg,${sT},${sB} 70%,${P.ground} 70%,${P.ground2})"><span class="pkemo">${P.emoji}</span><span class="pklv">${L.icon} ${L.name}</span>${ed?'<span class="pkedit">Sedang diatur</span>':''}</div>
+  <div class="pkbody"><p class="pkbab">${escapeHTML(t.mapel)} · Kelas ${t.kelas} · Bab ${t.bab}</p><h4>${escapeHTML(t.dunia)}</h4><p class="pkjudul">${escapeHTML(t.judul)}</p>${o&&o.m?`<p class="pkcustom">✎ Disesuaikan guru · ${o.m.length} misi${o.dirty?' · belum diterbitkan':''}</p>`:o&&o.dirty?'<p class="pkcustom">↺ Kembali ke soal bawaan · belum diterbitkan</p>':''}
+  <details class="pksoal"><summary>Lihat ${ms.length} soal</summary><ol>${ms.map(m=>`<li>${escapeHTML(m.q)} <b>${escapeHTML(m.a[m.c])}</b></li>`).join('')}</ol></details>
+  <div class="pkact"><button class="primary" data-pk-use="${t.id}">${ed?'Sedang diatur':'Atur misi'}</button><button data-pk-xl="${t.id}" title="Unduh soal dunia ini sebagai Excel">Excel</button><label class="pkchk"><input type="checkbox" data-pk-sel="${t.id}"${on?' checked':''}> Gabung</label></div></div></article>`}).join('');
+ renderPkBar();renderPkPub()}
+function renderPkPub(){const d=dirtyWorlds(),row=$('pkPubRow');row.hidden=!d.length;if(d.length)$('pkPubText').textContent=d.length+' dunia sudah diubah tetapi belum diterbitkan ke link siswa.'}
+function renderPkBar(){const n=pkPicked.size,bar=$('pkBar');bar.hidden=!n;if(!n)return;$('pkMerge').textContent=n>1?'Gabungkan jadi dunia guru':'Jadikan dunia guru';const tot=[...pkPicked].reduce((a,id)=>a+teacherWorldMissions(id).length,0);$('pkSel').textContent=n+' bab dipilih · '+tot+' soal'+(tot>MAXM?' (diambil '+MAXM+' soal merata dari tiap bab)':'');$('pkMerge').disabled=n<1}
 function pkApply(o,msg){$('subject').value=o.subject;ensureGradeOption(o.grade);$('grade').value=o.grade;$('topic').value=o.topic;theme=palettes[o.tema]?o.tema:'cyber';$('theme').value=theme;worldTitle=o.dunia;if(R3D)buildWorld();
  startNewWorld(o.missions.map(m=>({...m,src:'paket'})),msg);setView('play');if(R3D)setupCamera(-1);toast((palettes[theme]||palettes.cyber).emoji+' '+worldTitle+' siap dengan '+missions.length+' misi','purple')}
 function setField(k,v){if(k==='grade')ensureGradeOption(v);$(k).value=v}
@@ -1853,23 +1963,142 @@ async function usePaket(id){await loadThemes();const t=themeById(id);if(!t)retur
  pkApply({subject:PK_SUBJ[t.mapel]||t.mapel,grade:'SMA Kelas '+t.kelas,topic:'Bab '+t.bab+' · '+t.judul,tema:t.tema,dunia:t.dunia,missions:t.missions},
   t.missions.length+' misi dari perangkat ajar '+t.mapel+' Kelas '+t.kelas+' Bab '+t.bab+' dimuat. Periksa atau sunting di Mission Editor, lalu tekan "Terbitkan misi ke link siswa" agar siswa mendapat dunia ini.')}
 function spread(arr,k){if(k>=arr.length)return arr.slice();const out=[];for(let i=0;i<k;i++)out.push(arr[Math.floor((i+.5)*arr.length/k)]);return out}
-async function mergePaket(){await loadThemes();const ts=[...pkPicked].map(themeById).filter(Boolean).sort((a,b)=>THEMES.indexOf(a)-THEMES.indexOf(b));if(ts.length<2)return;
- const tot=ts.reduce((a,t)=>a+t.missions.length,0),cap=Math.min(MAXM,tot);let q=ts.map(t=>Math.max(1,Math.floor(cap*t.missions.length/tot)));let left=cap-q.reduce((a,b)=>a+b,0);for(let i=0;left>0;i=(i+1)%ts.length)if(q[i]<ts[i].missions.length){q[i]++;left--}
- const list=ts.flatMap((t,i)=>spread(t.missions,q[i]).map(m=>({...m,title:m.title})));
+async function mergePaket(){await loadThemes();const ts=[...pkPicked].map(themeById).filter(Boolean).sort((a,b)=>THEMES.indexOf(a)-THEMES.indexOf(b));if(!ts.length)return;const MS=ts.map(t=>teacherWorldMissions(t.id));
+ const tot=MS.reduce((a,m)=>a+m.length,0),cap=Math.min(MAXM,tot);let q=MS.map(m=>Math.max(1,Math.floor(cap*m.length/tot)));let left=cap-q.reduce((a,b)=>a+b,0);for(let i=0;left>0;i=(i+1)%ts.length)if(q[i]<MS[i].length){q[i]++;left--}
+ const list=ts.flatMap((t,i)=>spread(MS[i],q[i]).map(m=>({...m,title:m.title})));
  const mapels=[...new Set(ts.map(t=>t.mapel))],kelas=[...new Set(ts.map(t=>t.kelas))],babs=ts.map(t=>(mapels.length>1?t.mapel+' ':'')+t.bab);
- if(missions.some(m=>m.q.trim())&&!(await confirmBox('Ganti misi yang ada dengan '+list.length+' misi gabungan dari '+ts.length+' bab?',{ok:'Gabungkan',title:'Gabung beberapa bab'})))return;
- pkApply({subject:mapels.map(m=>PK_SUBJ[m]||m).join(' & '),grade:'SMA Kelas '+kelas[kelas.length-1],topic:'Gabungan Bab '+babs.join(', '),tema:ts[0].tema,dunia:'Tantangan '+ts[0].dunia,missions:list},
-  list.length+' misi gabungan dari '+ts.length+' bab ('+babs.join(', ')+') dimuat, diambil merata dari setiap bab. Periksa di Mission Editor, lalu terbitkan ke link siswa.');
+ if(!(await confirmBox('Jadikan '+list.length+' misi dari '+ts.length+' bab sebagai dunia guru? Dunia guru yang lama diganti. Dunia guru muncul paling atas di pilihan dunia siswa yang tingkat kelasnya sama.',{ok:'Jadikan dunia guru',title:'Dunia guru'})))return;if(curWorld&&!(await applyWorld('')))return;
+ pkApply({subject:mapels.map(m=>PK_SUBJ[m]||m).join(' & '),grade:'SMA Kelas '+kelas[kelas.length-1],topic:'Gabungan Bab '+babs.join(', '),tema:ts[0].tema,dunia:(ts.length>1?'Tantangan ':'Tugas ')+ts[0].dunia,missions:list},
+  list.length+' misi dari '+ts.length+' bab ('+babs.join(', ')+') menjadi dunia guru'+(ts.length>1?', diambil merata dari setiap bab':'')+'. Periksa di Mission Editor, lalu terbitkan dunia guru ke link siswa.');
  pkPicked.clear();renderPkBar()}
-async function pkExcel(id){await loadThemes();const t=themeById(id);if(!t)return;const rows=[TPL_HEAD,...t.missions.map((m,i)=>[i+1,m.title,m.q,m.a[0]||'',m.a[1]||'',m.a[2]||'',m.a[3]||'','ABCD'[m.c]||'A',m.ex||'',m.skill||''])];
+async function pkExcel(id){await loadThemes();const t=themeById(id);if(!t)return;const rows=[TPL_HEAD,...teacherWorldMissions(id).map((m,i)=>[i+1,m.title,m.q,m.a[0]||'',m.a[1]||'',m.a[2]||'',m.a[3]||'','ABCD'[m.c]||'A',m.ex||'',m.skill||''])];
  const ok=await download(makeXlsx([{name:'Misi',rows,widths:[5,18,48,24,24,24,24,14,42,28]}]),'Misi_'+slug(t.mapel+'_Kelas_'+t.kelas+'_Bab_'+t.bab+'_'+t.dunia)+'.xlsx');if(ok)toast('💾 Soal '+t.dunia+' diunduh','green')}
 function renderThemeOptions(){const sel=$('theme'),cur=sel.value;sel.innerHTML='<option value="auto">Otomatis sesuai mapel</option>'+Object.entries(palettes).map(([k,P])=>`<option value="${k}">${P.emoji} ${escapeHTML(P.name)}</option>`).join('');sel.value=palettes[cur]||cur==='auto'?cur:'auto'}
 function bindPaket(){const g=$('pkGrid');if(!g)return;
  document.querySelectorAll('[data-pk-mapel]').forEach(b=>b.addEventListener('click',()=>{pkMapel=b.dataset.pkMapel;renderPaket()}));
  document.querySelectorAll('[data-pk-kelas]').forEach(b=>b.addEventListener('click',()=>{pkKelas=b.dataset.pkKelas;renderPaket()}));
- g.addEventListener('click',e=>{const u=e.target.closest('[data-pk-use]'),x=e.target.closest('[data-pk-xl]');if(u)usePaket(u.dataset.pkUse);else if(x)pkExcel(x.dataset.pkXl)});
+ g.addEventListener('click',e=>{const u=e.target.closest('[data-pk-use]'),x=e.target.closest('[data-pk-xl]');if(u)editWorld(u.dataset.pkUse);else if(x)pkExcel(x.dataset.pkXl)});
  g.addEventListener('change',e=>{const c=e.target.closest('[data-pk-sel]');if(!c)return;const id=c.dataset.pkSel;if(c.checked)pkPicked.add(id);else pkPicked.delete(id);c.closest('.pkcard').classList.toggle('picked',c.checked);renderPkBar()});
- $('pkMerge').addEventListener('click',mergePaket);$('pkClear').addEventListener('click',()=>{pkPicked.clear();renderPaket()})}
+ $('pkMerge').addEventListener('click',mergePaket);$('pkPubAll').addEventListener('click',async()=>{const d=dirtyWorlds();if(d.length&&(await confirmBox('Terbitkan '+d.length+' dunia yang sudah diubah ke link siswa?',{ok:'🌐 Terbitkan',title:'Terbitkan dunia'})))await publishWorlds(d)});$('pkClear').addEventListener('click',()=>{pkPicked.clear();renderPaket()})}
+
+/* ================= DUNIA PER KELAS: SISWA MEMILIH, GURU MENGATUR MISI ================= */
+const KELAS_LIST=['X-1','X-2','X-3','XI-A1','XI-1','XI-2','XI-3','XI-4','XII-A1','XII-1','XII-2','XII-3'];
+function kelasTingkat(k){const m=String(k||'').trim().toUpperCase().match(/^(XII|XI|X)(?![A-Z])/);return m?m[1]:''}
+function fillKelas(sel,val){val=String(val||'').trim();const list=KELAS_LIST.slice();if(val&&!list.includes(val))list.push(val);sel.innerHTML='<option value="">Pilih kelas</option>'+list.map(k=>`<option>${escapeHTML(k)}</option>`).join('');sel.value=val}
+
+/* --- penyimpanan --- */
+const lsGet=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v}catch(e){return d}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+let OV=lsGet(OV_KEY,{})||{},WC=lsGet(WCACHE_KEY,{})||{},lastOvSig='';
+const mJSON=list=>JSON.stringify((list||[]).map(m=>[m.title,m.q,m.a,+m.c,m.ex||'',m.skill||'']));
+const plainM=list=>(list||[]).map(m=>({title:m.title,q:m.q,a:m.a.slice(),c:+m.c,ex:m.ex||'',skill:m.skill||''}));
+function saveOV(){if(!lsSet(OV_KEY,OV))toast('Penyimpanan perangkat penuh. Unduh Excel sebagai cadangan.')}
+function defaultMissions(id){const t=themeById(id);return t?t.missions:[]}
+function teacherWorldMissions(id){const o=OV[id];return o&&o.m?o.m:defaultMissions(id)}
+let SRVN=null;
+async function loadSrvList(){if(!SERVER)return;try{const r=await fetchT(SERVER_URL+'?a=daftar&t='+Date.now(),8000);const j=await r.json();if(j&&j.ok&&j.dunia){SRVN=j.dunia;let ch=false;for(const id of Object.keys(WC))if(!SRVN[id]){delete WC[id];ch=true}if(ch)lsSet(WCACHE_KEY,WC)}}catch(e){}}
+function worldCount(id){if(!isStudent()){const o=OV[id];if(o&&o.m)return o.m.length}else{if(SRVN&&SRVN[id])return SRVN[id].n;if(WC[id])return WC[id].m.length;if(CFG.worlds&&Array.isArray(CFG.worlds[id]))return CFG.worlds[id].length}return defaultMissions(id).length}
+
+/* --- kemajuan per dunia --- */
+function snapProgress(){return{n:missions.length,completed:completed.slice(),wrongs:wrongs.slice(),xp,coins,right,wrong,steps,player:{...player},collected:[...collected],chest,startedAt,finishedAt,finished}}
+function readProg(id){return(lsGet(PROG_KEY,{})||{})[id||'guru']||null}
+function setProgress(p){if(!p||p.n!==missions.length)p={};completed=Array.isArray(p.completed)?p.completed:[];wrongs=Array.isArray(p.wrongs)?p.wrongs:[];xp=+p.xp||0;coins=+p.coins||0;right=+p.right||0;wrong=+p.wrong||0;steps=+p.steps||0;player=p.player?{...p.player}:{...START};collected=new Set(p.collected||[]);chest=!!p.chest;startedAt=+p.startedAt||0;finishedAt=+p.finishedAt||0;finished=!!p.finished}
+function saveWorldState(){const P=lsGet(PROG_KEY,{})||{};P[curWorld||'guru']=snapProgress();lsSet(PROG_KEY,P);
+ if(!isStudent()&&curWorld&&THEMES){const sig=mJSON(missions);if(sig===lastOvSig)return;lastOvSig=sig;const cur=OV[curWorld];
+  let ch=false;if(sig===mJSON(defaultMissions(curWorld))){if(cur&&cur.m){OV[curWorld]={m:null,dirty:true};ch=true}}else{OV[curWorld]={m:plainM(missions),dirty:true};ch=true}if(ch){saveOV();renderWorldCtx();if(mode==='paket')renderPaket()}}}
+
+/* --- dunia milik guru (dunia yang ditugaskan) --- */
+function ownWorld(){if(!curWorld)return{missions,subject:$('subject').value,topic:$('topic').value,grade:$('grade').value,genre:$('genre').value,theme,worldTitle};return lsGet(OWN_KEY,null)}
+function stashOwn(){lsSet(OWN_KEY,{missions:plainM(missions),subject:$('subject').value,topic:$('topic').value,grade:$('grade').value,genre:$('genre').value,theme,worldTitle})}
+function restoreOwn(){const o=lsGet(OWN_KEY,null);if(o&&Array.isArray(o.missions)&&o.missions.length){missions=o.missions.slice(0,MAXM).map(fixMission);['subject','topic','grade','genre'].forEach(k=>{if(o[k]!==undefined)setField(k,o[k])});theme=palettes[o.theme]?o.theme:'cyber';worldTitle=o.worldTitle||'Algorithm Island'}else{missions=clone(packs.Informatika);theme='cyber';worldTitle='Algorithm Island'}}
+function exportWorlds(){const out={};Object.keys(OV).forEach(id=>{if(OV[id]&&OV[id].m)out[id]=OV[id].m});return out}
+
+/* --- misi dunia untuk siswa: server guru → file siswa → bawaan --- */
+async function studentWorldMissions(id){
+ if(SERVER){try{const r=await fetchT(SERVER_URL+'?a=dunia&id='+encodeURIComponent(id)+'&t='+Date.now(),9000);const j=await r.json();
+   if(j&&j.ok){if(j.kosong)delete WC[id];else{const c=unpackCfg(JSON.stringify({id:j.id,z:j.z}));if(c&&Array.isArray(c.missions)&&c.missions.length>=MINM)WC[id]={m:c.missions,h:j.id}}lsSet(WCACHE_KEY,WC)}}catch(e){}
+  if(WC[id])return WC[id].m}
+ if(CFG.worlds&&Array.isArray(CFG.worlds[id])&&CFG.worlds[id].length>=MINM)return CFG.worlds[id];
+ return defaultMissions(id)}
+
+/* --- pindah dunia --- */
+let switching=false;
+function worldTingkat(){if(curWorld){const t=themeById(curWorld);return t?t.kelas:''}const l=gradeLevel(isStudent()?CFG.grade:$('grade').value);return l===1?'X':l===2?'XI':l===3?'XII':''}
+async function applyWorld(id,{startup=false}={}){if(switching)return false;switching=true;try{
+ id=id||'';let T=null;if(id){await loadThemes();T=themeById(id);if(!T){if(startup){curWorld='';worldReady=true}toast('Dunia tidak ditemukan.');return false}}
+ if(!startup&&worldReady){saveWorldState();if(!curWorld&&!isStudent())stashOwn()}
+ worldReady=false;const list=id?(isStudent()?await studentWorldMissions(id):teacherWorldMissions(id)):null;
+ curWorld=id;picked=true;try{localStorage.setItem(PICK_KEY,id)}catch(e){}
+ if(T){missions=list.slice(0,MAXM).map(m=>fixMission({...m,src:'paket'}));setField('subject',PK_SUBJ[T.mapel]||T.mapel);setField('grade','SMA Kelas '+T.kelas);setField('topic','Bab '+T.bab+' · '+T.judul);theme=palettes[T.tema]?T.tema:'cyber';worldTitle=T.dunia;lastOvSig=mJSON(missions)}
+ else if(isStudent()){if(CFG.missions&&CFG.missions.length)applyConfig(CFG);else missions=[]}
+ else restoreOwn();
+ setProgress(readProg(id));normalize();chestLid=chest?1:0;shown.xp=null;shown.coins=null;activeMission=-1;worldReady=true;
+ if(R3D)buildWorld();snapPlayer();rebuildLabels();renderWorldHeader();renderAll();if(!isStudent()){renderEditorSelect();if(mode==='paket')renderPaket()}checkReady();renderWorldCtx();save();if(R3D)setupCamera(-1);return true}
+ finally{switching=false}}
+
+/* --- pilihan dunia di layar siswa --- */
+function teacherWorldFor(t){if(!(CFG.missions&&CFG.missions.length>=MINM))return false;const g=gradeLevel(CFG.grade);return !g||g===gradeLevel('Kelas '+t)}
+function lastScore(title){for(let i=history.length-1;i>=0;i--)if(history[i].world===title)return history[i].score;return null}
+function wCard(id,o){const P=palettes[o.tema]||palettes.cyber,L=LEVELS[gradeLevel('Kelas '+o.kelas)]||LEVELS[0],[sT,sB]=skyFor(P,L.time),pr=readProg(id),n=pr&&pr.n||o.n,done=pr&&Array.isArray(pr.completed)?pr.completed.filter(Boolean).length:0,cur=picked&&curWorld===id,sc=pr&&pr.finished?lastScore(o.title):null;
+ const st=pr&&pr.finished?'✓ Selesai'+(sc!=null?' · nilai '+sc:''):done?done+' dari '+n+' misi':n+' misi · belum dimulai';
+ return`<button class="wcard${cur?' cur':''}${pr&&pr.finished?' fin':''}" data-world="${id}"><span class="wband" style="background:linear-gradient(180deg,${sT},${sB} 68%,${P.ground} 68%,${P.ground2})"><span class="pkemo">${P.emoji}</span>${cur?'<span class="pklv">Sedang dimainkan</span>':''}</span><span class="wbody"><span class="pkbab">${escapeHTML(o.bab)}</span><b>${escapeHTML(o.title)}</b><span class="pkjudul">${escapeHTML(o.sub)}</span><span class="wstat">${st}</span><span class="wbar"><i style="width:${Math.round(done/Math.max(1,n)*100)}%"></i></span></span></button>`}
+async function openPicker(){if(!isStudent())return;if(!student.name&&!nameSkipped){openStudent();return}await loadThemes();fillKelas($('wKelas'),student.kelas);renderPicker();$('worldModal').classList.add('show');if(SERVER)loadSrvList().then(()=>{if($('worldModal').classList.contains('show'))renderPicker()});setTimeout(()=>{const c=document.querySelector('.wcard.cur')||document.querySelector('.wcard');if(c)c.focus({preventScroll:true})},80)}
+function renderPicker(){const k=$('wKelas').value,t=kelasTingkat(k),box=$('wList');$('worldTier').textContent=t?'Tingkat '+t:'Pilih kelasmu';$('wClose').hidden=!(picked&&gameReady());
+ if(!t){box.innerHTML='<p class="wempty">Pilih kelasmu dulu. Dunia yang muncul disesuaikan dengan tingkatan kelasmu.</p>';return}
+ let html='';if(teacherWorldFor(t))html+='<h3 class="wgrp">Dari guru</h3><div class="wgrid">'+wCard('',{tema:CFG.theme,kelas:t,title:CFG.worldTitle||'Dunia guru',sub:CFG.topic||CFG.subject||'',bab:CFG.subject||'Ditugaskan guru',n:CFG.missions.length})+'</div>';
+ for(const mp of ['Informatika','KKA']){const ws=(THEMES||[]).filter(x=>x.kelas===t&&x.mapel===mp);if(!ws.length)continue;html+=`<h3 class="wgrp">${escapeHTML(PK_SUBJ[mp]||mp)}</h3><div class="wgrid">`+ws.map(x=>wCard(x.id,{tema:x.tema,kelas:x.kelas,title:x.dunia,sub:x.judul,bab:'Bab '+x.bab,n:worldCount(x.id)})).join('')+'</div>'}
+ box.innerHTML=html||'<p class="wempty">Belum ada dunia untuk tingkat ini.</p>'}
+async function pickWorld(id){const same=picked&&curWorld===id&&gameReady();$('worldModal').classList.remove('show');if(currentView!=='play')setView('play');
+ if(!same){toast('Memuat dunia...','purple');const ok=await applyWorld(id);if(!ok)return;toast((palettes[theme]||palettes.cyber).emoji+' Selamat datang di '+worldTitle+'!','green')}
+ if(finished&&(await confirmBox('Kamu sudah menyelesaikan '+worldTitle+'. Main lagi dari awal? Nilai lama tetap tersimpan di riwayat.',{ok:'Main lagi',title:'Dunia sudah selesai'})))resetGame();
+ canvas.focus({preventScroll:true})}
+function needPicker(){if(!isStudent())return false;const t=kelasTingkat(student.kelas);if(!picked)return true;if(!t)return false;const w=worldTingkat();return !!w&&w!==t}
+
+/* --- guru: konteks dunia yang sedang diatur --- */
+function renderWorldCtx(){const el=$('worldCtx');if(!el||isStudent())return;$('srvPublish').textContent=curWorld?'🌐 Terbitkan dunia ini ke link siswa':'🌐 Terbitkan dunia guru ke link siswa';$('srvPull').textContent=curWorld?'📥 Ambil dunia ini dari spreadsheet':'📥 Ambil misi dari spreadsheet';
+ if(!curWorld){el.innerHTML='<b>Sedang mengatur: dunia guru</b><span>Dunia ini muncul paling atas di pilihan dunia siswa yang tingkat kelasnya sama. Untuk mengatur misi dunia perangkat ajar, buka <b>📚 Paket perangkat ajar</b> lalu pilih <b>Atur misi</b>.</span>';el.className='worldctx';return}
+ const T=themeById(curWorld),o=OV[curWorld],P=palettes[theme]||palettes.cyber;if(!T)return;
+ const st=o&&o.m?(o.dirty?'disesuaikan, belum diterbitkan':'disesuaikan dan sudah diterbitkan'):o&&o.dirty?'kembali ke soal bawaan, belum diterbitkan':'soal bawaan';
+ el.className='worldctx pk';el.innerHTML=`<b>${P.emoji} Sedang mengatur: ${escapeHTML(T.dunia)}</b><span>${escapeHTML(T.mapel)} Kelas ${T.kelas} · Bab ${T.bab} · ${missions.length} misi (${st}). Ubah, tambah, atau hapus misi di Mission Editor, maksimal ${MAXM} misi. Siswa kelas ${T.kelas} memilih dunia ini sendiri.</span><span class="wcact"><button id="wcReset"${o&&o.m?'':' disabled'}>↺ Kembalikan soal bawaan</button><button id="wcOwn">Kembali ke dunia guru</button></span>`;
+ $('wcReset').onclick=resetWorldMissions;$('wcOwn').onclick=()=>applyWorld('')}
+async function resetWorldMissions(){if(!curWorld)return;if(!(await confirmBox('Kembalikan '+worldTitle+' ke '+defaultMissions(curWorld).length+' soal bawaan perangkat ajar? Misi yang Anda ubah atau tambahkan di dunia ini terhapus.',{ok:'Kembalikan',danger:true,title:'Soal bawaan'})))return;
+ startNewWorld(defaultMissions(curWorld).map(m=>({...m,src:'paket'})),'Dunia dikembalikan ke soal bawaan. Terbitkan lagi agar siswa ikut mendapat soal bawaan.');renderWorldCtx()}
+async function editWorld(id){if(curWorld===id){$('editMission').scrollIntoView({behavior:'smooth',block:'center'});return}const ok=await applyWorld(id);if(!ok)return;const t=themeById(id);$('studioMessage').textContent='Mengatur misi '+t.dunia+' ('+t.mapel+' Kelas '+t.kelas+' Bab '+t.bab+'). Sunting, tambah, atau hapus misi di Mission Editor (maksimal '+MAXM+'), lalu terbitkan dunia ini ke link siswa.';toast((palettes[theme]||palettes.cyber).emoji+' Mengatur '+t.dunia,'purple');$('worldCtx').scrollIntoView({behavior:'smooth',block:'start'})}
+
+/* --- guru: terbitkan misi per dunia ke Apps Script versi 4 --- */
+async function srvVersion(){try{const r=await fetchT(sheetUrl+'?a=versi&t='+Date.now(),15000);const j=await r.json();return +j.v||0}catch(e){return 0}}
+function dirtyWorlds(){return Object.keys(OV).filter(id=>OV[id]&&OV[id].dirty)}
+async function publishWorlds(ids){if(ONLINE)return;const line=$('srvStatus');
+ if(!saveSheetUrl()||!sheetUrl||!scriptId()){setSendLine(line,'Isi URL Apps Script yang benar (berakhiran /exec) di kolom Google Sheets dulu.','err');line.scrollIntoView({behavior:'smooth',block:'center'});return}
+ if(!pinData){openPin('setup',null);toast('Buat PIN guru dulu.');return}
+ const kunci=getTKey();if(!kunci){setSendLine(line,'Isi kunci guru (KUNCI_GURU di Apps Script).','err');$('teacherKey').focus();return}
+ if(curWorld)saveWorldState();
+ for(const id of ids){const o=OV[id];if(o&&o.m&&(o.m.length<MINM||!o.m.map(fixMission).every(missionValid))){const t=themeById(id);setSendLine(line,(t?t.dunia:id)+' belum siap: butuh minimal '+MINM+' misi yang lengkap.','err');return}}
+ setSendLine(line,'Memeriksa versi Apps Script...','busy');const v=await srvVersion();
+ if(v<4){setSendLine(line,'Apps Script di spreadsheet masih versi lama. Salin kode versi 4 di atas, tempel menggantikan semua kode lama, ganti KUNCI_GURU, simpan, lalu Terapkan → Kelola deployment → ✏️ Edit → Versi baru → Terapkan.','err');return}
+ let n=0;$('srvPublish').disabled=true;
+ try{for(const id of ids){const o=OV[id],t=themeById(id);setSendLine(line,'Menerbitkan '+(t?t.dunia:id)+' ('+(n+1)+' dari '+ids.length+')...','busy');
+   if(o&&o.m)await srvPost({a:'simpanDunia',kunci,id,missions:o.m});else await srvPost({a:'hapusDunia',kunci,id});
+   if(OV[id]){OV[id].dirty=false;if(!OV[id].m)delete OV[id]}saveOV();n++}
+  setSendLine(line,'✓ '+n+' dunia terbit. Siswa yang memilih dunia itu langsung mendapat misi terbaru.','ok');toast('🌐 '+n+' dunia terbit','green')}
+ catch(e){const m=String(e.message||e);setSendLine(line,(n?n+' dunia sudah terbit. ':'')+(m.includes('Failed to fetch')||e.name==='AbortError'?'Tidak bisa menghubungi Apps Script. Periksa internet dan URL-nya.':m.includes('salah')?m+' Isi kolom ini harus sama persis dengan KUNCI_GURU di Apps Script.':m),'err')}
+ $('srvPublish').disabled=false;renderWorldCtx();if(mode==='paket')renderPaket()}
+async function publishCurrentWorld(){if(!curWorld)return;saveWorldState();const o=OV[curWorld];if(!gameReady()){toast('Lengkapi minimal '+MINM+' misi dulu.');renderReady();return}
+ if(!(await confirmBox('Terbitkan '+missions.length+' misi '+worldTitle+' ke link siswa?'+(o&&o.m?'':' Dunia ini memakai soal bawaan, jadi siswa mendapat soal bawaan.'),{title:'Terbitkan dunia',ok:'🌐 Terbitkan'})))return;
+ if(!OV[curWorld])OV[curWorld]={m:null,dirty:true};else OV[curWorld].dirty=true;await publishWorlds([curWorld])}
+async function pullWorld(id){if(!saveSheetUrl()||!scriptId()){setSendLine($('srvStatus'),'Isi URL Apps Script dulu.','err');return}setSendLine($('srvStatus'),'Mengambil dunia dari spreadsheet...','busy');
+ try{const r=await fetchT(sheetUrl+'?a=dunia&id='+encodeURIComponent(id)+'&t='+Date.now(),20000);let j;try{j=await r.json()}catch(e){throw new Error('Apps Script masih versi lama. Perbarui ke versi 4.')}if(!j.ok)throw new Error(j.error||'Gagal');
+  if(j.kosong){setSendLine($('srvStatus'),'Spreadsheet belum punya misi khusus untuk dunia ini. Siswa memakai soal bawaan.','ok');return}
+  const c=unpackCfg(JSON.stringify({id:j.id,z:j.z}));if(!(await confirmBox('Ganti misi '+worldTitle+' dengan '+c.missions.length+' misi dari spreadsheet?',{ok:'Ambil misi'})))return;
+  startNewWorld(c.missions,c.missions.length+' misi diambil dari spreadsheet.');saveWorldState();if(OV[id])OV[id].dirty=false;saveOV();renderWorldCtx();setSendLine($('srvStatus'),'✓ '+c.missions.length+' misi diambil dari spreadsheet.','ok')}
+ catch(e){setSendLine($('srvStatus'),String(e.message||e),'err')}}
+
+function bindDunia(){
+ $('worldBtn').addEventListener('click',openPicker);$('pickWorld').addEventListener('click',openPicker);$('winWorld').addEventListener('click',()=>{$('winModal').classList.remove('show');openPicker()});
+ $('wKelas').addEventListener('change',()=>{student.kelas=$('wKelas').value;save();renderStuChip();renderPicker()});
+ $('wList').addEventListener('click',e=>{const b=e.target.closest('[data-world]');if(b)pickWorld(b.dataset.world)});
+ $('wClose').addEventListener('click',()=>$('worldModal').classList.remove('show'));
+ $('worldModal').addEventListener('click',e=>{if(e.target.id==='worldModal'&&!$('wClose').hidden)$('worldModal').classList.remove('show')})}
 
 /* ================= LIBRARY ================= */
 function renderLibrary(){$('libraryList').innerHTML=library.length?library.map((s,i)=>`<div class="quest" style="grid-template-columns:36px 1fr auto;align-items:center"><div class="num" style="background:var(--lagoon)">📘</div><div><b>${escapeHTML(s.name)}</b><div class="sub">${escapeHTML(s.type)}${s.ref?' — '+escapeHTML(s.ref):''}</div></div><button class="small danger" data-del-lib="${i}">Hapus</button></div>`).join(''):'<div class="empty">Belum ada sumber. File dan link yang dibaca di Teacher Studio akan tercatat di sini.</div>';document.querySelectorAll('[data-del-lib]').forEach(b=>b.addEventListener('click',()=>{library.splice(+b.dataset.delLib,1);renderLibrary();save()}))}
@@ -1880,7 +2109,7 @@ document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',(
 document.querySelectorAll('[data-move]').forEach(b=>{const d=b.dataset.move;b.addEventListener('pointerdown',e=>{e.preventDefault();audio();if(!canPlay())return;path=[];pendingTarget=null;heldDir=d;try{b.setPointerCapture(e.pointerId)}catch(_){}if(!anim)tryMove(d)});const up=()=>{if(heldDir===d)heldDir=null};['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,up))});
 const KEYMAP={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right'};
 document.addEventListener('keydown',e=>{if($('quizModal').classList.contains('show')&&!answered){const k={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3}[String(e.key).toLowerCase()];if(k!==undefined&&document.querySelector(`[data-answer="${k}"]:not(:disabled)`)){e.preventDefault();answer(k);return}}
- if(e.key==='Escape'){if($('quizModal').classList.contains('show'))closeQuizModal();else if($('npcModal').classList.contains('show'))$('npcModal').classList.remove('show');else if($('winModal').classList.contains('show'))$('winModal').classList.remove('show');else if($('stuModal').classList.contains('show')&&!$('stuSkip').hidden)$('stuModal').classList.remove('show');else if($('pinModal').classList.contains('show')&&!$('pinCancel').hidden){$('pinModal').classList.remove('show');pinAfter=null}else if(stage.classList.contains('full'))toggleFull();return}
+ if(e.key==='Escape'){if($('quizModal').classList.contains('show'))closeQuizModal();else if($('npcModal').classList.contains('show'))$('npcModal').classList.remove('show');else if($('winModal').classList.contains('show'))$('winModal').classList.remove('show');else if($('stuModal').classList.contains('show')&&!$('stuSkip').hidden)$('stuModal').classList.remove('show');else if($('worldModal').classList.contains('show')&&!$('wClose').hidden)$('worldModal').classList.remove('show');else if($('pinModal').classList.contains('show')&&!$('pinCancel').hidden){$('pinModal').classList.remove('show');pinAfter=null}else if(stage.classList.contains('full'))toggleFull();return}
  if(modalOpen()||currentView!=='play')return;const tag=document.activeElement&&document.activeElement.tagName;if(['INPUT','TEXTAREA','SELECT'].includes(tag))return;
  const d=KEYMAP[e.key];if(d){e.preventDefault();if(!canPlay())return;path=[];pendingTarget=null;if(!e.repeat){heldDir=d;if(!anim)tryMove(d)}return}
  if(e.key==='e'||e.key==='E'||(e.key==='Enter'&&tag!=='BUTTON')){e.preventDefault();if(canPlay())interact()}if(e.key==='c'||e.key==='C')cycleCam()});
@@ -1923,7 +2152,7 @@ $('blankBtn').addEventListener('click',blankSlots);$('templateBtn').addEventList
 $('importBtn').addEventListener('click',()=>$('importInput').click());$('importInput').addEventListener('change',e=>importMissions(e.target.files[0]));
 ['grade','subject','topic','genre'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='grade'&&R3D)buildWorld();renderWorldHeader();save()}));
 $('theme').addEventListener('change',()=>{const v=$('theme').value;if(v==='auto'||!palettes[v])return;const old=(palettes[theme]||palettes.cyber).name;theme=v;if(worldTitle===old)worldTitle=palettes[v].name;if(R3D)buildWorld();renderWorldHeader();save()});
-bindPaket();
+bindPaket();bindDunia();
 $('editMission').addEventListener('change',loadEditor);
 $('edPrev').addEventListener('click',()=>{const s=$('editMission');s.value=String(Math.max(0,+s.value-1));loadEditor()});
 $('edNext').addEventListener('click',()=>{const s=$('editMission');s.value=String(Math.min(missions.length-1,+s.value+1));loadEditor()});
@@ -1959,7 +2188,8 @@ requestAnimationFrame(frame);
 setView('play');
 if(sheetUrl&&navigator.onLine&&!ONLINE)setTimeout(()=>resendPending(null),2500);
 if(SERVER)loadServerCfg();else showStudentLink();
-loadThemes().then(()=>{renderWorldHeader();if(mode==='paket'&&!isStudent())renderPaket()});
+$('worldBtn').hidden=!isStudent();renderWorldCtx();
+loadThemes().then(async()=>{if(curWorld)await applyWorld(curWorld,{startup:true});else worldReady=true;renderWorldHeader();renderWorldCtx();if(mode==='paket'&&!isStudent())renderPaket();if(isStudent()&&needPicker()&&!modalOpen())openPicker()});
 if(ONLINE)initOnline();else setTimeout(()=>{if(!ONLINE&&detectOnline()){ONLINE=true;initOnline()}},1500);
 }
 if(WEB&&!SERVER&&!ONLINE){readSiteConfig().then(g=>{CONFIG_GID=g;if(g&&!TEACHER_ENTRY){location.replace(location.pathname+'?g='+g+location.hash);return}startApp()})}else startApp();
