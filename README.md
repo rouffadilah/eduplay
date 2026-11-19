@@ -17,6 +17,14 @@ Game belajar 3D berbasis browser. Siswa membuka **satu link tetap**, dan misinya
 
 Setiap kali kode Apps Script diganti: **Terapkan → Kelola deployment → Edit → Versi baru → Terapkan**. URL-nya tidak berubah.
 
+## Jenis soal, musik, dan avatar
+
+- **8 jenis soal:** pilihan ganda, benar/salah, pilih semua yang tepat, isian (ketik jawaban), susun huruf, susun kata, urutkan, dan pasangkan. Guru memilih jenisnya di Mission Editor atau di kolom **Jenis Soal** pada template Excel (lihat sheet Petunjuk).
+- Soal paket perangkat ajar otomatis diolah menjadi beragam jenis. Mode otomatis juga mencampur jenis soal.
+- Kelas X tetap mendapat bantuan setelah jawaban salah, disesuaikan dengan jenis soalnya (pilihan disingkirkan, huruf atau langkah dipasang, atau petunjuk huruf).
+- **Musik tema:** setiap dunia punya musik sendiri yang dibuat langsung di browser (tanpa file audio). Tombol 🎵 menyalakan atau mematikannya.
+- **Avatar:** 24 karakter siap pakai (manusia, hewan, robot, alien, astronot, ninja) dan menu **Buat avatar sendiri** untuk mengatur karakter, rambut atau penutup kepala, warna, tas, dan aksesori.
+
 ## Kelas dan pilihan dunia
 
 Siswa memilih kelas dari daftar (X-1, X-2, X-3, XI-A1, XI-1 s.d. XI-4, XII-A1, XII-1 s.d. XII-3), lalu memilih dunia lewat tombol 🌍. Dunia yang muncul hanya untuk tingkat kelasnya: kelas X-1/X-2/X-3 melihat dunia kelas X, dan seterusnya. Dunia buatan guru sendiri tampil paling atas sebagai **Dari guru**. Kemajuan setiap dunia tersimpan terpisah, jadi siswa bisa berpindah dunia tanpa kehilangan progres.
@@ -25,12 +33,12 @@ Siswa memilih kelas dari daftar (X-1, X-2, X-3, XI-A1, XI-1 s.d. XI-4, XII-A1, X
 
 Teacher Studio → **📚 Paket perangkat ajar** berisi 36 dunia siap pakai (582 misi) dari perangkat ajar Informatika dan KKA kelas X–XII, satu dunia per bab. Soal diambil dari instrumen asesmen dan bahan ajar, lengkap dengan kunci, pembahasan, dan kode TP.
 
-- **Atur misi** membuka dunia itu di Mission Editor. Guru bisa mengubah, menambah, menghapus, atau mengimpor misi hingga **50 misi per dunia**. Dunia yang diubah ditandai *Disesuaikan guru*.
+- **Atur misi** membuka dunia itu di Mission Editor. Pilih **Jumlah misi** (15–50) lalu **Susun ulang misi** untuk membuat dunia hingga **50 misi** dari soal bab itu, atau ubah, tambah, hapus, dan impor misi sendiri. Dunia yang diubah ditandai *Disesuaikan guru*.
 - **Terbitkan semua** mengirim semua dunia yang diubah ke link siswa sekaligus. **Kembalikan soal bawaan** menghapus perubahan guru untuk dunia itu.
 - **Jadikan dunia guru / Gabungkan** menyalin satu atau beberapa bab menjadi dunia guru sendiri.
 - **Excel** mengunduh soal satu dunia dalam format template impor.
 - Suasana mengikuti kelas: X siang dengan bantuan (satu pilihan salah disingkirkan setelah jawaban salah), XI senja, XII malam. Nilai tetap dari jawaban benar pada percobaan pertama.
-- Fitur misi per dunia butuh **Apps Script versi 4**. Jika masih versi lama, Teacher Studio menampilkan langkah pembaruannya.
+- Menerbitkan misi per dunia dan jenis soal baru butuh **Apps Script versi 5**. Jika masih versi lama, Teacher Studio menampilkan langkah pembaruannya.
 
 ## Privasi
 
