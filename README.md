@@ -4,8 +4,8 @@ Game belajar 3D berbasis browser. Siswa membuka **satu link tetap**, dan misinya
 
 ## Link
 
-- **Link siswa:** `https://rouffadilah.github.io/eduplay/` (setelah `config.json` dibuat)
-- **Pintu guru:** `https://rouffadilah.github.io/eduplay/?guru` (Teacher Studio dikunci PIN, jangan dibagikan)
+- **Link siswa:** `https://rouffadilah.github.io/eduverse/` (setelah `config.json` dibuat)
+- **Pintu guru:** `https://rouffadilah.github.io/eduverse/?guru` (Teacher Studio dikunci PIN, jangan dibagikan)
 
 ## Persiapan sekali saja
 
@@ -16,6 +16,15 @@ Game belajar 3D berbasis browser. Siswa membuka **satu link tetap**, dan misinya
 5. Buat file `config.json` di repo ini berisi `{"g":"ID_DEPLOYMENT"}` (isi persisnya ditampilkan di Teacher Studio). Setelah itu link utama otomatis menjadi link siswa.
 
 Setiap kali kode Apps Script diganti: **Terapkan → Kelola deployment → Edit → Versi baru → Terapkan**. URL-nya tidak berubah.
+
+## Dunia yang hidup dan bertemu teman
+
+- Setiap dunia punya bentang alam sendiri: sungai berkelok dengan jembatan kayu, danau kecil, bukit dan lembah, tebing di sekeliling pulau, air terjun, dan pegunungan di cakrawala. Bentuknya berbeda di tiap dunia.
+- Saat siswa bermain lewat link guru, teman **sekelas** yang memilih dunia yang sama terlihat berjalan dengan nama dan avatarnya masing-masing. Tombol 👥 menunjukkan siapa saja yang ada, dan 👋 untuk melambai. Fitur ini butuh **Apps Script versi 6** dan memakai cache Apps Script, jadi tidak menulis apa pun ke spreadsheet.
+
+## Sumber apa pun jadi dunia
+
+Mode otomatis: unggah file (PDF, Word, PowerPoint, Excel, OpenDocument, EPUB, HTML, TXT/Markdown/CSV, RTF, JSON, subtitle, ZIP berisi dokumen, foto lewat OCR) atau tempel link dari situs mana pun (termasuk Wikipedia, Google Docs/Slides/Sheets/Drive, YouTube). EDUPLAY mengenali mapel dari isi sumber (Informatika, KKA, Matematika, Fisika, Kimia, Biologi, Sejarah, Geografi, Ekonomi, Sosiologi, Pendidikan Pancasila, Bahasa Indonesia, Bahasa Inggris, PAI, Seni Budaya, PJOK, Prakarya), juga topik dan kelas, lalu langsung membuat dunia dengan tema yang cocok. Matikan centang **Langsung buat dunia** jika ingin memeriksa teksnya dulu.
 
 ## Jenis soal, musik, dan avatar
 
@@ -38,7 +47,7 @@ Teacher Studio → **📚 Paket perangkat ajar** berisi 36 dunia siap pakai (582
 - **Jadikan dunia guru / Gabungkan** menyalin satu atau beberapa bab menjadi dunia guru sendiri.
 - **Excel** mengunduh soal satu dunia dalam format template impor.
 - Suasana mengikuti kelas: X siang dengan bantuan (satu pilihan salah disingkirkan setelah jawaban salah), XI senja, XII malam. Nilai tetap dari jawaban benar pada percobaan pertama.
-- Menerbitkan misi per dunia dan jenis soal baru butuh **Apps Script versi 5**. Jika masih versi lama, Teacher Studio menampilkan langkah pembaruannya.
+- Menerbitkan misi per dunia dan jenis soal baru butuh **Apps Script versi 6**. Jika masih versi lama, Teacher Studio menampilkan langkah pembaruannya.
 
 ## Privasi
 

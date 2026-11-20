@@ -475,6 +475,14 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
 .swatch.none{background:#fff;font-size:13px;display:grid;place-items:center;color:var(--muted,#5b6b80)}
 @media(max-width:600px){.avmake{grid-template-columns:1fr}.avprev{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center}.avprev canvas{width:120px}.avopts{max-height:none}.swatch{width:28px;height:28px}}
 .swatch:hover:not(:disabled){background:var(--c)}.swatch.none:hover:not(:disabled){background:#fff}
+.lbl.peer{background:#e9fbff;border-color:var(--lagoon-d,#0b7f8f);color:#0b4d57}
+.lbl.peer.near{background:#fff;outline:3px solid var(--lagoon);transform-origin:center}
+.lbl.peer.emote{background:#fffbe0}
+.stagebtns .peerchip{width:auto!important;padding:0 10px;font-size:13px}
+.stagebtns .peerchip.has{background:#e9fbff}
+.autobuild{display:flex;gap:8px;align-items:flex-start;font-size:13px;font-weight:700;margin:8px 0 4px;line-height:1.4}
+.autobuild input{margin-top:2px;width:18px;height:18px;flex:0 0 18px}
+.detect{margin:6px 0;padding:8px 12px;border-radius:12px;background:#eef9f1;border:2px solid var(--leaf-d);font-size:13px;line-height:1.45}
 </style>
 <!--EV:/HEAD--></head>
 <body><!--EV:BODY-->
@@ -527,6 +535,8 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
      <div class="worldchip"><h2 id="worldName">🌴 Algorithm Island</h2><div class="tags" id="worldMeta"></div><p class="story" id="worldStory" hidden></p><div class="minihud" id="miniHud"></div></div>
      <div class="stagebtns">
       <button class="stuchip" id="stuChip" aria-label="Ubah nama pemain">👤 Pemain</button>
+      <button class="peerchip" id="peerChip" hidden aria-label="Teman di dunia ini">👥 0</button>
+      <button id="waveBtn" hidden aria-label="Lambaikan tangan ke teman" title="Lambaikan tangan">👋</button>
       <button id="worldBtn" aria-label="Pilih dunia" title="Pilih dunia" hidden>🌍</button>
       <button id="camBtn" aria-label="Ganti sudut kamera" title="Kamera">🎥</button>
       <button id="fullBtn" aria-label="Layar penuh" title="Layar penuh">⛶</button>
@@ -578,10 +588,12 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
      <label for="material">Sumber materi</label>
      <div class="srcrow">
       <button id="pickFile">📎 Unggah file</button>
-      <div class="urlrow"><input id="sourceUrl" type="url" inputmode="url" placeholder="Tempel link artikel, PDF, Google Docs/Slides/Drive, Wikipedia..."><button id="fetchUrl">🔗 Ambil</button></div>
+      <div class="urlrow"><input id="sourceUrl" type="url" inputmode="url" placeholder="Tempel link apa saja: artikel, PDF, Google Docs/Slides/Drive, Wikipedia, YouTube..."><button id="fetchUrl">🔗 Ambil</button></div>
      </div>
      <input type="file" id="fileInput" multiple hidden>
-     <div class="extract" id="extractStatus">Bisa PDF, Word, PowerPoint, Excel, OpenDocument, EPUB, HTML, TXT/Markdown/CSV, RTF, dan foto/gambar (dibaca lewat OCR saat online). Teks yang terbaca ditambahkan ke kotak di bawah.</div>
+     <label class="autobuild"><input type="checkbox" id="autoBuild" checked> Langsung buat dunia setelah sumber dibaca. Mapel, topik, kelas, dan tema dunia dikenali otomatis dari isi sumber.</label>
+     <div class="extract" id="extractStatus">Bisa PDF, Word, PowerPoint, Excel, OpenDocument, EPUB, HTML, TXT/Markdown/CSV, RTF, JSON, subtitle (SRT/VTT), ZIP berisi dokumen, dan foto/gambar (dibaca lewat OCR saat online). Link bisa dari situs mana pun, Wikipedia, Google Docs/Slides/Sheets/Drive, atau YouTube.</div>
+     <div class="detect" id="detectInfo" hidden></div>
      <div class="drop" id="dropZone"><textarea id="material" rows="7" placeholder="Tempel teks materi di sini, unggah file, atau ambil dari link...">Algoritma adalah urutan langkah logis untuk menyelesaikan masalah. Variabel digunakan untuk menyimpan data atau nilai dalam program. Perulangan merupakan struktur yang menjalankan instruksi secara berulang. Percabangan memungkinkan program memilih tindakan berdasarkan kondisi. Pseudocode adalah penulisan algoritma menggunakan bahasa sederhana.</textarea></div>
      <div class="wcount" id="materialCount">0 kata</div>
     </div>
@@ -671,7 +683,7 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
    <div>
     <div id="srvBox">
      <h3 class="sub2">🔗 Link siswa tetap (tanpa unduh ulang)</h3>
-     <p class="small muted" style="margin-top:0">Misi disimpan di Google Sheet Anda (sheet <b>Misi</b>). Siswa cukup membuka satu link. Setiap kali Anda menerbitkan, misi di link itu ikut berubah. Butuh kode Apps Script <b>versi 5</b> dan <b>KUNCI_GURU</b> yang sudah Anda ganti di kode itu.</p>
+     <p class="small muted" style="margin-top:0">Misi disimpan di Google Sheet Anda (sheet <b>Misi</b>). Siswa cukup membuka satu link. Setiap kali Anda menerbitkan, misi di link itu ikut berubah. Butuh kode Apps Script <b>versi 6</b> dan <b>KUNCI_GURU</b> yang sudah Anda ganti di kode itu.</p>
      <div class="field"><label for="teacherKey">Kunci guru (sama dengan KUNCI_GURU di Apps Script)</label><input id="teacherKey" type="password" autocomplete="off"></div>
      <div class="actions"><button class="primary" id="srvPublish">🌐 Terbitkan misi ke link siswa</button><button id="srvPull">📥 Ambil misi dari spreadsheet</button></div>
      <div class="sendline" id="srvStatus">Isi URL Apps Script di kolom kiri dan kunci guru, lalu terbitkan.</div>
@@ -747,8 +759,9 @@ html:fullscreen,html:-webkit-full-screen{background:#5fc2f5}
    <div class="helpitem"><h3>⌨️ Di komputer</h3><p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> atau tombol panah untuk berjalan. <kbd>E</kbd> atau <kbd>Enter</kbd> untuk interaksi, <kbd>C</kbd> untuk ganti kamera. Saat soal terbuka, tekan <kbd>A</kbd>–<kbd>D</kbd> untuk menjawab.</p></div>
    <div class="helpitem"><h3>📱 Di HP / tablet</h3><p>Ketuk petak atau portal untuk berjalan otomatis. Bisa juga geser layar, atau tahan tombol arah. Tombol ⛶ membuat dunia memenuhi layar.</p></div>
    <div class="helpitem"><h3>🎯 Tujuan dan nilai</h3><p>Buka semua portal dengan menjawab soal. Nilai dihitung dari soal yang benar pada percobaan pertama. Koin (+10 XP) dan peti harta (+50 XP) menambah XP, bukan nilai.</p></div>
-   <div class="helpitem teacher-help"><h3>🧑‍🏫 Membuat misi</h3><p>Mode otomatis: unggah file, tempel link, atau tempel teks, lalu pilih jumlah misi (15–50). Mode manual: tulis di Mission Editor atau impor dari template Excel. Mode paket perangkat ajar: atur misi tiap dunia Informatika dan KKA kelas X–XII (sampai 50 misi), atau gabungkan beberapa bab menjadi dunia guru. Siswa memilih sendiri dunia sesuai tingkat kelasnya lewat tombol 🌍. Periksa soal sebelum dipakai di kelas.</p></div>
+   <div class="helpitem teacher-help"><h3>🧑‍🏫 Membuat misi</h3><p>Mode otomatis: unggah file apa pun atau tempel link. Mapel, topik, kelas, dan tema dunia dikenali dari isinya, lalu dunia langsung dibuat. Jumlah misi 15–50. Mode manual: tulis di Mission Editor atau impor dari template Excel. Mode paket perangkat ajar: atur misi tiap dunia Informatika dan KKA kelas X–XII (sampai 50 misi), atau gabungkan beberapa bab menjadi dunia guru. Siswa memilih sendiri dunia sesuai tingkat kelasnya lewat tombol 🌍. Periksa soal sebelum dipakai di kelas.</p></div>
    <div class="helpitem"><h3>🧩 Jenis soal</h3><p>Setiap portal bisa berbeda: pilihan ganda, benar atau salah, pilih semua yang tepat, ketik jawaban, susun huruf, susun kata, urutkan, dan pasangkan. Petunjuk singkat muncul di atas jawaban.</p></div>
+   <div class="helpitem"><h3>🏞️ Jelajah dan bertemu teman</h3><p>Setiap dunia punya sungai, jembatan, danau, bukit, dan pegunungan. Saat bermain lewat link guru, teman sekelas yang memilih dunia yang sama terlihat dengan namanya. Ketuk 👋 untuk melambai.</p></div>
    <div class="helpitem"><h3>🎵 Musik dan avatar</h3><p>Setiap dunia punya musik temanya sendiri. Tombol 🎵 menyalakan atau mematikan musik, 🔊 untuk semua suara. Ketuk nama atau avatarmu di dunia untuk memilih karakter atau membuat avatar sendiri.</p></div>
    <div class="helpitem"><h3>🌗 Suasana sesuai kelas</h3><p>Kelas X bermain di dunia siang dan mendapat bantuan setelah jawaban salah, misalnya satu pilihan salah disingkirkan atau satu huruf dipasang. Kelas XI bermain saat senja, kelas XII saat malam, tanpa bantuan. Nilai tetap dihitung dari jawaban benar pada percobaan pertama.</p></div>
    <div class="helpitem teacher-help"><h3>📊 Hasil ke spreadsheet</h3><p>Di akhir permainan muncul laporan nilai yang bisa diunduh sebagai Excel. Jika URL Apps Script diisi, hasil juga terkirim otomatis ke Google Sheets guru.</p></div>
@@ -979,12 +992,12 @@ function pickPack(sub){const s=(sub||'').toLowerCase();
 
 /* ================= TEMA ================= */
 const palettes={
-cyber:{name:'Cyber City',emoji:'🏙️',ground:'#5fae94',ground2:'#53a088',path:'#dcd2a8',dirt:'#8a6a4a',tree:'#1f6b55',leaf2:'#2f8f6e',trunk:'#7a5236',building:'#4a5f8f',roof:'#2c3a63',window:'#5ff5e6',portal:'#38e8d6',skyTop:'#5cb8ec',sky:'#c2ebff',water:'#2a9fd0',sand:'#f0dfb0',sand2:'#e2cc93'},
-forest:{name:'Adventure Forest',emoji:'🌲',ground:'#7cc36a',ground2:'#6fb65e',path:'#dccb94',dirt:'#8a6440',tree:'#2b7a3d',leaf2:'#3f9d4d',trunk:'#7a5236',building:'#9a7350',roof:'#c0503f',window:'#ffe08a',portal:'#ffd23f',skyTop:'#69c3f0',sky:'#cdf1ff',water:'#33a6d8',sand:'#f2e2b0',sand2:'#e2cd95'},
-science:{name:'Science World',emoji:'🔬',ground:'#86c79a',ground2:'#78ba8c',path:'#e6e9c9',dirt:'#7d6a52',tree:'#2f7e53',leaf2:'#47a36b',trunk:'#7a5236',building:'#eef2f3',roof:'#3f9fc9',window:'#7af0ff',portal:'#a77bff',skyTop:'#62bdea',sky:'#c8eeff',water:'#3aa5d6',sand:'#eee6c2',sand2:'#ddd1a4'},
-math:{name:'Math Kingdom',emoji:'📐',ground:'#b4a1e0',ground2:'#a693d6',path:'#f1dcb3',dirt:'#7d6290',tree:'#4a8a5f',leaf2:'#62aa76',trunk:'#7a5236',building:'#7d66b8',roof:'#f2b33d',window:'#ffe48a',portal:'#ffd34b',skyTop:'#8f86e6',sky:'#e1dcff',water:'#5b8fe0',sand:'#f3e3c0',sand2:'#e3cfa3'},
-history:{name:'Ancient Kingdom',emoji:'🏛️',ground:'#cdb27f',ground2:'#c0a572',path:'#ecd8ad',dirt:'#8d6a46',tree:'#6f8a45',leaf2:'#8aa65a',trunk:'#6e4b31',building:'#a5805a',roof:'#7a4b33',window:'#ffd27a',portal:'#ff9f43',skyTop:'#f0a56e',sky:'#ffe7c6',water:'#3b9cc4',sand:'#f2dcae',sand2:'#e0c590'},
-language:{name:'Language City',emoji:'🗣️',ground:'#86c4a6',ground2:'#78b798',path:'#e7d8a9',dirt:'#82684c',tree:'#3a8256',leaf2:'#50a06c',trunk:'#7a5236',building:'#6b86b0',roof:'#e2675a',window:'#fff1a8',portal:'#ff6fae',skyTop:'#6cc2ee',sky:'#d0f0ff',water:'#2f9fd2',sand:'#f2e1b0',sand2:'#e1cb94'},
+cyber:{name:'Kota Siber',emoji:'🏙️',ground:'#5fae94',ground2:'#53a088',path:'#dcd2a8',dirt:'#8a6a4a',tree:'#1f6b55',leaf2:'#2f8f6e',trunk:'#7a5236',building:'#4a5f8f',roof:'#2c3a63',window:'#5ff5e6',portal:'#38e8d6',skyTop:'#5cb8ec',sky:'#c2ebff',water:'#2a9fd0',sand:'#f0dfb0',sand2:'#e2cc93'},
+forest:{name:'Hutan Petualangan',emoji:'🌲',ground:'#7cc36a',ground2:'#6fb65e',path:'#dccb94',dirt:'#8a6440',tree:'#2b7a3d',leaf2:'#3f9d4d',trunk:'#7a5236',building:'#9a7350',roof:'#c0503f',window:'#ffe08a',portal:'#ffd23f',skyTop:'#69c3f0',sky:'#cdf1ff',water:'#33a6d8',sand:'#f2e2b0',sand2:'#e2cd95'},
+science:{name:'Dunia Sains',emoji:'🔬',ground:'#86c79a',ground2:'#78ba8c',path:'#e6e9c9',dirt:'#7d6a52',tree:'#2f7e53',leaf2:'#47a36b',trunk:'#7a5236',building:'#eef2f3',roof:'#3f9fc9',window:'#7af0ff',portal:'#a77bff',skyTop:'#62bdea',sky:'#c8eeff',water:'#3aa5d6',sand:'#eee6c2',sand2:'#ddd1a4'},
+math:{name:'Kerajaan Matematika',emoji:'📐',ground:'#b4a1e0',ground2:'#a693d6',path:'#f1dcb3',dirt:'#7d6290',tree:'#4a8a5f',leaf2:'#62aa76',trunk:'#7a5236',building:'#7d66b8',roof:'#f2b33d',window:'#ffe48a',portal:'#ffd34b',skyTop:'#8f86e6',sky:'#e1dcff',water:'#5b8fe0',sand:'#f3e3c0',sand2:'#e3cfa3'},
+history:{name:'Kerajaan Kuno',emoji:'🏛️',ground:'#cdb27f',ground2:'#c0a572',path:'#ecd8ad',dirt:'#8d6a46',tree:'#6f8a45',leaf2:'#8aa65a',trunk:'#6e4b31',building:'#a5805a',roof:'#7a4b33',window:'#ffd27a',portal:'#ff9f43',skyTop:'#f0a56e',sky:'#ffe7c6',water:'#3b9cc4',sand:'#f2dcae',sand2:'#e0c590'},
+language:{name:'Kota Bahasa',emoji:'🗣️',ground:'#86c4a6',ground2:'#78b798',path:'#e7d8a9',dirt:'#82684c',tree:'#3a8256',leaf2:'#50a06c',trunk:'#7a5236',building:'#6b86b0',roof:'#e2675a',window:'#fff1a8',portal:'#ff6fae',skyTop:'#6cc2ee',sky:'#d0f0ff',water:'#2f9fd2',sand:'#f2e1b0',sand2:'#e1cb94'},
 fakta:{name:'Kota Detektif Fakta',emoji:'🕵️',ground:'#c9b58f',ground2:'#bfa982',path:'#efe3c4',dirt:'#7a5f42',tree:'#5f7d4a',leaf2:'#7a9a5c',trunk:'#6e4b31',building:'#8a7a6a',roof:'#3d3a4a',window:'#ffe39a',portal:'#ff7a59',skyTop:'#9fb7c9',sky:'#f1e6cf',water:'#5d8fa8',sand:'#ead9b4',sand2:'#d9c39a',deco:'round',roofStyle:'pyr'},
 kantor:{name:'Menara Kantor Digital',emoji:'🗂️',ground:'#a9c7b5',ground2:'#9dbcaa',path:'#e9edf2',dirt:'#6f7a86',tree:'#3d8a6a',leaf2:'#58a882',trunk:'#6e5a48',building:'#d9e2ec',roof:'#4b6cb7',window:'#8fd3ff',portal:'#3aa0ff',skyTop:'#7cc0f0',sky:'#e3f3ff',water:'#3f9bd6',sand:'#eceff3',sand2:'#d6dce4',deco:'round',roofStyle:'flat'},
 benteng:{name:'Benteng Siber',emoji:'🛡️',ground:'#4f7b78',ground2:'#48726f',path:'#a9bcc0',dirt:'#3a3f4a',tree:'#1f4f5a',leaf2:'#2c6d78',trunk:'#4a3a33',building:'#5d6782',roof:'#2a3047',window:'#4dfcff',portal:'#00e5ff',skyTop:'#3d6ea8',sky:'#a9d6e8',water:'#1d6d8a',sand:'#b7c4c8',sand2:'#9aaab0',deco:'pylon',roofStyle:'pyr'},
@@ -1129,6 +1142,73 @@ function quizRight(el,extra){const m=missions[activeMission];answered=true;compl
  const f=$('quizFeedback');f.className='feedback ok';f.innerHTML='<b>✓ Benar! +100 XP.</b> '+escapeHTML((extra?extra+' ':'')+(m.ex||'Jawaban kamu tepat.'));$('nextQuiz').style.display='';$('closeQuiz').style.display='none';SFX.correct();
  const r=(el||box).getBoundingClientRect();confetti(70,r.left+r.width/2,r.top,.7);pendingBurst=activeMission;setTimeout(()=>$('nextQuiz').focus({preventScroll:true}),50);renderAll();save()}
 function quizWrong(msg,hint){wrong++;wrongs[activeMission]=(wrongs[activeMission]||0)+1;const f=$('quizFeedback');f.className='feedback no';f.innerHTML='<b>Belum tepat, coba lagi.</b> '+escapeHTML(msg?msg+' ':'')+escapeHTML(hint||'Baca kembali pertanyaannya pelan-pelan.');SFX.wrong();const d=$('quizDialog');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');renderAll();save()}
+/* ================= BENTANG ALAM: SUNGAI, DANAU, BUKIT, LEMBAH, TEBING, GUNUNG ================= */
+let TERR=null;
+const tk=(x,z)=>x+','+z;
+function terr(){const k=theme+'|'+((typeof curWorld!=='undefined'&&curWorld)||worldTitle);if(TERR&&TERR.key===k)return TERR;TERR=makeTerrain(k);return TERR}
+const inGrid=(x,z)=>x>=0&&z>=0&&x<COLS&&z<ROWS;
+function waterAt(x,z){const T=terr();const k=tk(x,z);return T.water.has(k)&&!T.bridge.has(k)}
+function tileH(x,z){if(!inGrid(x,z))return 0;return terr().h[z*COLS+x]}
+function hAt(fx,fz){const x0=Math.floor(fx),z0=Math.floor(fz),ax=fx-x0,az=fz-z0,H=(x,z)=>inGrid(x,z)?tileH(x,z):0,sm=t=>t*t*(3-2*t);
+ const near=(Math.abs(ax-.5)<.5&&Math.abs(az-.5)<.5);const kx=sm(ax),kz=sm(az);return(H(x0,z0)*(1-kx)+H(x0+1,z0)*kx)*(1-kz)+(H(x0,z0+1)*(1-kx)+H(x0+1,z0+1)*kx)*kz}
+function makeTerrain(key){const rnd=seedRng('alam|'+key),T={key,water:new Set(),bridge:new Set(),lake:new Set(),h:new Float32Array(COLS*ROWS),river:[],src:-1,mouth:-1};
+ const forb=new Set();[...TOUR,...TOUR50,...coinSpots,...trees].forEach(p=>forb.add(tk(p[0],p[1])));buildings.forEach(b=>forb.add(tk(b.x,b.y)));[NPC,CHEST,START].forEach(p=>forb.add(tk(p.x,p.y)));
+ [[1,0],[0,1],[-1,0],[0,-1],[1,1]].forEach(([dx,dz])=>forb.add(tk(START.x+dx,START.y+dz)));
+ const free=(x,z)=>inGrid(x,z)&&!forb.has(tk(x,z))&&x!==PCOL;
+ const noise=new Float32Array(COLS*ROWS).map(()=>rnd());
+ /* sungai: jalur termurah dari tepi utara ke tepi selatan */
+ const dist=new Float32Array(COLS*ROWS).fill(1e9),prev=new Int32Array(COLS*ROWS).fill(-1),done=new Uint8Array(COLS*ROWS);
+ for(let x=3;x<COLS-3;x++)if(free(x,0))dist[x]=noise[x]*3+Math.abs(x-COLS*(.25+rnd()*.5))*.15;
+ for(;;){let b=-1,bd=1e9;for(let i=0;i<dist.length;i++)if(!done[i]&&dist[i]<bd){bd=dist[i];b=i}if(b<0)break;done[b]=1;const x=b%COLS,z=(b/COLS)|0;if(z===ROWS-1){let i=b;const path=[];while(i>=0){path.push(i);i=prev[i]}path.reverse();T.river=path.map(i=>[i%COLS,(i/COLS)|0]);break}
+  for(const [dx,dz,c] of [[1,0,1.6],[-1,0,1.6],[0,1,1]]){const nx=x+dx,nz=z+dz;if(!free(nx,nz))continue;const j=nz*COLS+nx,nd=bd+c+noise[j]*2.4;if(nd<dist[j]){dist[j]=nd;prev[j]=b}}}
+ const blockedBase=(x,z)=>!inGrid(x,z)||forb.has(tk(x,z))&&!(START.x===x&&START.y===z)&&(isTree(x,z)||isBuilding(x,z)||(x===NPC.x&&z===NPC.y)||(x===CHEST.x&&z===CHEST.y)||TOUR.some(p=>p[0]===x&&p[1]===z)||TOUR50.some(p=>p[0]===x&&p[1]===z));
+ const walk=(x,z)=>!blockedBase(x,z)&&!(T.water.has(tk(x,z))&&!T.bridge.has(tk(x,z)));
+ const ok=()=>{const seen=new Set([tk(START.x,START.y)]),q=[[START.x,START.y]];while(q.length){const [x,z]=q.shift();for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,nz=z+dz,k=tk(nx,nz);if(seen.has(k)||!walk(nx,nz))continue;seen.add(k);q.push([nx,nz])}}
+  const nb=(x,z)=>[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dz])=>seen.has(tk(x+dx,z+dz)));
+  for(let z=0;z<ROWS;z++)for(let x=0;x<COLS;x++){if(walk(x,z)){if(!seen.has(tk(x,z)))return false}else if(!T.water.has(tk(x,z))&&!nb(x,z)&&!(isTree(x,z)||isBuilding(x,z)))return false}return true};
+ const crossAt=r=>{const cells=T.river.filter(([x,z])=>z===r);for(const [x,z] of cells){const k=tk(x,z);if(walk(x-1,z)&&walk(x+1,z)||(!T.water.has(tk(x-1,z))&&!T.water.has(tk(x+1,z))))return k}return cells.length?tk(cells[0][0],cells[0][1]):null};
+ if(T.river.length){T.river.forEach(([x,z])=>T.water.add(tk(x,z)));T.src=T.river[0][0];T.mouth=T.river[T.river.length-1][0];
+  T.river.filter(([x,z])=>z===PROW).forEach(([x,z])=>T.bridge.add(tk(x,z)));
+  for(const r of [PROW,2,11,4,9,0,13,6,12,1,3,5,8,10]){if(ok())break;const k=crossAt(r);if(k)T.bridge.add(k)}
+  if(!ok()){T.water.clear();T.bridge.clear();T.river=[];T.src=T.mouth=-1}}
+ /* danau kecil */
+ for(let tries=0;tries<30;tries++){const x=1+Math.floor(rnd()*(COLS-3)),z=1+Math.floor(rnd()*(ROWS-3)),cells=[[x,z],[x+1,z],[x,z+1],[x+1,z+1]];if(!cells.every(([a,b])=>free(a,b)&&b!==PROW&&!T.water.has(tk(a,b))))continue;if(cells.some(([a,b])=>[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dz])=>T.water.has(tk(a+dx,b+dz)))))continue;cells.forEach(([a,b])=>{T.water.add(tk(a,b));T.lake.add(tk(a,b))});if(ok())break;cells.forEach(([a,b])=>{T.water.delete(tk(a,b));T.lake.delete(tk(a,b))})}
+ /* bukit dan lembah: noise halus, tanpa menyentuh jalan, objek, dan air */
+ const G=[];for(let i=0;i<5*4;i++)G.push(rnd());const vn=(x,z)=>{const gx=x/(COLS-1)*4,gz=z/(ROWS-1)*3,i=Math.min(3,Math.floor(gx)),j=Math.min(2,Math.floor(gz)),fx=gx-i,fz=gz-j,a=G[j*5+i],b=G[j*5+i+1],c=G[(j+1)*5+i],d=G[(j+1)*5+i+1];return(a*(1-fx)+b*fx)*(1-fz)+(c*(1-fx)+d*fx)*fz};
+ const L=new Int8Array(COLS*ROWS);for(let z=0;z<ROWS;z++)for(let x=0;x<COLS;x++){if(!free(x,z)||z===PROW||T.water.has(tk(x,z)))continue;const n=vn(x,z)*.8+noise[z*COLS+x]*.2;L[z*COLS+x]=n>.66?2:n>.5?1:0}
+ for(let it=0;it<3;it++)for(let z=0;z<ROWS;z++)for(let x=0;x<COLS;x++){const i=z*COLS+x;let mn=9;for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,nz=z+dz;if(!inGrid(nx,nz))continue;mn=Math.min(mn,L[nz*COLS+nx])}if(L[i]>mn+1)L[i]=mn+1}
+ for(let i=0;i<L.length;i++)T.h[i]=L[i]*.22;
+ return T}
+/* geometri bentang alam: dipanggil dari buildWorld */
+function buildLandscape(g,gw,P,C){const T=terr(),snowy=!['pulau','desa','pasar','rawa','forest','fakta','studio'].includes(theme),rnd=seedRng('gunung|'+T.key),wl=hex(mixHex(P.water,'#ffffff',.55)),rock=hex(mixHex(P.dirt,'#8a9099',.45)),grass=C('ground');
+ /* tepi sungai dan danau */
+ for(const k of T.water){const [x,z]=k.split(',').map(Number);if(T.bridge.has(k))continue;for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,nz=z+dz;if(!inGrid(nx,nz)||T.water.has(tk(nx,nz)))continue;const top=tileH(nx,nz);g.box(x+dx*.47,(top-.36)/2,z+dz*.47,dx?.06:1,top+.36,dz?.06:1,shade(C('dirt'),1.05))}
+  if(T.lake.has(k)&&hash(x*3,z*5)>.45){g.cyl(x+(hash(x,z)-.5)*.4,-.27,z+(hash(z,x)-.5)*.4,.16,.02,8,hex('#3f9e5a'));gw.ico(x+(hash(x,z)-.5)*.4+.05,-.23,z+(hash(z,x)-.5)*.4,.05,hex('#ffd6ec'),0,1,0)}
+  if(!T.lake.has(k)&&hash(x+7,z*3)>.6)g.ico(x+(hash(x,z+1)-.5)*.5,-.3,z+(hash(z+2,x)-.5)*.5,.12,rock,0,.6,0)}
+ /* jembatan kayu */
+ for(const k of T.bridge){const [x,z]=k.split(',').map(Number);const ns=T.water.has(tk(x,z-1))||T.water.has(tk(x,z+1)),wood=hex('#a7784d'),dark=hex('#6e4b31');
+  for(let i=0;i<5;i++){const o=-.4+i*.2;if(ns)g.box(x+o,-.01,z,.17,.06,1.02,shade(wood,.92+(i%2)*.1));else g.box(x,-.01,z+o,1.02,.06,.17,shade(wood,.92+(i%2)*.1))}
+  for(const s of [-.47,.47]){if(ns){g.box(x+s,.2,z,.05,.05,1,dark);g.box(x+s,.1,z-.42,.06,.24,.06,dark);g.box(x+s,.1,z+.42,.06,.24,.06,dark)}else{g.box(x,.2,z+s,1,.05,.05,dark);g.box(x-.42,.1,z+s,.06,.24,.06,dark);g.box(x+.42,.1,z+s,.06,.24,.06,dark)}}}
+ /* tebing dan bukit di sekeliling pulau, pantai di depan */
+ const HT={},hk=(x,z)=>x+','+z;
+ for(let z=-3;z<=ROWS+1;z++)for(let x=-3;x<=COLS+2;x++){if(inGrid(x,z))continue;const h0=hash(x+50,z+50),north=z<0,side=x<0||x>=COLS,south=z>=ROWS;
+  if(T.mouth>=0&&x===T.mouth&&south)continue;if(north&&T.src>=0&&x===T.src&&z>=-2)continue;if(south||(side&&z>=ROWS-4&&!north))continue;
+  const far=north?-z:Math.max(x<0?-x:x-COLS+1,0);let hh=north?.55+far*.45+h0*.5:(.3+far*.32+h0*.35)*(1.1-Math.max(0,z)/ROWS*.6);if(north&&T.src>=0&&Math.abs(x-T.src)===1)hh+=.35;HT[hk(x,z)]=hh}
+ const nTop=(x,z)=>HT[hk(x,z)]!==undefined?HT[hk(x,z)]:inGrid(x,z)?(T.water.has(tk(x,z))?-9:tileH(x,z)):(x<-3||x>COLS+2||z<-3)?99:-9;
+ for(let z=-3;z<=ROWS+1;z++)for(let x=-3;x<=COLS+2;x++){if(inGrid(x,z))continue;const h0=hash(x+50,z+50),north=z<0,side=x<0||x>=COLS,south=z>=ROWS;
+  if(T.mouth>=0&&x===T.mouth&&south)continue;
+  if(north&&T.src>=0&&x===T.src&&z>=-2)continue;
+  if(south||(side&&z>=ROWS-4&&!north)){const ring1=x>=-1&&z>=-1&&x<=COLS&&z<=ROWS;if(z>ROWS+1||x<-2||x>COLS+1)continue;if(ring1){g.boxF(x,-.42,z,1,.48,1,shade(C('sand'),.97+h0*.06),31);if(h0<.12)g.ico(x+(h0-.06)*3,-.12,z,.17+h0,hex('#9aa6b2'),0,.7,0)}else if(h0>.3)g.boxF(x,-.47,z,1,.36,1,C('sand2'),31);continue}
+  const hh=HT[hk(x,z)],far=north?-z:Math.max(x<0?-x:x-COLS+1,0),lo=t=>nTop(x,z-1)<t-1e-3?1:0|0,sm=t=>(nTop(x,z-1)<t-1e-3?1:0)|(nTop(x,z+1)<t-1e-3?2:0)|(nTop(x-1,z)<t-1e-3?4:0)|(nTop(x+1,z)<t-1e-3?8:0);
+  g.boxF(x,(hh-.4)/2-.02,z,1,hh+.36,1,shade(rock,.9+h0*.15),sm(hh));g.boxF(x,hh-.03,z,1.001,.08,1.001,shade(grass,.86+h0*.1),16|sm(hh));
+  if(h0>.62&&far<=2){if(snowy&&hh>1.3)g.cyl(x+(h0-.8)*.6,hh+.36,z,.32,.72,6,shade(C('tree'),.85),.6,0);else g.ico(x+(h0-.8)*.6,hh+.22,z,.3,C('tree'),.6,.9,1)}
+  else if(h0<.18)g.ico(x+(h0-.09)*3,hh+.06,z,.16+h0,rock,0,.6,0)}
+ /* air terjun di hulu sungai */
+ if(T.src>=0){const x=T.src;g.box(x,.55,-3,1.2,1.9,1,shade(rock,.85));g.box(x,1.48,-3,1.2,.08,1,shade(grass,.86));for(let i=0;i<3;i++)gw.box(x-.25+i*.25,.58,-2.47,.22,1.84,.05,shade(wl,1-i*.04),0);gw.box(x,-.25,-2.25,.9,.08,.5,wl);for(let i=0;i<6;i++)g.ico(x+(hash(i,4)-.5)*.9,-.24,-2.2+hash(i,8)*.6,.1+hash(i,2)*.08,hex('#ffffff'),0,.6,0)}
+ /* pegunungan di cakrawala */
+ const mcol=hex(mixHex(P.tree,P.skyTop,.4)),mrock=hex(mixHex(P.dirt,P.skyTop,.35)),snow=hex('#f6fbff');
+ for(let i=0;i<11;i++){const x=-9+i*4+(rnd()-.5)*2.4,z=-6.2-rnd()*4.5,h=2.6+rnd()*3.6,r=2+rnd()*1.6;g.cyl(x,-.34+h/2,z,r,h,6,i%2?mcol:mrock,0,0,rnd()*3);if(snowy&&h>3.6)g.cyl(x,-.34+h*.84,z,r*.33,h*.32,6,snow,0,0,rnd()*3);else g.cyl(x,-.34+h*.8,z,r*.38,h*.4,6,shade(i%2?mcol:mrock,1.12),0,0,rnd()*3)}
+ for(const side of [-1,1])for(let i=0;i<4;i++){const x=side<0?-6.5-rnd()*2.5:COLS+5+rnd()*2.5,z=-2+i*3.4+rnd()*1.5,h=1.6+rnd()*2.2*(1-i/5),r=1.5+rnd();g.cyl(x,-.34+h/2,z,r,h,6,i%2?mrock:mcol,0,0,rnd()*3)}}
 
 /* ================= KONFIG TERTANAM (file siswa) ================= */
 const QS=new URLSearchParams(location.search),GID=(QS.get('g')||'').trim(),TEACHER_ENTRY=QS.has('guru')||/^#guru$/i.test(location.hash),WEB=/^https?:$/.test(location.protocol);
@@ -1179,7 +1259,7 @@ const gameReady=()=>missions.length>=MINM&&validCount()===missions.length;
 const isTree=(x,y)=>trees.some(p=>p[0]===x&&p[1]===y);
 const isBuilding=(x,y)=>buildings.some(b=>b.x===x&&b.y===y);
 function portalAt(x,y){for(let i=0;i<missions.length;i++){const p=SPOTS[i];if(p&&p[0]===x&&p[1]===y&&!completed[i])return i}return -1}
-function blocked(x,y){return x<0||y<0||x>=COLS||y>=ROWS||isTree(x,y)||isBuilding(x,y)||(x===NPC.x&&y===NPC.y)||(x===CHEST.x&&y===CHEST.y)||portalAt(x,y)>=0}
+function blocked(x,y){return x<0||y<0||x>=COLS||y>=ROWS||waterAt(x,y)||isTree(x,y)||isBuilding(x,y)||(x===NPC.x&&y===NPC.y)||(x===CHEST.x&&y===CHEST.y)||portalAt(x,y)>=0}
 const adj=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y)===1;
 function ensurePlayerFree(){if(!blocked(player.x,player.y))return;const q=[[player.x,player.y]],seen=new Set([player.x+','+player.y]);while(q.length){const [x,y]=q.shift();if(!blocked(x,y)){player={x,y};return}for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,k=nx+','+ny;if(nx<0||ny<0||nx>=COLS||ny>=ROWS||seen.has(k))continue;seen.add(k);q.push([nx,ny])}}player={...START}}
 function findPath(goals){const key=(x,y)=>x+','+y,goal=new Set(goals.map(g=>key(g[0],g[1]))),start=key(player.x,player.y);if(goal.has(start))return[];const prev=new Map([[start,null]]),q=[[player.x,player.y]];while(q.length){const [x,y]=q.shift();for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,k=key(nx,ny);if(prev.has(k)||blocked(nx,ny))continue;prev.set(k,key(x,y));if(goal.has(k)){const path=[];let c=k;while(c&&c!==start){const [px,py]=c.split(',').map(Number);path.unshift({x:px,y:py});c=prev.get(c)}return path}q.push([nx,ny])}}return null}
@@ -1245,6 +1325,8 @@ class Geo{constructor(){this.d=[]}
  quad(a,b,c,d,col,s,ctr){this.tri(a,b,c,col,s,ctr);this.tri(a,c,d,col,s,ctr)}
  box(x,y,z,w,h,dp,col,s=0,ry=0){const hw=w/2,hh=h/2,hd=dp/2,cs=Math.cos(ry),sn=Math.sin(ry);const P=(a,b,c)=>[x+a*cs+c*sn,y+b,z-a*sn+c*cs];const p=[P(-hw,-hh,-hd),P(hw,-hh,-hd),P(hw,hh,-hd),P(-hw,hh,-hd),P(-hw,-hh,hd),P(hw,-hh,hd),P(hw,hh,hd),P(-hw,hh,hd)],ct=[x,y,z];
   [[0,1,2,3],[5,4,7,6],[4,0,3,7],[1,5,6,2],[3,2,6,7],[4,5,1,0]].forEach(f=>this.quad(p[f[0]],p[f[1]],p[f[2]],p[f[3]],col,s,ct))}
+ boxF(x,y,z,w,h,dp,col,mask,s=0){if(!mask)return;const hw=w/2,hh=h/2,hd=dp/2,P=(a,b,c)=>[x+a,y+b,z+c];const p=[P(-hw,-hh,-hd),P(hw,-hh,-hd),P(hw,hh,-hd),P(-hw,hh,-hd),P(-hw,-hh,hd),P(hw,-hh,hd),P(hw,hh,hd),P(-hw,hh,hd)],ct=[x,y,z];
+  [[0,1,2,3],[5,4,7,6],[4,0,3,7],[1,5,6,2],[3,2,6,7],[4,5,1,0]].forEach((f,i)=>{if(mask&(1<<i))this.quad(p[f[0]],p[f[1]],p[f[2]],p[f[3]],col,s,ct)})}
  cyl(x,y,z,r,h,seg,col,s=0,rTop=r,off=0){const ct=[x,y,z],y0=y-h/2,y1=y+h/2;for(let i=0;i<seg;i++){const a0=off+i/seg*Math.PI*2,a1=off+(i+1)/seg*Math.PI*2;const b0=[x+Math.cos(a0)*r,y0,z+Math.sin(a0)*r],b1=[x+Math.cos(a1)*r,y0,z+Math.sin(a1)*r],t0=[x+Math.cos(a0)*rTop,y1,z+Math.sin(a0)*rTop],t1=[x+Math.cos(a1)*rTop,y1,z+Math.sin(a1)*rTop];
   if(rTop>0.0001)this.quad(b0,b1,t1,t0,col,s,ct);else this.tri(b0,b1,[x,y1,z],col,s,ct);this.tri([x,y0,z],b1,b0,col,s,ct);if(rTop>0.0001)this.tri([x,y1,z],t0,t1,col,s,ct)}}
  ico(x,y,z,r,col,s=0,sy=1,sub=1){const t=(1+Math.sqrt(5))/2;let V=[[-1,t,0],[1,t,0],[-1,-t,0],[1,-t,0],[0,-1,t],[0,1,t],[0,-1,-t],[0,1,-t],[t,0,-1],[t,0,1],[-t,0,-1],[-t,0,1]].map(v=>{const l=Math.hypot(...v);return v.map(c=>c/l)});
@@ -1261,13 +1343,14 @@ function initMeshes(){const mk=f=>{const g=new Geo();f(g);return g.build()};
 let STATIC=null,GLOW=null,FOG=[.8,.9,1];
 function buildWorld(){const P=palettes[theme]||palettes.cyber,g=new Geo(),gw=new Geo();const C=k=>hex(P[k]);
  const occupied=(x,z)=>isTree(x,z)||isBuilding(x,z)||(x===NPC.x&&z===NPC.y)||(x===CHEST.x&&z===CHEST.y)||TOUR50.some(p=>p[0]===x&&p[1]===z)||coinSpots.some(p=>p[0]===x&&p[1]===z)||(x===START.x&&z===START.y);
- for(let z=0;z<ROWS;z++)for(let x=0;x<COLS;x++){const path=z===PROW||x===PCOL,h=hash(x,z);let col=path?C('path'):(h<.5?C('ground'):C('ground2'));col=shade(col,.96+hash(z,x)*.08);g.box(x,-.07,z,1,.14,1,col);
+ const TR=terr(),topOf=(x,z)=>inGrid(x,z)?(TR.water.has(tk(x,z))?-9:tileH(x,z)):-9,sides=(x,z,top)=>(topOf(x,z-1)<top-1e-3?1:0)|(topOf(x,z+1)<top-1e-3?2:0)|(topOf(x-1,z)<top-1e-3?4:0)|(topOf(x+1,z)<top-1e-3?8:0);
+ for(let z=0;z<ROWS;z++)for(let x=0;x<COLS;x++){const path=z===PROW||x===PCOL,h=hash(x,z),wk=tk(x,z);if(TR.water.has(wk))continue;const th=tileH(x,z),sm=sides(x,z,th);let col=path?C('path'):(h<.5?C('ground'):C('ground2'));col=shade(col,.96+hash(z,x)*.08);
+  if(th>0){g.boxF(x,(th-.22)/2,z,1,th+.06,1,shade(C('dirt'),1.08+hash(x+1,z)*.08),sm);g.boxF(x,th-.04,z,1,.08,1,col,16|sm)}else g.boxF(x,-.07,z,1,.14,1,col,16|sm);
   if(path&&h<.35)g.box(x+(h-.17)*2,.005,z+(hash(z+3,x)-.5)*.6,.18,.03,.12,shade(C('path'),.82));
   if(x===0||z===0||x===COLS-1||z===ROWS-1)g.box(x,-.42,z,1,.56,1,C('dirt'));
-  if(!path&&!occupied(x,z)){if(h>.8){const fc=[hex('#ff6b9a'),hex('#ffd23f'),hex('#ffffff'),hex('#b388ff')][Math.floor(hash(x+9,z)*4)];for(let k=0;k<3;k++){const ox=(hash(x+k,z*2)-.5)*.7,oz=(hash(x*2,z+k)-.5)*.7;g.box(x+ox,.09,z+oz,.035,.18,.035,C('leaf2'),.7);g.box(x+ox,.2,z+oz,.11,.06,.11,fc,.7)}}
-   else if(h>.55){for(let k=0;k<3;k++){const ox=(hash(x+k*3,z)-.5)*.6,oz=(hash(x,z+k*5)-.5)*.6;g.box(x+ox,.06,z+oz,.04,.12+k*.03,.04,shade(C('ground'),.75),.8)}}}}
- for(let z=-2;z<=ROWS+1;z++)for(let x=-2;x<=COLS+1;x++){const inner=x>=0&&z>=0&&x<COLS&&z<ROWS;if(inner)continue;const ring1=x>=-1&&z>=-1&&x<=COLS&&z<=ROWS,h=hash(x+50,z+50);
-  if(ring1){g.box(x,-.42,z,1,.48,1,shade(C('sand'),.97+h*.06));if(h<.12)g.ico(x+(h-.06)*3,-.12,z,.17+h,hex('#9aa6b2'),0,.7,0)}else if(h>.3)g.box(x,-.47,z,1,.36,1,C('sand2'))}
+  if(!path&&!occupied(x,z)){if(h>.8){const fc=[hex('#ff6b9a'),hex('#ffd23f'),hex('#ffffff'),hex('#b388ff')][Math.floor(hash(x+9,z)*4)];for(let k=0;k<3;k++){const ox=(hash(x+k,z*2)-.5)*.7,oz=(hash(x*2,z+k)-.5)*.7;g.box(x+ox,th+.09,z+oz,.035,.18,.035,C('leaf2'),.7);g.box(x+ox,th+.2,z+oz,.11,.06,.11,fc,.7)}}
+   else if(h>.55){for(let k=0;k<3;k++){const ox=(hash(x+k*3,z)-.5)*.6,oz=(hash(x,z+k*5)-.5)*.6;g.box(x+ox,th+.06,z+oz,.04,.12+k*.03,.04,shade(C('ground'),.75),.8)}}}}
+ buildLandscape(g,gw,P,C);
  for(let z=ROWS+1;z<ROWS+4;z++){g.box(PCOL,-.2,z,1.1,.08,.95,hex('#a7784d'));g.box(PCOL+.45,-.4,z,.12,.5,.12,hex('#6e4b31'));g.box(PCOL-.45,-.4,z,.12,.5,.12,hex('#6e4b31'))}
  const deco=P.deco||'mix';trees.forEach(([x,z],i)=>{const hv=hash(x+3,z+7);g.cyl(x,.012,z,.42,.02,12,shade(C('ground'),.72));
   if(deco==='hedge'){g.box(x,.42,z,.86,.84,.86,C('tree'),.25);g.box(x,.9,z,.62,.14,.62,C('leaf2'),.25);return}
@@ -1310,11 +1393,11 @@ const COL={skin:hex('#f2c9a5'),shirt:hex('#3a7bff'),pants:hex('#26364f'),hair:he
 function resize(){const r=stage.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,innerWidth<700?1.5:2);const w=Math.max(1,Math.round(r.width*dpr)),h=Math.max(1,Math.round(r.height*dpr));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}if(R3D)gl.viewport(0,0,w,h)}
 let viewW=1,viewH=1;
 function setupCamera(dt){const r=stage.getBoundingClientRect();viewW=r.width;viewH=r.height;const asp=viewW/Math.max(1,viewH),C=CAMS[camMode];let off=C.off.slice();if(asp<1){const k=camMode===2?1.8:1.2;off=off.map(v=>v*k)}
- const tgt=C.fixed?C.fixed.slice():[rp.x,.35,rp.z];const eye=[tgt[0]+off[0],tgt[1]+off[1],tgt[2]+off[2]];const k=dt<0?1:1-Math.exp(-dt*4.5);for(let i=0;i<3;i++){cam.e[i]+=(eye[i]-cam.e[i])*k;cam.t[i]+=(tgt[i]-cam.t[i])*k}
+ const tgt=C.fixed?C.fixed.slice():[rp.x,.35+hAt(rp.x,rp.z)*.6,rp.z];const eye=[tgt[0]+off[0],tgt[1]+off[1],tgt[2]+off[2]];const k=dt<0?1:1-Math.exp(-dt*4.5);for(let i=0;i<3;i++){cam.e[i]+=(eye[i]-cam.e[i])*k;cam.t[i]+=(tgt[i]-cam.t[i])*k}
  persp(PJ,(asp<1?56:42)*Math.PI/180,asp,.1,160);lookAt(VW,cam.e,cam.t);mul(VP,PJ,VW);invert(IVP,VP);
  gl.uniformMatrix4fv(U.uVP,false,VP);gl.uniform3fv(U.uEye,cam.e);const dist=Math.hypot(off[0],off[1],off[2]);gl.uniform2f(U.uFogR,dist+12,dist+42);gl.uniform3fv(U.uFog,FOG)}
 function project(x,y,z){const v=[VP[0]*x+VP[4]*y+VP[8]*z+VP[12],VP[1]*x+VP[5]*y+VP[9]*z+VP[13],VP[3]*x+VP[7]*y+VP[11]*z+VP[15]];if(v[2]<=0.01)return null;return{x:(v[0]/v[2]*.5+.5)*viewW,y:(1-(v[1]/v[2]*.5+.5))*viewH}}
-function shadow(x,z,r,a=.22){const M=MT();compose(M,x,.018,z,0,0,0,r,.01,r);draw(MESH.disc,M,COL.shadow,0,a)}
+function shadow(x,z,r,a=.22,y=0){const M=MT();compose(M,x,y+.018,z,0,0,0,r,.01,r);draw(MESH.disc,M,COL.shadow,0,a)}
 const AV_ANIMAL=['kucing','beruang','panda','rubah','kelinci','penguin','dino'];
 const mkAv=(id,name,emoji,o)=>({id,name,emoji,sp:'manusia',style:'short',skin:'#f2c9a5',hair:'#2b2b3a',head:'#7b5be0',top:'#3a7bff',bottom:'#26364f',bag:'#ff8c42',...o});
 const AVATARS=[
@@ -1343,7 +1426,8 @@ const AVATARS=[
  mkAv('astronot','Astronot','🧑‍🚀',{sp:'astronot',skin:'#e8b896',head:'#ff8c42',top:'#f4f7fb',bottom:'#dfe6ef',bag:'#f4f7fb',style:'none'}),
  mkAv('ninja','Ninja Kode','🥷',{sp:'ninja',skin:'#e8b896',head:'#2d2d36',top:'#2d2d36',bottom:'#2d2d36',bag:'#ff5d6c',style:'none',scarf:true})];
 let customAvCache=null;
-function customAvatar(){const c=avatarCustom||{},sig=JSON.stringify(c);if(customAvCache&&customAvCache.sig===sig)return customAvCache.av;const acc=Array.isArray(c.acc)?c.acc:[];const av=mkAv('custom','Avatarku',(AV_SPECIES.find(x=>x[0]===c.sp)||['','🙂'])[1],{sp:c.sp||'manusia',style:c.style||'short',skin:c.skin||'#f2c9a5',hair:c.hair||'#2b2b3a',head:c.hair||'#7b5be0',top:c.top||'#3a7bff',bottom:c.bottom||'#26364f',bag:c.bag==null?'#ff8c42':c.bag});acc.forEach(k=>av[k]=true);customAvCache={sig,av};return av}
+function customAvatar(){const c=avatarCustom||{},sig=JSON.stringify(c);if(customAvCache&&customAvCache.sig===sig)return customAvCache.av;const av=avFromCustom(c,'custom','Avatarku');customAvCache={sig,av};return av}
+function avFromCustom(c,id,name){c=c||{};const ok=v=>typeof v==='string'&&/^#[0-9a-f]{6}$/i.test(v)?v:null;const acc=Array.isArray(c.acc)?c.acc:[];const av=mkAv(id,name,(AV_SPECIES.find(x=>x[0]===c.sp)||['','🙂'])[1],{sp:AV_SPECIES.some(x=>x[0]===c.sp)?c.sp:'manusia',style:String(c.style||'short').slice(0,10),skin:ok(c.skin)||'#f2c9a5',hair:ok(c.hair)||'#2b2b3a',head:ok(c.hair)||'#7b5be0',top:ok(c.top)||'#3a7bff',bottom:ok(c.bottom)||'#26364f',bag:c.bag===''?'':ok(c.bag)||'#ff8c42'});acc.forEach(k=>{if(AV_ACC.some(x=>x[0]===k))av[k]=true});return av}
 const avById=id=>id==='custom'&&avatarCustom?customAvatar():AVATARS.find(a=>a.id===id);
 const curAvatar=()=>avById(avatarId)||AVATARS[0];
 function drawAvatar(av,x,y,z,face,phase,moving,t){const c=av._c||(av._c=Object.fromEntries(Object.entries(av).filter(([k,v])=>typeof v==='string'&&v[0]==='#').map(([k,v])=>[k,hex(v)])));
@@ -1397,7 +1481,7 @@ function drawAvatar(av,x,y,z,face,phase,moving,t){const c=av._c||(av._c=Object.f
   else if(st==='hijab'||st==='hood'){const h=c.head;part(0,1.18,-.01,.46,.1,.42,h);part(0,.98,-.2,.46,.48,.06,h);part(-.215,.98,0,.05,.48,.38,h);part(.215,.98,0,.05,.48,.38,h);if(st==='hijab'){part(0,.79,.02,.47,.12,.42,h);part(0,.66,0,.5,.2,.34,h)}else part(0,.79,-.02,.44,.06,.4,shade(h,.85))}}
  if(av.phones){part(0,1.25,0,.46,.04,.07,dark);part(-.24,.98,0,.07,.15,.15,c.head);part(.24,.98,0,.07,.15,.15,c.head);part(-.24,1.1,0,.04,.15,.05,dark);part(.24,1.1,0,.04,.15,.05,dark)}
  if(av.crown){const g=H('#ffc83d'),y0=st==='afro'?1.36:sp==='kelinci'?1.25:1.27;part(0,y0,0,.32,.07,.32,g,0,null,.15);[[-.13,-.13],[.13,-.13],[-.13,.13],[.13,.13],[0,.16]].forEach(([xx,zz])=>part(xx,y0+.07,zz,.05,.08,.05,g,0,null,.15));part(0,y0+.01,.165,.05,.05,.01,H('#ff5d6c'),0,null,.4)}}
-function drawPlayer(t){drawAvatar(curAvatar(),rp.x,0,rp.z,rp.face,rp.phase,rp.moving,t)}
+function drawPlayer(t){drawAvatar(curAvatar(),rp.x,hAt(rp.x,rp.z),rp.z,rp.face,rp.phase,rp.moving,t)}
 function renderAvatarThumbs(){if(!R3D)return false;const cw=canvas.width,ch=canvas.height,S=Math.min(220,cw,ch);if(S<60)return false;
  const P=new Float32Array(16),V=new Float32Array(16),PV=new Float32Array(16);persp(P,30*Math.PI/180,1,.1,50);lookAt(V,[0,1.02,2.7],[0,.64,0]);mul(PV,P,V);
  gl.uniformMatrix4fv(U.uVP,false,PV);gl.uniform3fv(U.uEye,[0,1.02,2.7]);gl.uniform2f(U.uFogR,100,200);gl.uniform1f(U.uWave,0);gl.uniform1f(U.uWf,0);
@@ -1427,10 +1511,10 @@ function drawParticles(dt){parts=parts.filter(p=>(p.life-=dt)>0);for(const p of 
 function burst(x,y,z,col,n=14,sp=2.4){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,u=Math.random()*sp;parts.push({x,y,z,vx:Math.cos(a)*u,vy:2+Math.random()*3,vz:Math.sin(a)*u,life:.7+Math.random()*.6,size:.08+Math.random()*.08,col})}}
 function drawHighlight(t){const tg=currentTarget();if(!tg)return;const M=MT();const s=1+Math.sin(t*5)*.06;compose(M,tg.x,.03,tg.y,0,Math.PI/2,0,1.25*s,1.25*s,1.25*s);draw(MESH.torus,M,hex('#ffffff'),1,.85)}
 const labelBox=$('labels');let LBL={};
-function rebuildLabels(){labelBox.innerHTML='';floaters=[];LBL={you:mkLbl('Kamu','you'),npc:mkLbl('Prof. Byte','npc'),portals:missions.map((m,i)=>mkLbl(String(i+1),'portal'))}}
+function rebuildLabels(){labelBox.innerHTML='';floaters=[];LBL={you:mkLbl('Kamu','you'),npc:mkLbl('Prof. Byte','npc'),portals:missions.map((m,i)=>mkLbl(String(i+1),'portal'))};if(typeof PEERS!=='undefined')PEERS.forEach(q=>q.lbl=mkLbl(q.n,'peer'))}
 function mkLbl(text,cls){const d=document.createElement('div');d.className='lbl '+cls;d.textContent=text;labelBox.appendChild(d);return d}
 function place(el,x,y,z){const p=project(x,y,z);if(!p||p.x<-60||p.y<-60||p.x>viewW+60||p.y>viewH+60){el.style.display='none';return}el.style.display='';el.style.transform=`translate(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px) translate(-50%,-100%)`}
-function updateLabels(){if(!LBL.you)return;place(LBL.you,rp.x,1.62,rp.z);place(LBL.npc,NPC.x,1.75,NPC.y);const tg=currentTarget();LBL.npc.classList.toggle('near',!!tg&&tg.kind==='npc');LBL.npc.textContent=tg&&tg.kind==='npc'?'💬 Prof. Byte':'Prof. Byte';
+function updateLabels(){if(!LBL.you)return;placePeerLabels();place(LBL.you,rp.x,1.62+hAt(rp.x,rp.z),rp.z);place(LBL.npc,NPC.x,1.75,NPC.y);const tg=currentTarget();LBL.npc.classList.toggle('near',!!tg&&tg.kind==='npc');LBL.npc.textContent=tg&&tg.kind==='npc'?'💬 Prof. Byte':'Prof. Byte';
  LBL.portals.forEach((el,i)=>{const sp=SPOTS[i];if(!sp){el.style.display='none';return}const [x,z]=sp;el.classList.toggle('done',!!completed[i]);el.textContent=completed[i]?'✓':String(i+1);el.classList.toggle('near',!!tg&&tg.kind==='portal'&&tg.i===i);place(el,x,completed[i]?1.15:1.62,z)});
  floaters=floaters.filter(f=>{f.t+=1/60;if(f.t>1.2){f.el.remove();return false}const p=project(f.x,1.3+f.t*1.1,f.z);if(p){f.el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-100%)`;f.el.style.opacity=String(Math.min(1,(1.2-f.t)*3))}return true})}
 function floatText(x,z,text,color='#ffc83d'){if(!R3D)return;const el=document.createElement('div');el.className='floater';el.textContent=text;el.style.color=color;labelBox.appendChild(el);floaters.push({el,x,z,t:0})}
@@ -1469,8 +1553,8 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
  if(rp.targetFace!==undefined){let d=rp.targetFace-rp.face;while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;rp.face+=d*Math.min(1,dt*16)}
  if(!R3D)return;resize();mpi=0;curMesh=null;gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);setupCamera(dt);gl.uniform1f(U.uT,T);gl.uniform1f(U.uTf,T%628.3);
  gl.uniform1f(U.uWave,1);gl.uniform1f(U.uWf,1);draw(MESH.water,I4,hex((palettes[theme]||palettes.cyber).water),0,1);gl.uniform1f(U.uWave,0);gl.uniform1f(U.uWf,0);
- draw(STATIC,I4);draw(GLOW,I4,W1,.85);drawClouds(T);drawPortals(T);drawCoins(T);drawChest(T);drawNPC(T);drawPlayer(T);drawParticles(dt);
- gl.enable(gl.BLEND);gl.depthMask(false);shadow(rp.x,rp.z,.62,.25);coinSpots.forEach((p,i)=>{if(!collected.has(i))shadow(p[0],p[1],.32,.15)});drawPortalGlows(T);drawHighlight(T);gl.depthMask(true);gl.disable(gl.BLEND);
+ draw(STATIC,I4);draw(GLOW,I4,W1,.85);drawClouds(T);drawPortals(T);drawCoins(T);drawChest(T);drawNPC(T);drawPlayer(T);drawPeers(T,dt);drawParticles(dt);
+ gl.enable(gl.BLEND);gl.depthMask(false);shadow(rp.x,rp.z,.62,.25,hAt(rp.x,rp.z));drawPeerShadows();coinSpots.forEach((p,i)=>{if(!collected.has(i))shadow(p[0],p[1],.32,.15)});drawPortalGlows(T);drawHighlight(T);gl.depthMask(true);gl.disable(gl.BLEND);
  updateLabels()}
 
 /* ================= UI ================= */
@@ -1777,21 +1861,21 @@ function setExtract(msg,kind=''){const e=$('extractStatus');e.textContent=msg;e.
 function appendMaterial(label,text){const t=text.replace(/\u0000/g,'').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();const cur=$('material').value.trim();const isDefault=cur===defaultMaterial;$('material').value=(isDefault||!cur?'':cur+'\n\n')+'[Sumber: '+label+']\n'+t;updateWordCount();return t}
 function addLibrary(name,type,ref){if(!library.some(l=>l.name===name&&l.ref===ref)){library.push({name,type,ref});renderLibrary();save()}}
 let busy=false;
-async function handleFiles(files){if(busy||!files||!files.length)return;busy=true;$('pickFile').disabled=true;let ok=0;const fails=[];
- for(const f of files){setExtract('Membaca '+f.name+'...','busy');try{const t=await extractFile(f,msg=>setExtract(msg,'busy'));if(letters(t)<20)throw new Error('kosong');appendMaterial(f.name,t);addLibrary(f.name,'File',(f.type||f.name.split('.').pop().toUpperCase())+', '+Math.max(1,Math.round(f.size/1024))+' KB');ok++}catch(e){console.warn(e);fails.push(errText(e,f.name).replace(/\(kosong\)/,'(tidak ada teks yang terbaca)'))}}
+async function handleFiles(files){if(busy||!files||!files.length)return;busy=true;$('pickFile').disabled=true;let ok=0,lastSrc='';const fails=[];
+ for(const f of files){setExtract('Membaca '+f.name+'...','busy');try{const t=await extractFile(f,msg=>setExtract(msg,'busy'));if(letters(t)<20)throw new Error('kosong');appendMaterial(f.name,t);lastSrc=f.name;addLibrary(f.name,'File',(f.type||f.name.split('.').pop().toUpperCase())+', '+Math.max(1,Math.round(f.size/1024))+' KB');ok++}catch(e){console.warn(e);fails.push(errText(e,f.name).replace(/\(kosong\)/,'(tidak ada teks yang terbaca)'))}}
  busy=false;$('pickFile').disabled=false;$('fileInput').value='';
- if(ok&&!fails.length)setExtract('✓ '+ok+' file berhasil dibaca dan ditambahkan ke materi. Periksa teksnya, lalu tekan "Buat misi otomatis".','ok');else if(ok)setExtract('✓ '+ok+' file terbaca. Gagal: '+fails.join(' '),'err');else setExtract(fails.join(' '),'err')}
+ const auto=autoBuildOn();if(ok&&!fails.length)setExtract('✓ '+ok+' file berhasil dibaca dan ditambahkan ke materi.'+(auto?' Dunia dibuat otomatis sesuai mapelnya.':' Periksa teksnya, lalu tekan "Buat misi otomatis".'),'ok');else if(ok)setExtract('✓ '+ok+' file terbaca. Gagal: '+fails.join(' '),'err');else setExtract(fails.join(' '),'err');if(ok)autoFromSource(ok>1?ok+' file':lastSrc)}
 async function handleUrl(){if(busy)return;if(ONLINE){setExtract('Di link online, halaman tidak boleh mengambil isi situs lain (aturan keamanan). Unduh file materinya lalu pakai Unggah file, atau salin teksnya ke kotak di bawah. Fitur ambil dari link tetap jalan di file HTML guru.','err');return}const raw=$('sourceUrl').value;if(!raw.trim()){setExtract('Tempel link dulu di kolom sebelah tombol Ambil.','err');$('sourceUrl').focus();return}busy=true;$('fetchUrl').disabled=true;
- try{const r=await fetchUrlText(raw,msg=>setExtract(msg,'busy'));const host=new URL(r.url).hostname.replace(/^www\./,'');appendMaterial(host,r.text);addLibrary(($('topic').value.trim()||host),'Artikel / Website',r.url);setExtract('✓ Teks dari '+host+' ditambahkan ke materi ('+(r.text.match(/\S+/g)||[]).length.toLocaleString('id-ID')+' kata).','ok');$('sourceUrl').value=''}
+ try{const r=await fetchUrlText(raw,msg=>setExtract(msg,'busy'));const host=new URL(r.url).hostname.replace(/^www\./,'');appendMaterial(host,r.text);addLibrary(($('topic').value.trim()||host),'Artikel / Website',r.url);setExtract('✓ Teks dari '+host+' ditambahkan ke materi ('+(r.text.match(/\S+/g)||[]).length.toLocaleString('id-ID')+' kata).','ok');autoFromSource(host);$('sourceUrl').value=''}
  catch(e){console.warn(e);const m=String(e&&e.message||e);setExtract(m==='offline'?'Perangkat sedang offline. Mengambil materi dari link butuh internet.':m==='urlsalah'?'Link tidak valid. Periksa lagi alamatnya.':'Link tidak bisa dibaca. Pastikan halaman bisa dibuka tanpa login (untuk Google Drive/Docs: bagikan sebagai "Siapa saja yang memiliki link"). Alternatif: unduh filenya lalu unggah, atau salin teksnya ke kotak materi.','err')}
  busy=false;$('fetchUrl').disabled=false}
 function startNewWorld(list,msg){if(curWorld){const T=themeById(curWorld);if(T){theme=palettes[T.tema]?T.tema:theme;worldTitle=T.dunia;if(R3D)buildWorld()}}missions=list.slice(0,MAXM).map(fixMission);completed=missions.map(()=>false);wrongs=missions.map(()=>0);xp=0;coins=0;right=0;wrong=0;steps=0;player={...START};collected=new Set();chest=false;chestLid=0;startedAt=0;finishedAt=0;finished=false;shown.xp=null;shown.coins=null;refreshSpots();snapPlayer();rebuildLabels();renderWorldHeader();renderAll();renderEditorSelect();checkReady();save();if(msg)$('studioMessage').textContent=msg}
 function generate(){const sub=$('subject').value.trim()||'Informatika',text=$('material').value.trim(),target=+$('autoCount').value||15;autoCount=target;const r=buildQuestions(text,target,sub);
- theme=$('theme').value==='auto'?autoTheme(sub):$('theme').value;worldTitle=(palettes[theme]||palettes.cyber).name;if(R3D)buildWorld();
+ theme=$('theme').value==='auto'?themeForSource(sub,text):$('theme').value;worldTitle=(palettes[theme]||palettes.cyber).name;if(R3D)buildWorld();
  let msg=r.fromText+' misi dibuat dari materi'+(r.fromBank?' dan '+r.fromBank+' misi diambil dari bank soal '+r.pack:'')+'. Periksa dan sunting soal di Mission Editor sebelum dipakai.';if(r.list.length<target)msg+=' Materi dan bank soal hanya cukup untuk '+r.list.length+' misi. Tambah materi atau tulis sisanya secara manual.';
  startNewWorld(varyTypes(r.list,sub+'|'+($('topic').value||'')+'|'+r.list.length),msg);setView('play');if(R3D)setupCamera(-1);toast('✦ Dunia '+worldTitle+' siap dengan '+missions.length+' misi','purple')}
 async function blankSlots(){if(missions.some(m=>m.q.trim())&&!(await confirmBox('Ganti semua misi yang ada dengan 15 slot kosong?',{ok:'Ganti',danger:true})))return;const list=Array.from({length:MINM},(_,i)=>({title:'Misi '+(i+1),q:'',a:['','','',''],c:0,ex:'',skill:'',src:'manual'}));startNewWorld(list,'15 slot kosong siap diisi. Pilih misi di Mission Editor, isi soalnya, lalu tekan Simpan. Game bisa dimainkan setelah semua slot lengkap.');$('editMission').value='0';loadEditor();toast('✍️ 15 slot misi kosong dibuat','purple');if(innerWidth<900)$('editMission').scrollIntoView({behavior:'smooth',block:'center'})}
-const V5_MSG='Misi berisi jenis soal baru (benar/salah, isian, susun, urutkan, pasangkan), jadi Apps Script perlu versi 5. Salin kode versi 5 di atas, tempel menggantikan semua kode lama, ganti KUNCI_GURU, simpan, lalu Terapkan → Kelola deployment → ✏️ Edit → Versi baru → Terapkan.';
+const V5_MSG='Misi berisi jenis soal baru (benar/salah, isian, susun, urutkan, pasangkan), jadi Apps Script perlu versi 6. Salin kode versi 6 di atas, tempel menggantikan semua kode lama, ganti KUNCI_GURU, simpan, lalu Terapkan → Kelola deployment → ✏️ Edit → Versi baru → Terapkan.';
 const TPL_HEAD=['No','Judul Misi','Pertanyaan','Opsi A','Opsi B','Opsi C','Opsi D','Jawaban Benar','Penjelasan','Kompetensi','Jenis Soal'];
 const rowOf=(m,i)=>{const t=qType(m),a=t==='bs'?[]:(m.a||[]).map(x=>t==='pasang'?splitPair(x).join(' = '):x);return[i+1,m.title,m.q,a[0]||'',a[1]||'',a[2]||'',a[3]||'',keyCode(m),m.ex||'',m.skill||'',QT_LABEL[t]]};
 function downloadTemplate(){const ex=[
@@ -1843,7 +1927,7 @@ const detailRows=r=>r.details.map(d=>[fmtTime(r.time),r.name,r.kelas||'',d.no,d.
 function excelFor(recs,fname){const rk=[REKAP_HEAD,...recs.map(rekapRow)],dt=[DETAIL_HEAD];recs.forEach(r=>dt.push(...detailRows(r)));download(makeXlsx([{name:'Rekap',rows:rk,widths:[19,24,9,9,9,16,24,18,11,13,11,8,11,8,7,7,13,12,14]},{name:'Detail',rows:dt,widths:[19,24,9,8,18,26,50,26,12,12,14]}]),fname)}
 
 /* ================= GOOGLE SHEETS ================= */
-const GAS_CODE=`/** EDUPLAY: server misi + dunia per kelas + penerima hasil siswa (versi 5) */
+const GAS_CODE=`/** EDUPLAY: server misi + dunia per kelas + penerima hasil siswa (versi 6) */
 
 // 1) GANTI kunci di bawah dengan kata sandi Anda sendiri. Jangan dibagikan ke siswa.
 var KUNCI_GURU = 'GANTI_DENGAN_KUNCI_RAHASIA';
@@ -1857,15 +1941,16 @@ var MAKS = 50;
 function doGet(e) {
   var p = (e && e.parameter) || {};
   if (p.a === 'misi') return json_(misiUntukSiswa_());
-  if (p.a === 'versi') return json_({ ok: true, v: 5 });
+  if (p.a === 'versi') return json_({ ok: true, v: 6 });
   if (p.a === 'dunia') return json_(duniaUntukSiswa_(String(p.id || '')));
   if (p.a === 'daftar') return json_(daftarDunia_());
   if (p.d) return catatLink_(p.d);
-  return halaman_('✓ EDUPLAY siap menerima hasil (versi 5).');
+  return halaman_('✓ EDUPLAY siap menerima hasil (versi 6).');
 }
 
 function doPost(e) {
   var data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+  if (data.a === 'posisi') return json_(posisi_(data));
   if (data.a === 'simpanMisi') return json_(kunci_(data.kunci, function () { return simpanMisi_(data.cfg); }));
   if (data.a === 'ambilMisi') return json_(kunci_(data.kunci, function () { return { ok: true, cfg: bacaMisi_() }; }));
   if (data.a === 'simpanDunia') return json_(kunci_(data.kunci, function () { return simpanDunia_(data.id, data.missions); }));
@@ -1876,6 +1961,32 @@ function doPost(e) {
     if (data.detail && data.detail.length) tulis_(ss, 'Detail', DETAIL, data.detail);
     return 'ok';
   }, false);
+}
+
+// ---------- Posisi pemain: siswa di dunia yang sama saling melihat ----------
+function posisi_(d) {
+  var w = String(d.w || '').slice(0, 60), id = String(d.id || '').slice(0, 40);
+  if (!w || !id) return { ok: false, error: 'Data posisi tidak lengkap.' };
+  var cache = CacheService.getScriptCache(), key = 'ruang_' + Utilities.base64EncodeWebSafe(w).slice(0, 200), now = Date.now(), room = {};
+  var lock = LockService.getScriptLock();
+  if (lock.tryLock(4000)) {
+    try {
+      room = JSON.parse(cache.get(key) || '{}');
+      var lama = room[id] || {}, e = String(d.e || '').slice(0, 4);
+      room[id] = { n: String(d.n || 'Teman').slice(0, 18), av: String(d.av || '').slice(0, 300), x: d.x | 0, y: d.y | 0, s: d.s | 0, e: e || lama.e || '', et: e ? now : (lama.et || 0), t: now };
+      Object.keys(room).forEach(function (k) { if (now - room[k].t > 20000) delete room[k]; });
+      var ids = Object.keys(room);
+      if (ids.length > 60) ids.sort(function (a, b) { return room[a].t - room[b].t; }).slice(0, ids.length - 60).forEach(function (k) { delete room[k]; });
+      cache.put(key, JSON.stringify(room), 120);
+    } finally { lock.releaseLock(); }
+  } else room = JSON.parse(cache.get(key) || '{}');
+  var out = [];
+  Object.keys(room).forEach(function (k) {
+    if (k === id) return;
+    var r = room[k];
+    out.push({ id: k, n: r.n, av: r.av, x: r.x, y: r.y, s: r.s, e: r.e, ea: r.et ? now - r.et : 99999 });
+  });
+  return { ok: true, p: out };
 }
 
 // ---------- Misi ----------
@@ -2021,7 +2132,7 @@ function duniaUntukSiswa_(id) {
 function daftarDunia_() {
   var all = bacaSemuaDunia_(), out = {};
   Object.keys(all).forEach(function (id) { if (all[id].length >= 15) out[id] = { n: Math.min(MAKS, all[id].length), h: sidik_({ missions: all[id].slice(0, MAKS) }) }; });
-  return { ok: true, v: 5, dunia: out };
+  return { ok: true, v: 6, dunia: out };
 }
 
 function pack_(obj, id) {
@@ -2102,7 +2213,7 @@ async function sendRecords(recs,line){if(!sheetUrl||!recs.length)return;if(ONLIN
 function resendPending(line){const p=history.filter(r=>!r.sent);if(p.length)sendRecords(p,line)}
 function saveSheetUrl(){const u=$('sheetUrl').value.trim().replace(/\s+/g,'');$('sheetUrl').value=u;if(u&&!/^https:\/\/script\.google(usercontent)?\.com\//.test(u)){setSendLine($('sheetStatus'),'URL harus berupa alamat Apps Script yang diawali https://script.google.com/... dan berakhiran /exec.','err');return false}sheetUrl=u;save();renderHistory();setSendLine($('sheetStatus'),u?(ONLINE?'URL tersimpan di link ini. Tekan "Terbitkan ke link ini" supaya siswa ikut memakai URL ini, lalu cek versi script.':'URL tersimpan. Tekan "Kirim data uji", lalu "Cek versi script".'):'URL dihapus. Hasil hanya disimpan di perangkat dan bisa diunduh sebagai Excel.',u?'ok':'');return true}
 function openExternal(url){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}
-function checkScript(){if(!saveSheetUrl()||!sheetUrl){setSendLine($('sheetStatus'),'Isi URL Aplikasi Web dulu.','err');return}openExternal(sheetUrl);setSendLine($('sheetStatus'),'Tab baru dibuka. Harus tertulis "siap menerima hasil (versi 5)". Jika tidak ada tulisan versi 5, kode Apps Script belum diperbarui atau belum diterapkan sebagai versi baru.','busy')}
+function checkScript(){if(!saveSheetUrl()||!sheetUrl){setSendLine($('sheetStatus'),'Isi URL Aplikasi Web dulu.','err');return}openExternal(sheetUrl);setSendLine($('sheetStatus'),'Tab baru dibuka. Harus tertulis "siap menerima hasil (versi 6)". Jika tidak ada tulisan versi 6, kode Apps Script belum diperbarui atau belum diterapkan sebagai versi baru.','busy')}
 async function testSheet(){if(!saveSheetUrl()||!sheetUrl){if(!sheetUrl)setSendLine($('sheetStatus'),'Isi URL Aplikasi Web dulu.','err');return}const now=Date.now();const rec={id:'UJI-'+now.toString(36),time:now,name:'Data uji (boleh dihapus)',kelas:'-',absen:'',grade:$('grade').value,subject:$('subject').value,topic:$('topic').value,world:worldTitle,n:1,first:1,wrong:0,score:100,acc:100,xp:0,level:1,coins:0,duration:0,device:deviceId,details:[{no:1,title:'Uji koneksi',skill:'-',q:'-',key:'-',wrongs:0,first:true}]};
  if(ONLINE){openExternal(sheetLink(rec));setSendLine($('sheetStatus'),'Tab baru dibuka. Jika tertulis "Hasil Data uji ... sudah tercatat", koneksi berhasil. Pastikan kode Apps Script sudah versi 2.','ok');return}
  setSendLine($('sheetStatus'),'Mengirim data uji...','busy');try{await postSheet(rec);setSendLine($('sheetStatus'),'✓ Data uji terkirim. Buka Google Sheet Anda: jika ada baris "Data uji" di sheet Rekap, koneksi berhasil.','ok')}catch(e){setSendLine($('sheetStatus'),'Gagal mengirim. Periksa internet dan pastikan akses deployment "Siapa saja".','err')}}
@@ -2122,7 +2233,7 @@ const PAGES_BASE='https://rouffadilah.github.io/eduverse/';let CONFIG_GID='';
 function scriptId(){const m=(sheetUrl||'').match(/\/macros\/s\/([\w-]+)\/exec/);return m?m[1]:''}
 function siteBase(){return WEB&&!ONLINE?location.origin+location.pathname:PAGES_BASE}
 function studentLinkFor(){const id=scriptId();if(!id)return'';return CONFIG_GID&&CONFIG_GID===id?siteBase():siteBase()+'?g='+id}
-async function srvPost(body){const r=await fetchT(sheetUrl,40000,{method:'POST',body:JSON.stringify(body)});const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error('Balasan dari Apps Script tidak dikenali. Pastikan kode versi 5 sudah diterapkan sebagai versi baru dan aksesnya "Siapa saja".')}if(!j.ok)throw new Error(j.error||'Gagal');return j}
+async function srvPost(body){const r=await fetchT(sheetUrl,40000,{method:'POST',body:JSON.stringify(body)});const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error('Balasan dari Apps Script tidak dikenali. Pastikan kode versi 6 sudah diterapkan sebagai versi baru dan aksesnya "Siapa saja".')}if(!j.ok)throw new Error(j.error||'Gagal');return j}
 function getTKey(){const k=$('teacherKey').value.trim();try{if(k)sessionStorage.setItem('ev-tkey',k)}catch(e){}return k}
 function showStudentLink(){const l=studentLinkFor(),id=scriptId();$('srvLinkRow').hidden=!l;if(l)$('studentLink').value=l;$('teacherLink').textContent=siteBase()+'?guru';$('cfgHint').hidden=!id||CONFIG_GID===id;if(id)$('cfgJson').textContent=JSON.stringify({g:id})}
 async function readSiteConfig(){if(!WEB||ONLINE)return'';try{const r=await fetchT('config.json?t='+Date.now(),8000);if(!r.ok)return'';const j=await r.json();const v=String(j.g||j.url||'');const m=v.match(/\/macros\/s\/([\w-]+)\/exec/);return m?m[1]:(/^[\w-]{20,}$/.test(v)?v:'')}catch(e){return''}}
@@ -2247,7 +2358,7 @@ const PK_SUBJ={Informatika:'Informatika',KKA:'Koding dan Kecerdasan Artifisial'}
 let THEMES=null,themesLoading=null,pkMapel='Semua',pkKelas='Semua';const pkPicked=new Set();
 function loadThemes(){if(THEMES)return Promise.resolve(THEMES);if(!themesLoading)themesLoading=(async()=>{try{const bin=Uint8Array.from(atob(THEME_Z),c=>c.charCodeAt(0));THEMES=JSON.parse(new TextDecoder().decode(await inflate(bin,'deflate-raw')))}catch(e){console.warn(e);THEMES=[]}return THEMES})();return themesLoading}
 function themeById(id){return(THEMES||[]).find(t=>t.id===id)}
-function worldStory(){const T=(THEMES||[]).find(t=>t.dunia===worldTitle);return T?T.cerita:''}
+function worldStory(){const T=(THEMES||[]).find(t=>t.dunia===worldTitle);if(T)return T.cerita;const tp=$('topic').value.trim();return tp&&worldTitle!=='Algorithm Island'?'Selamat datang di '+worldTitle+'! Buka setiap portal, jawab tantangannya, dan kuasai materi '+tp+'.':''}
 function pkLevel(k){return LEVELS[gradeLevel('Kelas '+k)]}
 function pkSky(t){const P=palettes[t.tema]||palettes.cyber;return skyFor(P,pkLevel(t.kelas).time)}
 async function renderPaket(){const grid=$('pkGrid');if(!grid||isStudent())return;if(!THEMES){grid.innerHTML='<p class="small muted">Memuat paket tema...</p>';await loadThemes()}
@@ -2378,7 +2489,7 @@ async function regenWorld(){if(!curWorld)return;const n=+$('wcN').value||MINM,T=
  startNewWorld(defaultMissions(curWorld,n).map(m=>({...m,src:'paket'})),n+' misi disusun dari '+T.missions.length+' soal Bab '+T.bab+' dengan jenis soal yang beragam. Periksa di Mission Editor, lalu terbitkan dunia ini.');renderWorldCtx();toast('✦ '+n+' misi siap','purple')}
 async function editWorld(id){if(curWorld===id){$('editMission').scrollIntoView({behavior:'smooth',block:'center'});return}const ok=await applyWorld(id);if(!ok)return;const t=themeById(id);$('studioMessage').textContent='Mengatur misi '+t.dunia+' ('+t.mapel+' Kelas '+t.kelas+' Bab '+t.bab+'). Sunting, tambah, atau hapus misi di Mission Editor (maksimal '+MAXM+'), lalu terbitkan dunia ini ke link siswa.';toast((palettes[theme]||palettes.cyber).emoji+' Mengatur '+t.dunia,'purple');$('worldCtx').scrollIntoView({behavior:'smooth',block:'start'})}
 
-/* --- guru: terbitkan misi per dunia ke Apps Script versi 5 --- */
+/* --- guru: terbitkan misi per dunia ke Apps Script versi 6 --- */
 async function srvVersion(){try{const r=await fetchT(sheetUrl+'?a=versi&t='+Date.now(),15000);const j=await r.json();return +j.v||0}catch(e){return 0}}
 function dirtyWorlds(){return Object.keys(OV).filter(id=>OV[id]&&OV[id].dirty)}
 async function publishWorlds(ids){if(ONLINE)return;const line=$('srvStatus');
@@ -2388,7 +2499,7 @@ async function publishWorlds(ids){if(ONLINE)return;const line=$('srvStatus');
  if(curWorld)saveWorldState();
  for(const id of ids){const o=OV[id];if(o&&o.m&&(o.m.length<MINM||!o.m.map(fixMission).every(missionValid))){const t=themeById(id);setSendLine(line,(t?t.dunia:id)+' belum siap: butuh minimal '+MINM+' misi yang lengkap.','err');return}}
  setSendLine(line,'Memeriksa versi Apps Script...','busy');const v=await srvVersion();
- if(v<5){setSendLine(line,v>=4?V5_MSG:'Apps Script di spreadsheet masih versi lama. Salin kode versi 5 di atas, tempel menggantikan semua kode lama, ganti KUNCI_GURU, simpan, lalu Terapkan → Kelola deployment → ✏️ Edit → Versi baru → Terapkan.','err');return}
+ if(v<5){setSendLine(line,v>=4?V5_MSG:'Apps Script di spreadsheet masih versi lama. Salin kode versi 6 di atas, tempel menggantikan semua kode lama, ganti KUNCI_GURU, simpan, lalu Terapkan → Kelola deployment → ✏️ Edit → Versi baru → Terapkan.','err');return}
  let n=0;$('srvPublish').disabled=true;
  try{for(const id of ids){const o=OV[id],t=themeById(id);setSendLine(line,'Menerbitkan '+(t?t.dunia:id)+' ('+(n+1)+' dari '+ids.length+')...','busy');
    if(o&&o.m)await srvPost({a:'simpanDunia',kunci,id,missions:o.m});else await srvPost({a:'hapusDunia',kunci,id});
@@ -2400,7 +2511,7 @@ async function publishCurrentWorld(){if(!curWorld)return;saveWorldState();const 
  if(!(await confirmBox('Terbitkan '+missions.length+' misi '+worldTitle+' ke link siswa?'+(o&&o.m?'':' Dunia ini memakai soal bawaan, jadi siswa mendapat soal bawaan.'),{title:'Terbitkan dunia',ok:'🌐 Terbitkan'})))return;
  if(!OV[curWorld])OV[curWorld]={m:null,dirty:true};else OV[curWorld].dirty=true;await publishWorlds([curWorld])}
 async function pullWorld(id){if(!saveSheetUrl()||!scriptId()){setSendLine($('srvStatus'),'Isi URL Apps Script dulu.','err');return}setSendLine($('srvStatus'),'Mengambil dunia dari spreadsheet...','busy');
- try{const r=await fetchT(sheetUrl+'?a=dunia&id='+encodeURIComponent(id)+'&t='+Date.now(),20000);let j;try{j=await r.json()}catch(e){throw new Error('Apps Script masih versi lama. Perbarui ke versi 5.')}if(!j.ok)throw new Error(j.error||'Gagal');
+ try{const r=await fetchT(sheetUrl+'?a=dunia&id='+encodeURIComponent(id)+'&t='+Date.now(),20000);let j;try{j=await r.json()}catch(e){throw new Error('Apps Script masih versi lama. Perbarui ke versi 6.')}if(!j.ok)throw new Error(j.error||'Gagal');
   if(j.kosong){setSendLine($('srvStatus'),'Spreadsheet belum punya misi khusus untuk dunia ini. Siswa memakai soal bawaan.','ok');return}
   const c=unpackCfg(JSON.stringify({id:j.id,z:j.z}));if(!(await confirmBox('Ganti misi '+worldTitle+' dengan '+c.missions.length+' misi dari spreadsheet?',{ok:'Ambil misi'})))return;
   startNewWorld(c.missions,c.missions.length+' misi diambil dari spreadsheet.');saveWorldState();if(OV[id])OV[id].dirty=false;saveOV();renderWorldCtx();setSendLine($('srvStatus'),'✓ '+c.missions.length+' misi diambil dari spreadsheet.','ok')}
@@ -2513,6 +2624,81 @@ function avTab(make){$('avTabPick').classList.toggle('on',!make);$('avTabMake').
 function bindAvatarMaker(){$('avTabPick').addEventListener('click',()=>avTab(false));$('avTabMake').addEventListener('click',()=>avTab(true));$('avRandom').addEventListener('click',avRandom);
  $('avOpts').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b)avSet(b.dataset.k,b.dataset.v)});
  let drag=null;const pv=$('avPrev');pv.addEventListener('pointerdown',e=>{drag={x:e.clientX,f:+(pv.dataset.face||.5)};pv.setPointerCapture(e.pointerId)});pv.addEventListener('pointermove',e=>{if(!drag)return;pv.dataset.face=(drag.f+(e.clientX-drag.x)/40).toFixed(2);renderAvatarThumbs()});pv.addEventListener('pointerup',()=>drag=null)}
+/* ================= BERTEMU TEMAN DI DUNIA (posisi dibagikan lewat Apps Script guru, versi 6) ================= */
+const PEERS=new Map(),PEER_AV={};let peerBusy=false,peerOn=null,peerCheckAt=0,myEmote='',myEmoteUntil=0,peerGreeted=new Set(),peerLast=0,peerRoomNow='';
+function peerUrl(){if(!isStudent())return'';if(SERVER)return SERVER_URL;return /script\.google\.com\/macros\/s\/[\w-]+\/exec/.test(sheetUrl||'')?sheetUrl:''}
+function peerRoom(){return String((curWorld||('guru-'+(CFG.id||'')))+'|'+(student.kelas||'')).slice(0,60)}
+function avSpec(){return avatarId==='custom'&&avatarCustom?JSON.stringify(avatarCustom).slice(0,300):avatarId}
+function peerAv(spec){if(PEER_AV[spec])return PEER_AV[spec];let av=null;if(spec&&spec[0]==='{'){try{av=avFromCustom(JSON.parse(spec),'peer','Teman')}catch(e){}}if(!av)av=AVATARS.find(a=>a.id===spec)||AVATARS[0];return PEER_AV[spec]=av}
+async function peerReady(){if(peerOn!==null)return peerOn;const u=peerUrl();if(!u){peerOn=false;return false}if(Date.now()<peerCheckAt)return false;peerCheckAt=Date.now()+30000;
+ try{const r=await fetchT(u+'?a=versi&t='+Date.now(),15000);const j=await r.json();peerOn=(+j.v||0)>=6}catch(e){return false}renderPeerHud();return peerOn}
+async function peerTick(force){if(peerBusy||document.hidden||currentView!=='play'||!student.name||!gameReady()||!picked&&isStudent()&&!EMBED)return;if(!force&&Date.now()-peerLast<2600)return;if(!(await peerReady()))return;peerBusy=true;peerLast=Date.now();
+ const room=peerRoom();if(room!==peerRoomNow){clearPeers();peerRoomNow=room}
+ const body={a:'posisi',w:room,id:deviceId,n:peerName(),av:avSpec(),x:player.x,y:player.y,s:completed.filter(Boolean).length,e:myEmote};myEmote='';
+ try{const r=await fetchT(peerUrl(),15000,{method:'POST',body:JSON.stringify(body)});const j=await r.json();if(j&&j.ok&&room===peerRoom())peerUpdate(j.p||[])}catch(e){}finally{peerBusy=false}}
+function peerName(){const p=String(student.name||'').trim().split(/\s+/);return(p[0]+(p[1]?' '+p[1][0]+'.':'')).slice(0,18)}
+function peerUpdate(list){const now=performance.now(),seen=new Set();
+ for(const p of list){if(!p||!p.id||p.id===deviceId)continue;seen.add(p.id);let q=PEERS.get(p.id);const x=Math.max(0,Math.min(COLS-1,p.x|0)),z=Math.max(0,Math.min(ROWS-1,p.y|0));
+  if(!q){const r=seedRng('teman|'+p.id);q={id:p.id,ox:(r()-.5)*.5,oz:(r()-.5)*.5,rx:x+0,rz:z+0,face:0,phase:0,moving:false,lbl:null};PEERS.set(p.id,q);if(!peerGreeted.has(p.id)){peerGreeted.add(p.id);toast('👋 '+String(p.n||'Teman')+' ada di dunia ini','purple')}}
+  q.n=String(p.n||'Teman');q.x=x+q.ox;q.z=z+q.oz;q.s=p.s|0;q.av=peerAv(String(p.av||''));if(p.e&&(+p.ea||0)<7000){q.emote=String(p.e).slice(0,4);q.emoteUntil=now+7000-(+p.ea||0)}
+  if(!q.lbl)q.lbl=mkLbl(q.n,'peer')}
+ for(const [id,q] of PEERS)if(!seen.has(id)){if(q.lbl)q.lbl.remove();PEERS.delete(id)}renderPeerHud()}
+function clearPeers(){for(const q of PEERS.values())if(q.lbl)q.lbl.remove();PEERS.clear();renderPeerHud()}
+function drawPeers(t,dt){for(const q of PEERS.values()){const dx=q.x-q.rx,dz=q.z-q.rz,d=Math.hypot(dx,dz);if(d>.04){const st=Math.min(d,(d>4?d*1.5:3.2)*dt);q.rx+=dx/d*st;q.rz+=dz/d*st;q.face=Math.atan2(dx,dz);q.phase+=dt*10;q.moving=true}else{q.rx=q.x;q.rz=q.z;q.moving=false}
+ drawAvatar(q.av,q.rx,hAt(q.rx,q.rz),q.rz,q.face,q.phase,q.moving,t+q.rx)}}
+function drawPeerShadows(){for(const q of PEERS.values())shadow(q.rx,q.rz,.55,.2,hAt(q.rx,q.rz))}
+function placePeerLabels(){const now=performance.now();for(const q of PEERS.values()){if(!q.lbl)continue;const near=Math.hypot(q.rx-rp.x,q.rz-rp.z)<1.6,em=q.emoteUntil>now?q.emote+' ':'';const txt=em+q.n+(q.s?' · '+q.s+'✓':'');if(q.lbl.textContent!==txt)q.lbl.textContent=txt;q.lbl.classList.toggle('near',near);q.lbl.classList.toggle('emote',!!em);place(q.lbl,q.rx,1.62+hAt(q.rx,q.rz),q.rz)}
+ if(LBL.you){const em=myEmoteUntil>now;const t=em?'👋 Kamu':'Kamu';if(LBL.you.textContent!==t)LBL.you.textContent=t}}
+function renderPeerHud(){const c=$('peerChip'),w=$('waveBtn');if(!c)return;const on=!!peerOn&&isStudent();c.hidden=!on;w.hidden=!on;if(!on)return;const n=PEERS.size;c.textContent='👥 '+n;c.title=n?'Teman di dunia ini: '+[...PEERS.values()].map(q=>q.n).join(', '):'Belum ada teman lain di dunia ini';c.classList.toggle('has',n>0)}
+function wave(){myEmote='👋';myEmoteUntil=performance.now()+6000;SFX.talk();peerTick(true);setTimeout(()=>{if(myEmote)peerTick(true)},1500)}
+function bindPeers(){setInterval(()=>peerTick(false),1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)peerTick(true)});$('waveBtn').addEventListener('click',wave);$('peerChip').addEventListener('click',()=>toast(PEERS.size?'Teman di dunia ini: '+[...PEERS.values()].map(q=>q.n).join(', '):'Belum ada teman lain di dunia ini. Ajak temanmu memilih dunia yang sama.'))}
+/* ================= SUMBER APA PUN → DUNIA SESUAI MAPEL ================= */
+const MAPEL_KW={
+ 'Informatika':['algoritma','pemrograman','komputer','jaringan komputer','internet','perangkat keras','perangkat lunak','hardware','software','bilangan biner','biner','python','scratch','sistem operasi','basis data','database','enkripsi','keamanan siber','siber','informasi digital','variabel','perulangan','percabangan','router','protokol','alamat ip','tcp/ip','server','aplikasi','spreadsheet','mesin pencari','pengurutan','struktur data','berpikir komputasional','dekomposisi','abstraksi','literasi digital','prosesor','memori','hoaks','algorithm','programming','computer','network','encryption','informatika'],
+ 'Koding dan Kecerdasan Artifisial':['kecerdasan artifisial','kecerdasan buatan','artificial intelligence','machine learning','pembelajaran mesin','deep learning','jaringan saraf','neural network','dataset','pelatihan model','model ai','prompt','chatbot','generatif','robotika','robot','sensor','arduino','mikrokontroler','computer vision','klasifikasi data','prediksi','bias algoritma','large language model','llm','koding'],
+ 'Matematika':['persamaan','pertidaksamaan','fungsi','turunan','integral','matriks','vektor','trigonometri','sinus','kosinus','peluang','statistika','logaritma','eksponen','barisan','deret','limit','aljabar','geometri','segitiga','lingkaran','himpunan','polinomial','kuadrat','teorema','pythagoras','transformasi geometri','komposisi fungsi','fungsi invers','equation','derivative','probability','matematika'],
+ 'Fisika':['gaya','energi kinetik','energi potensial','usaha','momentum','kecepatan','percepatan','gelombang','listrik','medan magnet','hukum newton','termodinamika','optik','gravitasi','tekanan','fluida','kalor','arus listrik','tegangan','hambatan','gerak lurus','gerak parabola','impuls','elastisitas','frekuensi','lensa','cermin','joule','radiasi','velocity','acceleration','fisika'],
+ 'Kimia':['atom','molekul','unsur','senyawa','reaksi kimia','ikatan kimia','ikatan kovalen','ikatan ion','larutan','asam','basa','stoikiometri','elektron','proton','neutron','tabel periodik','oksidasi','reduksi','redoks','hidrokarbon','laju reaksi','kesetimbangan kimia','termokimia','koloid','elektrolit','isotop','konfigurasi elektron','katalis','molecule','chemical','kimia'],
+ 'Biologi':['sel','organisme','ekosistem','fotosintesis','genetika','dna','rna','kromosom','evolusi','jaringan tumbuhan','jaringan hewan','bakteri','virus','metabolisme','enzim','respirasi','makhluk hidup','keanekaragaman hayati','mitosis','meiosis','sistem pencernaan','peredaran darah','sistem saraf','hormon','reproduksi','tumbuhan','hewan','mutasi','bioteknologi','protista','jamur','rantai makanan','photosynthesis','organism','ecosystem','biologi'],
+ 'Sejarah':['kerajaan','kolonial','penjajahan','kemerdekaan','proklamasi','perang','revolusi','peradaban','prasejarah','hindu-buddha','hindu buddha','voc','hindia belanda','pendudukan jepang','pahlawan','sumpah pemuda','pergerakan nasional','orde baru','reformasi','majapahit','sriwijaya','mataram','kesultanan','sumber sejarah','historiografi','nasionalisme','kingdom','colonial','empire','sejarah'],
+ 'Geografi':['peta','litosfer','atmosfer','hidrosfer','biosfer','iklim','cuaca','gunung api','vulkanisme','gempa bumi','tektonik','kependudukan','demografi','bentang alam','mitigasi bencana','bencana alam','daerah aliran sungai','sumber daya alam','pemetaan','penginderaan jauh','sistem informasi geografis','garis lintang','garis bujur','kartografi','curah hujan','pedosfer','climate','volcano','geografi'],
+ 'Ekonomi':['pasar','permintaan','penawaran','harga keseimbangan','uang','perbankan','inflasi','pajak','apbn','produksi','konsumsi','distribusi','akuntansi','koperasi','kelangkaan','pendapatan nasional','ekspor','impor','investasi','saham','kebijakan moneter','kebijakan fiskal','badan usaha','ketenagakerjaan','pengangguran','market','demand','supply','ekonomi'],
+ 'Sosiologi':['masyarakat','interaksi sosial','kelompok sosial','norma sosial','nilai sosial','stratifikasi','mobilitas sosial','konflik sosial','perubahan sosial','sosialisasi','lembaga sosial','penyimpangan sosial','integrasi sosial','kearifan lokal','struktur sosial','pemberdayaan komunitas','sosiologi'],
+ 'Pendidikan Pancasila':['pancasila','uud 1945','undang-undang dasar','demokrasi','hak asasi manusia','warga negara','kewarganegaraan','konstitusi','nkri','bhinneka tunggal ika','lembaga negara','norma hukum','mpr','dpr','mahkamah konstitusi','otonomi daerah','wawasan nusantara','ideologi','musyawarah','ppkn'],
+ 'Bahasa Indonesia':['teks','paragraf','kalimat utama','puisi','cerpen','novel','majas','teks eksposisi','argumentasi','teks eksplanasi','negosiasi','debat','hikayat','unsur intrinsik','unsur ekstrinsik','gagasan utama','kata baku','ejaan','pantun','drama','resensi','anekdot','laporan hasil observasi','editorial','struktur teks','kaidah kebahasaan','amanat','bahasa indonesia'],
+ 'Bahasa Inggris':['tense','simple present','past tense','present perfect','passive voice','reported speech','noun','verb','adjective','adverb','conditional sentence','descriptive text','narrative text','recount text','procedure text','report text','explanation text','analytical exposition','vocabulary','grammar','pronoun','preposition','bahasa inggris'],
+ 'Pendidikan Agama Islam':["al-qur'an",'al-quran','al quran','alquran','hadis','hadits','iman','ibadah','akhlak','salat','shalat','zakat','puasa','haji','fikih','fiqih','tauhid','sirah','nabi','rasulullah','ayat','surah','tajwid','sunnah','muamalah','dakwah','asmaul husna','malaikat','hari akhir','takdir','wudu','syariat','akidah','pendidikan agama islam'],
+ 'Seni Budaya':['seni rupa','seni musik','seni tari','teater','lukisan','karya seni','nada','irama','tempo','melodi','harmoni','koreografi','pameran','patung','ornamen','batik','alat musik','gamelan','apresiasi seni','seni budaya'],
+ 'PJOK':['olahraga','kebugaran','sepak bola','bola voli','bola basket','atletik','renang','pencak silat','senam','teknik dasar','pemanasan','kebugaran jasmani','pjok'],
+ 'Prakarya dan Kewirausahaan':['kewirausahaan','wirausaha','kerajinan','pengolahan pangan','budidaya','peluang usaha','pemasaran','kemasan produk','modal usaha','prakarya']};
+const MAPEL_RX={};for(const [k,list] of Object.entries(MAPEL_KW))MAPEL_RX[k]=list.map(w=>[w,new RegExp('(^|[^a-z0-9])'+w.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')+'(?=$|[^a-z0-9])','g'),w.includes(' ')?2.2:1]);
+const EN_STOP=/\b(the|and|of|to|is|are|was|were|in|that|it|with|for|this|which|on|as|by|be)\b/g;
+function detectSubject(text){const t=' '+String(text||'').toLowerCase().slice(0,120000)+' ',words=(t.match(/[a-z]+/g)||[]).length||1,sc={},hits={};
+ for(const [k,list] of Object.entries(MAPEL_RX)){let s=0,d=0;const h=[];for(const [w,rx,wt] of list){rx.lastIndex=0;const n=Math.min(6,(t.match(rx)||[]).length);if(n){s+=n*wt;d++;h.push([w,n])}}sc[k]=s*(1+d/8);hits[k]=h.sort((a,b)=>b[1]-a[1]).map(x=>x[0])}
+ const en=(t.match(EN_STOP)||[]).length/words;if(en>.12)sc['Bahasa Inggris']+=en*60;
+ const r=Object.entries(sc).sort((a,b)=>b[1]-a[1]),[best,bs]=r[0],second=r[1]?r[1][1]:0;return{subject:bs>0?best:'',score:bs,conf:bs/(bs+second||1),hits:hits[best]||[],english:en>.12}}
+function themeForSource(sub,text){const s=String(sub||'').toLowerCase(),t=String(text||'').toLowerCase().slice(0,60000),has=re=>re.test(t);
+ if(/kecerdasan|koding|kka/.test(s))return has(/etika|bias|privasi|hak cipta/)&&!has(/robot|sensor|arduino/)?'etika':has(/data|dataset|basis data/)&&!has(/robot/)?'data':'robot';
+ if(/informatika/.test(s)){if(has(/jaringan|router|protokol|tcp|wi-?fi|lan\b/))return'jaringan';if(has(/keamanan|siber|enkripsi|malware|phishing|kata sandi/))return'benteng';if(has(/analisis data|visualisasi|dataset|pandas|grafik data/))return'data';if(has(/perangkat keras|prosesor|motherboard|sistem komputer|cpu/))return'mesin';if(has(/hoaks|penelusuran|mesin pencari|literasi digital/))return'fakta';if(has(/algoritma|pengurutan|pencarian biner|struktur data/))return'labirin';if(has(/python|pemrograman|kode program|\bc\+\+/))return'kode';if(has(/spreadsheet|pengolah kata|presentasi|aplikasi perkantoran/))return'kantor';return'cyber'}
+ if(/matematika/.test(s))return'math';if(/fisika/.test(s))return has(/planet|tata surya|bintang|galaksi|orbit|astronomi/)?'antariksa':'science';if(/kimia/.test(s))return'science';if(/biologi/.test(s))return has(/rawa|perairan|ikan|plankton|mangrove/)?'rawa':'forest';
+ if(/sejarah/.test(s))return'history';if(/geografi/.test(s))return'pulau';if(/ekonomi|kewirausahaan|prakarya/.test(s))return'pasar';if(/sosiologi/.test(s))return'desa';if(/pancasila|ppkn|kewarganegaraan/.test(s))return'etika';if(/bahasa/.test(s))return'language';if(/agama|islam/.test(s))return'desa';if(/seni/.test(s))return'studio';if(/pjok|olahraga/.test(s))return'pulau';return autoTheme(sub)}
+const TOPIC_SKIP=/^(nama|kelas|semester|tahun|sekolah|mata pelajaran|mapel|guru|penyusun|alokasi|kompetensi|tujuan|capaian|modul|halaman|page|url source|published|markdown content|daftar isi|kata pengantar|identitas|fase|jenjang|kurikulum|\[sumber|copyright|hak cipta|isbn)/i;
+function detectTopic(label,text){const lines=String(text||'').split(/\n/).map(x=>x.replace(/^[#>*\-\s]+/,'').replace(/\*\*/g,'').trim()).filter(Boolean);
+ for(const l of lines.slice(0,60)){let m=l.match(/^title:\s*(.+)/i)||l.match(/^(?:bab|materi|topik|judul|chapter|unit)\s*[:\-–]?\s*(?:[0-9IVXLC]+\b)?\s*[:.\-–]?\s*(.{4,80})$/i);if(m&&!TOPIC_SKIP.test(m[1]))return niceTitle(m[1])}
+ for(const l of lines.slice(0,40)){const w=l.split(/\s+/).length;if(l.length<6||l.length>80||w<2||w>11||TOPIC_SKIP.test(l)||/[.:;?]$/.test(l)&&w>6||/^\d|https?:|@|\|/.test(l))continue;if((l.match(/[A-Za-zÀ-ÿ]/g)||[]).length<l.length*.6)continue;return niceTitle(l)}
+ return niceTitle(String(label||'').replace(/\.[a-z0-9]{2,5}$/i,'').replace(/[_-]+/g,' '))}
+function niceTitle(s){s=String(s||'').replace(/\s*[-|–]\s*(wikipedia|youtube|blogspot|kompas|detik).*$/i,'').replace(/\s+/g,' ').trim().slice(0,70);if(s&&s===s.toUpperCase())s=s.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()).replace(/ (Dan|Di|Ke|Dari|Yang|Untuk|Pada|Dengan|Atau|Dalam|Sebagai) /g,m=>m.toLowerCase());return s}
+function detectGrade(text){const t=String(text||'').slice(0,20000);let m=t.match(/kelas\s*(XII|XI|X|12|11|10)\b/i);if(m){const v=m[1].toUpperCase();return'SMA Kelas '+({'10':'X','11':'XI','12':'XII'}[v]||v)}m=t.match(/\bfase\s*([EF])\b/i);if(m)return m[1].toUpperCase()==='E'?'SMA Kelas X':'SMA Kelas XI';return''}
+let autoSrcTimer=0;
+function autoBuildOn(){const c=$('autoBuild');return!!c&&c.checked}
+function autoFromSource(label){if(!autoBuildOn()||mode!=='auto'||isStudent())return;clearTimeout(autoSrcTimer);autoSrcTimer=setTimeout(()=>runAutoWorld(label),350)}
+function applySourceDetection(label){const all=$('material').value,parts=all.split(/\n?\[Sumber: [^\]]*\]\n/),last=parts[parts.length-1]||all,d=detectSubject(all),info=[];
+ if(d.subject&&d.score>=5&&d.conf>=.55){setField('subject',d.subject);info.push('mapel <b>'+escapeHTML(d.subject)+'</b> (kata kunci: '+escapeHTML(d.hits.slice(0,4).join(', '))+')')}else info.push('mapel tidak terdeteksi dengan yakin, tetap memakai <b>'+escapeHTML($('subject').value||'Informatika')+'</b>');
+ const tp=detectTopic(label,last);if(tp){setField('topic',tp);info.push('topik <b>'+escapeHTML(tp)+'</b>')}
+ const gr=detectGrade(all);if(gr){ensureGradeOption(gr);setField('grade',gr);info.push('<b>'+gr+'</b>')}
+ const el=$('detectInfo');if(el){el.hidden=false;el.innerHTML='🔎 Terdeteksi: '+info.join(' · ')+'.'}return d}
+function runAutoWorld(label){if(busy)return;const words=($('material').value.match(/\S+/g)||[]).length;if(words<25){setExtract('Teks yang terbaca baru '+words+' kata. Tambahkan sumber lain agar dunia bisa dibuat.','err');return}applySourceDetection(label);generate();const P=palettes[theme]||palettes.cyber;toast('✦ Dunia '+P.emoji+' '+worldTitle+' dibuat dari '+label,'purple')}
+function bindSumber(){const c=$('autoBuild');try{c.checked=localStorage.getItem('eduverse-autobuild')!=='0'}catch(e){}c.addEventListener('change',()=>{try{localStorage.setItem('eduverse-autobuild',c.checked?'1':'0')}catch(e){}})}
 
 /* ================= LIBRARY ================= */
 function renderLibrary(){$('libraryList').innerHTML=library.length?library.map((s,i)=>`<div class="quest" style="grid-template-columns:36px 1fr auto;align-items:center"><div class="num" style="background:var(--lagoon)">📘</div><div><b>${escapeHTML(s.name)}</b><div class="sub">${escapeHTML(s.type)}${s.ref?' — '+escapeHTML(s.ref):''}</div></div><button class="small danger" data-del-lib="${i}">Hapus</button></div>`).join(''):'<div class="empty">Belum ada sumber. File dan link yang dibaca di Teacher Studio akan tercatat di sini.</div>';document.querySelectorAll('[data-del-lib]').forEach(b=>b.addEventListener('click',()=>{library.splice(+b.dataset.delLib,1);renderLibrary();save()}))}
@@ -2566,7 +2752,7 @@ $('blankBtn').addEventListener('click',blankSlots);$('templateBtn').addEventList
 $('importBtn').addEventListener('click',()=>$('importInput').click());$('importInput').addEventListener('change',e=>importMissions(e.target.files[0]));
 ['grade','subject','topic','genre'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='grade'&&R3D)buildWorld();renderWorldHeader();save()}));
 $('theme').addEventListener('change',()=>{const v=$('theme').value;if(v==='auto'||!palettes[v])return;const old=(palettes[theme]||palettes.cyber).name;theme=v;if(worldTitle===old)worldTitle=palettes[v].name;if(R3D)buildWorld();renderWorldHeader();save()});
-bindPaket();bindMusic();bindAvatarMaker();bindDunia();
+bindPaket();bindMusic();bindAvatarMaker();bindPeers();bindSumber();bindDunia();
 $('editMission').addEventListener('change',loadEditor);
 $('edPrev').addEventListener('click',()=>{const s=$('editMission');s.value=String(Math.max(0,+s.value-1));loadEditor()});
 $('edNext').addEventListener('click',()=>{const s=$('editMission');s.value=String(Math.min(missions.length-1,+s.value+1));loadEditor()});
