@@ -4,8 +4,8 @@ Game belajar 3D berbasis browser. Siswa membuka **satu link tetap**, dan misinya
 
 ## Link
 
-- **Link siswa:** `https://rouffadilah.github.io/eduverse/` (setelah `config.json` dibuat)
-- **Pintu guru:** `https://rouffadilah.github.io/eduverse/?guru` (Teacher Studio dikunci PIN, jangan dibagikan)
+- **Link siswa:** `https://rouffadilah.github.io/eduplay/` (setelah `config.json` dibuat)
+- **Pintu guru:** `https://rouffadilah.github.io/eduplay/?guru` (Teacher Studio dikunci PIN, jangan dibagikan)
 
 ## Persiapan sekali saja
 
