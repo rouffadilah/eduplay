@@ -26,6 +26,16 @@ Setiap kali kode Apps Script diganti: **Terapkan → Kelola deployment → Edit 
 
 Mode otomatis: unggah file (PDF, Word, PowerPoint, Excel, OpenDocument, EPUB, HTML, TXT/Markdown/CSV, RTF, JSON, subtitle, ZIP berisi dokumen, foto lewat OCR) atau tempel link dari situs mana pun (termasuk Wikipedia, Google Docs/Slides/Sheets/Drive, YouTube). EDUPLAY mengenali mapel dari isi sumber (Informatika, KKA, Matematika, Fisika, Kimia, Biologi, Sejarah, Geografi, Ekonomi, Sosiologi, Pendidikan Pancasila, Bahasa Indonesia, Bahasa Inggris, PAI, Seni Budaya, PJOK, Prakarya), juga topik dan kelas, lalu langsung membuat dunia dengan tema yang cocok. Matikan centang **Langsung buat dunia** jika ingin memeriksa teksnya dulu.
 
+Bank soal bawaan juga tersedia untuk Geografi, Ekonomi, Sosiologi, Pendidikan Pancasila/PPKn, Bahasa Indonesia, PAI, Seni Budaya, PJOK, dan Prakarya. Pilih nama mapel di Teacher Studio; misi otomatis melengkapi soal yang berhasil dibuat dari materi dengan bank soal mapel tersebut.
+
+## Struktur berkas
+
+- `index.html` memuat kerangka halaman dan semua tampilan aplikasi.
+- `assets/css/base.css` berisi gaya dasar bersama; `assets/css/pages/` memisahkan gaya permainan, Teacher Studio, hasil, dan bantuan.
+- `assets/js/main.js` menjalankan aplikasi dan navigasi antartampilan; `assets/js/questions.js` berisi bank soal dan pemetaan mata pelajaran.
+
+EDUPLAY tetap berupa satu aplikasi halaman tunggal: navigasi permainan, Teacher Studio, hasil, dan bantuan mengganti tampilan tanpa membuka dokumen HTML terpisah.
+
 ## Jenis soal, musik, dan avatar
 
 - **8 jenis soal:** pilihan ganda, benar/salah, pilih semua yang tepat, isian (ketik jawaban), susun huruf, susun kata, urutkan, dan pasangkan. Guru memilih jenisnya di Mission Editor atau di kolom **Jenis Soal** pada template Excel (lihat sheet Petunjuk).
