@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101b35"><meta name="description" content="EDUPLAY — ruang belajar interaktif, game edukasi, dan analitik pembelajaran.">
+<title>EDUPLAY — Learning Hub</title>
+<style>
+:root{--navy:#101b35;--navy2:#182747;--ink:#24314b;--muted:#71809a;--bg:#f4f7fc;--white:#fff;--line:#e6ebf3;--green:#27b58a;--blue:#5888ef;--violet:#8b70e8;--orange:#f2a84b;--shadow:0 14px 40px #1c31500d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}.shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.side{background:var(--navy);color:#e9efff;padding:26px 18px;display:flex;flex-direction:column;gap:30px}.brand{display:flex;align-items:center;gap:11px;padding:0 10px}.brandmark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#31c99a,#558cf4);display:grid;place-items:center;font-size:23px}.brand b{font-size:20px;letter-spacing:.06em}.brand small{display:block;color:#9eafd0;font-size:10px;letter-spacing:.15em}.navlabel{color:#788aaa;text-transform:uppercase;font-size:10px;font-weight:800;letter-spacing:.14em;padding:0 12px;margin-bottom:8px}.nav{display:grid;gap:6px}.nav a{padding:11px 13px;border-radius:12px;color:#aebbd3;display:flex;gap:12px;align-items:center;font-weight:650}.nav a:hover,.nav a.active{background:#ffffff13;color:white}.nav a.active{box-shadow:inset 3px 0 #39c99a}.nav .ic{width:22px;text-align:center}.sidefoot{margin-top:auto;border:1px solid #ffffff1a;background:#ffffff0a;border-radius:15px;padding:14px;color:#aebbd3;font-size:12px}.sidefoot b{display:block;color:white;margin-bottom:4px}.main{min-width:0;padding:28px clamp(18px,4vw,48px) 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}.crumb{color:var(--muted);font-size:13px}.crumb b{color:var(--ink)}.profile{display:flex;align-items:center;gap:10px}.avatar{width:39px;height:39px;border-radius:50%;background:#dff7ef;color:#18845f;display:grid;place-items:center;font-weight:800}.profile small{display:block;color:var(--muted);font-size:11px}.hero{background:linear-gradient(115deg,#17294b,#233e68 60%,#276d70);border-radius:24px;padding:30px 34px;color:white;display:flex;align-items:center;justify-content:space-between;gap:20px;overflow:hidden;position:relative;box-shadow:var(--shadow)}.hero:after{content:"✦";position:absolute;font-size:220px;color:#ffffff0b;right:18%;top:-100px}.eyebrow{color:#80e5c4;font-size:11px;letter-spacing:.16em;font-weight:800;text-transform:uppercase}.hero h1{font-size:clamp(26px,3.4vw,39px);line-height:1.12;margin:9px 0 10px;max-width:620px}.hero p{margin:0;color:#c5d2e9;max-width:550px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:11px;font-weight:750;border:1px solid transparent}.btn.primary{background:#35c79a;color:#082f2b}.btn.ghost{border-color:#ffffff45;color:white;background:#ffffff0b}.hero-art{font-size:92px;filter:drop-shadow(0 12px 14px #0003);z-index:1;padding:0 24px}.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:28px 0 14px}.sectionhead h2{font-size:19px;margin:0}.sectionhead p{margin:3px 0 0;color:var(--muted);font-size:12px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:18px}.stat,.panel,.module{background:var(--white);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.stat{padding:17px}.stathead{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.staticon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#edf3ff;font-size:16px}.stat strong{display:block;font-size:26px;margin-top:7px;letter-spacing:-.04em}.stat small{color:var(--muted);font-size:11px}.contentgrid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}.panel{padding:20px}.panel h3{margin:0 0 14px;font-size:15px}.course{display:flex;align-items:center;gap:13px;padding:12px 0;border-top:1px solid var(--line)}.course:first-of-type{border-top:0}.courseicon{width:43px;height:43px;border-radius:13px;display:grid;place-items:center;font-size:21px;background:#edf5ff}.courseinfo{flex:1;min-width:0}.courseinfo b{display:block;font-size:13px}.courseinfo small{color:var(--muted);font-size:11px}.progress{height:7px;border-radius:10px;background:#edf0f6;margin-top:8px;overflow:hidden}.progress i{height:100%;display:block;border-radius:10px;background:var(--green)}.pct{font-size:12px;color:var(--muted);font-weight:750}.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.module{padding:17px;transition:.2s}.module:hover{transform:translateY(-3px);box-shadow:0 16px 34px #1c315015}.moduleicon{font-size:25px;margin-bottom:12px}.module b{display:block;font-size:13px}.module p{font-size:11px;color:var(--muted);margin:5px 0 12px;min-height:34px}.module a{font-size:11px;font-weight:800;color:#268f76}.notice{background:#fff8e9;border:1px solid #f5e5bd;color:#86632b;padding:12px 14px;border-radius:12px;font-size:12px;margin-top:18px}.hide{display:none!important}.mobilemenu{display:none;border:0;background:white;border-radius:10px;padding:8px 12px}
+@media(max-width:1000px){.shell{grid-template-columns:210px 1fr}.stats{grid-template-columns:repeat(2,1fr)}.contentgrid{grid-template-columns:1fr}.modules{grid-template-columns:repeat(2,1fr)}.hero-art{font-size:70px;padding:0}}
+@media(max-width:700px){.shell{display:block}.side{position:fixed;z-index:5;inset:0 auto 0 0;width:260px;transform:translateX(-105%);transition:.2s;box-shadow:20px 0 50px #0003}.side.open{transform:translateX(0)}.mobilemenu{display:block}.main{padding:18px 15px 36px}.top{margin-bottom:18px}.hero{padding:24px 20px}.hero-art{display:none}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:23px}.modules{grid-template-columns:1fr 1fr}.sectionhead{margin-top:23px}}
+@media(max-width:390px){.modules{grid-template-columns:1fr}.profile .who{display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side" id="sidebar">
+ <div class="brand"><div class="brandmark">✦</div><div><b>EDUPLAY</b><small>LEARNING HUB</small></div></div>
+ <div><div class="navlabel">Workspace</div><nav class="nav">
+  <a class="active" href="#overview"><span class="ic">⌂</span>Ringkasan</a>
+  <a href="#learning"><span class="ic">▣</span>Ruang Belajar</a>
+  <a href="index.html"><span class="ic">🎮</span>Game Adventure 3D</a>
+  <a href="#assessment"><span class="ic">☑</span>Asesmen & CBT</a>
+  <a href="#analytics"><span class="ic">▥</span>Analitik Belajar</a>
+ </nav></div>
+ <div><div class="navlabel">Pengelolaan</div><nav class="nav">
+  <a href="#teacher"><span class="ic">♧</span>Teacher Studio</a>
+  <a href="#classes"><span class="ic">▤</span>Kelas & Siswa</a>
+  <a href="#library"><span class="ic">▧</span>Perpustakaan</a>
+ </nav></div>
+ <div class="sidefoot"><b>Mode pratinjau</b>Portal ini adalah fondasi UI. Login, database, dan sinkronisasi server belum diaktifkan.</div>
+</aside>
+<main class="main" id="overview">
+ <header class="top"><div style="display:flex;align-items:center;gap:12px"><button class="mobilemenu" id="menu" aria-label="Buka menu">☰</button><div class="crumb">EDUPLAY / <b>Ringkasan</b></div></div><div class="profile"><div class="avatar">EP</div><div class="who"><b style="font-size:12px">Learning Hub</b><small>Portal pembelajaran</small></div></div></header>
+ <section class="hero"><div><div class="eyebrow">✦ Learn · Play · Explore · Achieve</div><h1>Belajar lebih seru,<br>bertumbuh setiap hari.</h1><p>Satu ruang untuk menjelajah materi, menyelesaikan tantangan, mengikuti asesmen, dan melihat perkembangan belajar.</p><div class="hero-actions"><a class="btn primary" href="index.html">▶ Jelajahi Game 3D</a><a class="btn ghost" href="#learning">Lihat ruang belajar →</a></div></div><div class="hero-art" aria-hidden="true">🚀</div></section>
+ <section class="stats" aria-label="Statistik ringkasan">
+  <div class="stat"><div class="stathead"><span>Aktivitas belajar</span><span class="staticon">📚</span></div><strong>—</strong><small>Menunggu integrasi akun</small></div>
+  <div class="stat"><div class="stathead"><span>Misi diselesaikan</span><span class="staticon">🎯</span></div><strong>—</strong><small>Data game belum tersinkron</small></div>
+  <div class="stat"><div class="stathead"><span>Rata-rata nilai</span><span class="staticon">📈</span></div><strong>—</strong><small>Menunggu data asesmen</small></div>
+  <div class="stat"><div class="stathead"><span>Pencapaian</span><span class="staticon">🏅</span></div><strong>—</strong><small>Reward akan ditampilkan di sini</small></div>
+ </section>
+ <div class="sectionhead" id="learning"><div><h2>Ruang belajar</h2><p>Akses cepat ke pengalaman inti EDUPLAY.</p></div></div>
+ <section class="modules">
+  <article class="module"><div class="moduleicon">🌍</div><b>Adventure Learning 3D</b><p>Jelajahi dunia, buka portal, dan jawab misi pembelajaran.</p><a href="index.html">BUKA GAME →</a></article>
+  <article class="module" id="assessment"><div class="moduleicon">🧠</div><b>Asesmen & CBT</b><p>Ruang ujian, latihan soal, dan evaluasi berbasis kompetensi.</p><a href="index.html#view-results">LIHAT MODUL →</a></article>
+  <article class="module" id="teacher"><div class="moduleicon">🧑‍🏫</div><b>Teacher Studio</b><p>Rancang materi, misi, bank soal, dan aktivitas kelas.</p><a href="index.html">BUKA STUDIO →</a></article>
+  <article class="module" id="classes"><div class="moduleicon">👥</div><b>Kelas & Siswa</b><p>Kelola rombongan belajar dan pantau partisipasi siswa.</p><a href="#roadmap">DALAM PENGEMBANGAN →</a></article>
+  <article class="module" id="library"><div class="moduleicon">📖</div><b>Perpustakaan Digital</b><p>Tempat materi, referensi, dan sumber belajar terkurasi.</p><a href="index.html">BUKA PERPUSTAKAAN →</a></article>
+  <article class="module" id="analytics"><div class="moduleicon">📊</div><b>Learning Analytics</b><p>Ringkasan capaian, kompetensi, dan rekomendasi belajar.</p><a href="#roadmap">DALAM PENGEMBANGAN →</a></article>
+ </section>
+ <div class="sectionhead"><div><h2>Contoh jalur pembelajaran</h2><p>Konten awal yang disiapkan untuk Informatika dan KKA SMA.</p></div></div>
+ <section class="contentgrid">
+  <div class="panel"><h3>Jalur belajar pilihan</h3>
+   <div class="course"><div class="courseicon">💻</div><div class="courseinfo"><b>Informatika — Kelas X</b><small>Berpikir komputasional · Sistem komputer · Algoritma</small><div class="progress"><i style="width:0%"></i></div></div><span class="pct">0%</span></div>
+   <div class="course"><div class="courseicon">🤖</div><div class="courseinfo"><b>Koding & Kecerdasan Artifisial — Kelas XI</b><small>Logika pemrograman · Data · AI</small><div class="progress"><i style="width:0%"></i></div></div><span class="pct">0%</span></div>
+   <div class="course"><div class="courseicon">🧩</div><div class="courseinfo"><b>Informatika — Kelas XII</b><small>Arsitektur aplikasi · Analisis · Proyek</small><div class="progress"><i style="width:0%"></i></div></div><span class="pct">0%</span></div>
+  </div>
+  <div class="panel" id="roadmap"><h3>Prioritas pengembangan</h3>
+   <div class="course"><div class="courseicon">1️⃣</div><div class="courseinfo"><b>Fondasi & pengalaman pengguna</b><small>Dashboard responsif, navigasi, dan stabilitas game</small></div></div>
+   <div class="course"><div class="courseicon">2️⃣</div><div class="courseinfo"><b>Akun dan manajemen kelas</b><small>Autentikasi, role, kelas, dan keanggotaan</small></div></div>
+   <div class="course"><div class="courseicon">3️⃣</div><div class="courseinfo"><b>Data pembelajaran terpusat</b><small>Materi, asesmen, nilai, dan analitik</small></div></div>
+  </div>
+ </section>
+ <div class="notice"><b>Catatan implementasi:</b> angka statistik dan progres belum diisi dengan data contoh agar tidak menimbulkan kesan bahwa siswa sungguhan sudah tercatat. Tahap berikutnya adalah menghubungkan autentikasi dan database (misalnya Supabase), lalu memindahkan data secara terkontrol dari penyimpanan lokal yang sudah ada.</div>
+</main>
+</div>
+<script>
+const menu=document.getElementById('menu'),side=document.getElementById('sidebar');
+menu?.addEventListener('click',()=>side.classList.toggle('open'));
+side.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>side.classList.remove('open')));
+</script>
+</body></html>
