@@ -389,7 +389,7 @@ function buildWorld(){const P=palettes[theme]||palettes.cyber,g=new Geo(),gw=new
   g.box(x,.29,z+.462,.29,.5,.045,door);
   g.box(x+.09,.3,z+.489,.018,.018,.018,hex('#ffc83d'));
   for(const wx of [-.25,.25]){g.box(x+wx,.62,z+.46,.21,.22,.04,trim);g.box(x+wx,.62,z+.486,.15,.16,.02,C('window'));g.box(x+wx,.62,z+.5,.018,.16,.012,shade(trim,1.2));g.box(x+wx,.62,z+.5,.16,.018,.012,shade(trim,1.2))}
-  g.box(x-.37,.78,z+.48,.045,.13,.045,shade(C('roof'),1.3));gw.ico(x-.37,.7,z+.5,.065,C('gold'),.7,1,1);
+  g.box(x-.37,.78,z+.48,.045,.13,.045,shade(C('roof'),1.3));gw.ico(x-.37,.7,z+.5,.065,hex('#ffc83d'),.7,1,1);
   for(const dx of [-.58,.58]){g.box(x+dx,.14,z+.4,.2,.24,.2,shade(C('ground'),.8));g.ico(x+dx,.34,z+.4,.14,C('leaf2'),.1,1,1)}
  });
  STATIC=g.build();GLOW=gw.build();
