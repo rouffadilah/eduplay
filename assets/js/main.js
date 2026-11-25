@@ -382,6 +382,16 @@ function buildWorld(){const P=palettes[theme]||palettes.cyber,g=new Geo(),gw=new
   g.cyl(x,.48,z,.14,.96,9,shade(C('trunk'),.92+hv*.16),0,.085,(hv-.5)*.22);const pick=deco==='round'?1:deco==='pine'?0:i%2;if(pick===0){for(let k=0;k<3;k++)g.cyl(x,.92+k*.34,z,.52-k*.12,.58-k*.1,9,k===1?C('leaf2'):C('tree'),1,0,(hv+k)*.6);g.cyl(x,1.65,z,.16,.35,7,C('leaf2'),1,0)}else{g.ico(x,.98,z,.52,C('tree'),1,1.02,1);g.ico(x-.28,1.13,z+.12,.34,C('leaf2'),1,1,1);g.ico(x+.25,1.18,z-.16,.36,C('tree'),1,1,1);g.ico(x+.08,1.43,z+.08,.3,C('leaf2'),1,1,1);g.ico(x-.2,.82,z-.2,.29,C('tree'),1,.9,1)}});
  buildings.forEach(b=>{const x=b.x,z=b.y,wc=C('building');g.box(x,.04,z,.98,.08,.98,hex('#b8c0c8'));g.box(x,.46,z,.84,.8,.84,wc);const rs=P.roofStyle||'pyr';if(rs==='dome'){g.ico(x,.86,z,.44,C('roof'),0,.62,1)}else if(rs==='flat'){g.box(x,.9,z,.92,.08,.92,C('roof'));g.box(x+.2,1.02,z-.2,.22,.16,.22,shade(C('roof'),1.15))}else g.cyl(x,1.1,z,.7,.5,4,C('roof'),0,0,Math.PI/4);g.box(x,.28,z+.425,.26,.42,.03,hex('#3a2a20'));gw.box(x-.24,.6,z+.425,.15,.15,.03,C('window'));gw.box(x+.24,.6,z+.425,.15,.15,.03,C('window'));gw.box(x+.425,.6,z,.03,.15,.15,C('window'));
   if(b.lab){g.box(x+.25,1.25,z-.15,.05,.6,.05,hex('#d0d6de'));gw.ico(x+.25,1.58,z-.15,.09,C('portal'),0,1,1)}else{g.box(x,.9,z+.43,.5,.12,.02,hex('#f4ead2'))}});
+ /* Detail arsitektur: kusen, lis fasad, lampu, tangga, dan taman mini. */
+ buildings.forEach((b,i)=>{const x=b.x,z=b.y,trim=shade(C('building'),1.24),door=hex('#493326');
+  g.box(x,.88,z+.438,.94,.07,.035,trim);
+  g.box(x,.1,z+.7,.78,.06,.5,shade(C('dirt'),1.12));
+  g.box(x,.29,z+.462,.29,.5,.045,door);
+  g.box(x+.09,.3,z+.489,.018,.018,.018,hex('#ffc83d'));
+  for(const wx of [-.25,.25]){g.box(x+wx,.62,z+.46,.21,.22,.04,trim);g.box(x+wx,.62,z+.486,.15,.16,.02,C('window'));g.box(x+wx,.62,z+.5,.018,.16,.012,shade(trim,1.2));g.box(x+wx,.62,z+.5,.16,.018,.012,shade(trim,1.2))}
+  g.box(x-.37,.78,z+.48,.045,.13,.045,shade(C('roof'),1.3));gw.ico(x-.37,.7,z+.5,.065,C('gold'),.7,1,1);
+  for(const dx of [-.58,.58]){g.box(x+dx,.14,z+.4,.2,.24,.2,shade(C('ground'),.8));g.ico(x+dx,.34,z+.4,.14,C('leaf2'),.1,1,1)}
+ });
  STATIC=g.build();GLOW=gw.build();
  const LV=worldLevel();LIGHT=LV.time;setLight(LIGHT);const [sT,sB]=skyFor(P,LIGHT);stage.style.setProperty('--skyTop',sT);stage.style.setProperty('--skyBot',sB);FOG=hex(sB);stage.classList.toggle('night',LIGHT==='night');stage.classList.toggle('dusk',LIGHT==='dusk');
  document.querySelector('meta[name=theme-color]').setAttribute('content',sT)}
