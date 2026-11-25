@@ -407,15 +407,19 @@ function draw(mesh,M,tint=W1,emis=0,alpha=1){bindMesh(mesh);gl.uniformMatrix4fv(
 const I4=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
 const cam={e:[1,6,8],t:[1,0,1]};
 const CAMS=[{name:'Dekat',off:[0,5.2,6.4]},{name:'Jauh',off:[0,8.6,9.4]},{name:'Peta',off:[0,16,13.5],fixed:[(COLS-1)/2,0,(ROWS-1)/2+.4]}];
+// Kamera orbit third-person: drag kanan atau Shift+drag untuk melihat dunia dari segala arah.
+let cameraYaw=0,cameraPitch=0,cameraZoom=1,orbitDrag=null;
 const rp={x:START.x,z:START.y,face:0,phase:0,moving:false};let anim=null,path=[],pendingTarget=null,heldDir=null;
 let parts=[],floaters=[],chestLid=0,npcFace=0;
 const COL={skin:hex('#f2c9a5'),shirt:hex('#3a7bff'),pants:hex('#26364f'),hair:hex('#2b2b3a'),bag:hex('#ff8c42'),eye:hex('#17324f'),robe:hex('#6b4ce6'),robe2:hex('#4630ad'),white:hex('#ffffff'),gold:hex('#ffc83d'),goldD:hex('#d99a12'),stone:hex('#8f9bab'),stoneD:hex('#6c7888'),wood:hex('#9b622d'),woodD:hex('#6e4220'),leaf:hex('#2fbf71'),shadow:[0,0,0]};
 function resize(){const r=stage.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,innerWidth<700?1.5:2);const w=Math.max(1,Math.round(r.width*dpr)),h=Math.max(1,Math.round(r.height*dpr));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}if(R3D)gl.viewport(0,0,w,h)}
 let viewW=1,viewH=1;
 function setupCamera(dt){const r=stage.getBoundingClientRect();viewW=r.width;viewH=r.height;const asp=viewW/Math.max(1,viewH),C=CAMS[camMode];let off=C.off.slice();if(asp<1){const k=camMode===2?1.8:1.2;off=off.map(v=>v*k)}
- const tgt=C.fixed?C.fixed.slice():[rp.x,.35+hAt(rp.x,rp.z)*.6,rp.z];const eye=[tgt[0]+off[0],tgt[1]+off[1],tgt[2]+off[2]];const k=dt<0?1:1-Math.exp(-dt*4.5);for(let i=0;i<3;i++){cam.e[i]+=(eye[i]-cam.e[i])*k;cam.t[i]+=(tgt[i]-cam.t[i])*k}
- persp(PJ,(asp<1?56:42)*Math.PI/180,asp,.1,160);lookAt(VW,cam.e,cam.t);mul(VP,PJ,VW);invert(IVP,VP);
- gl.uniformMatrix4fv(U.uVP,false,VP);gl.uniform3fv(U.uEye,cam.e);const dist=Math.hypot(off[0],off[1],off[2]);gl.uniform2f(U.uFogR,dist+12,dist+42);gl.uniform3fv(U.uFog,FOG)}
+ const tgt=C.fixed?C.fixed.slice():[rp.x,.35+hAt(rp.x,rp.z)*.6,rp.z];
+ if(!C.fixed){const base=Math.hypot(off[0],off[2])*cameraZoom,basePitch=Math.atan2(off[1],Math.max(.001,Math.hypot(off[0],off[2]))),pitch=Math.max(.12,Math.min(1.18,basePitch+cameraPitch));off=[Math.sin(cameraYaw)*Math.cos(pitch)*base,Math.sin(pitch)*Math.hypot(off[1],Math.hypot(off[0],off[2]))*cameraZoom,Math.cos(cameraYaw)*Math.cos(pitch)*base]}
+ const eye=[tgt[0]+off[0],tgt[1]+off[1],tgt[2]+off[2]],k=dt<0?1:1-Math.exp(-dt*4.5);for(let i=0;i<3;i++){cam.e[i]+=(eye[i]-cam.e[i])*k;cam.t[i]+=(tgt[i]-cam.t[i])*k}
+ persp(PJ,(asp<1?56:42)*Math.PI/180,asp,.1,180);lookAt(VW,cam.e,cam.t);mul(VP,PJ,VW);invert(IVP,VP);
+ gl.uniformMatrix4fv(U.uVP,false,VP);gl.uniform3fv(U.uEye,cam.e);const dist=Math.hypot(off[0],off[1],off[2]);gl.uniform2f(U.uFogR,dist+14,dist+52);gl.uniform3fv(U.uFog,FOG)}
 function project(x,y,z){const v=[VP[0]*x+VP[4]*y+VP[8]*z+VP[12],VP[1]*x+VP[5]*y+VP[9]*z+VP[13],VP[3]*x+VP[7]*y+VP[11]*z+VP[15]];if(v[2]<=0.01)return null;return{x:(v[0]/v[2]*.5+.5)*viewW,y:(1-(v[1]/v[2]*.5+.5))*viewH}}
 function shadow(x,z,r,a=.22,y=0){const M=MT();compose(M,x,y+.018,z,0,0,0,r,.01,r);draw(MESH.disc,M,COL.shadow,0,a)}
 const AV_ANIMAL=['kucing','beruang','panda','rubah','kelinci','penguin','dino'];
@@ -1735,7 +1739,7 @@ document.addEventListener('keydown',e=>{if($('quizModal').classList.contains('sh
  if(e.key==='e'||e.key==='E'||(e.key==='Enter'&&tag!=='BUTTON')){e.preventDefault();if(canPlay())interact()}if(e.key==='c'||e.key==='C')cycleCam()});
 document.addEventListener('keyup',e=>{const d=KEYMAP[e.key];if(d&&heldDir===d)heldDir=null});
 window.addEventListener('blur',()=>{heldDir=null});
-let swipe=null;canvas.addEventListener('pointerdown',e=>{audio();swipe={x:e.clientX,y:e.clientY}});canvas.addEventListener('pointerup',e=>{if(!swipe)return;const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;swipe=null;if(!canPlay())return;if(Math.max(Math.abs(dx),Math.abs(dy))>28){path=[];pendingTarget=null;tryMove(Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up')}else{const r=canvas.getBoundingClientRect();tapAt(e.clientX-r.left,e.clientY-r.top)}});
+let swipe=null;canvas.addEventListener('contextmenu',e=>e.preventDefault());canvas.addEventListener('pointerdown',e=>{audio();if(e.button===2||(e.button===0&&e.shiftKey)){orbitDrag={x:e.clientX,y:e.clientY};canvas.setPointerCapture?.(e.pointerId);return}swipe={x:e.clientX,y:e.clientY}});canvas.addEventListener('pointermove',e=>{if(!orbitDrag)return;const dx=e.clientX-orbitDrag.x,dy=e.clientY-orbitDrag.y;orbitDrag={x:e.clientX,y:e.clientY};cameraYaw-=dx*.008;cameraPitch=Math.max(-.55,Math.min(.82,cameraPitch+dy*.006))});canvas.addEventListener('pointerup',e=>{if(orbitDrag){orbitDrag=null;return}if(!swipe)return;const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;swipe=null;if(!canPlay())return;if(Math.max(Math.abs(dx),Math.abs(dy))>28){path=[];pendingTarget=null;tryMove(Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up')}else{const r=canvas.getBoundingClientRect();tapAt(e.clientX-r.left,e.clientY-r.top)}});canvas.addEventListener('pointercancel',()=>{swipe=null;orbitDrag=null});canvas.addEventListener('wheel',e=>{e.preventDefault();cameraZoom=Math.max(.72,Math.min(1.55,cameraZoom+Math.sign(e.deltaY)*.06))},{passive:false});
 $('interactBtn').addEventListener('click',()=>{audio();if(canPlay())interact()});$('talkBtn').addEventListener('click',talk);
 $('closeNpc').addEventListener('click',()=>{clearInterval(typeTimer);$('npcModal').classList.remove('show')});
 $('closeQuiz').addEventListener('click',closeQuizModal);$('nextQuiz').addEventListener('click',closeQuizModal);
@@ -1745,7 +1749,7 @@ $('winExcel').addEventListener('click',()=>{const r=lastRecord||history[history.
 ['quizModal','npcModal','winModal','stuModal'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target.id!==id)return;if(id==='quizModal')closeQuizModal();else if(id==='stuModal'){if(!$('stuSkip').hidden)$(id).classList.remove('show')}else $(id).classList.remove('show')}));
 $('stuChip').addEventListener('click',openStudent);$('stuSave').addEventListener('click',saveStudent);$('stuSkip').addEventListener('click',()=>{nameSkipped=true;$('stuModal').classList.remove('show')});
 ['stuName','stuClass','stuAbsen'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveStudent()}}));
-function cycleCam(){camMode=(camMode+1)%CAMS.length;toast('🎥 Kamera: '+CAMS[camMode].name);save()}
+function cycleCam(){camMode=(camMode+1)%CAMS.length;if(camMode===0){cameraYaw=0;cameraPitch=0;cameraZoom=1}toast('🎥 Kamera: '+CAMS[camMode].name);save()}
 $('camBtn').addEventListener('click',cycleCam);
 const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement||null;
 function setFullUI(on){stage.classList.toggle('full',on);document.body.classList.toggle('locked',on);$('fullBtn').textContent=on?'✕':'⛶';$('fullBtn').setAttribute('aria-label',on?'Keluar layar penuh':'Layar penuh');if(R3D)resize()}
